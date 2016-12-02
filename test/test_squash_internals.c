@@ -13,9 +13,9 @@
 
 void test_squash_internals()
 {
-	const unsigned char data[] = { 230, 51, 0, 0 };
+	const uint8_t data[] = { 230, 51, 0, 0 };
 	assert(13286 == SQUASH_READ32(data));
 
-	const unsigned char data_ubuntu[] = { 0xCB, 0x18, 0x03, 0x00 };
+	const uint8_t data_ubuntu[] = { 0xCB, 0x18, 0x03, 0x00 };
 	assert(202955 == SQUASH_READ32(data_ubuntu));
 }

@@ -8,7 +8,15 @@
 #ifndef SQUASH_INTERNALS_H_66FCE0B7
 #define SQUASH_INTERNALS_H_66FCE0B7
 
+#define SQUASH_READ16(ptr) \
+	((uint16_t)(ptr)[0] | ((uint16_t)(ptr)[1]<<8))
+
 #define SQUASH_READ32(ptr) \
-	((ptr)[0] | ((ptr)[1]<<8) | ((ptr)[2]<<16) | ((ptr)[3]<<24))
+	((uint32_t)SQUASH_READ16(ptr) | ((uint32_t)SQUASH_READ16(ptr+2)<<16))
+
+#define SQUASH_READ64(ptr) \
+	((uint64_t)SQUASH_READ32(ptr) | ((uint64_t)SQUASH_READ32(ptr+4)<<32))
+
+SQUASH_DISK *squash_only_supports(const char *feature);
 
 #endif
