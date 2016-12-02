@@ -1,0 +1,15 @@
+language: c
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+script:
+  - mkdir build && cd build
+  - cmake ..
+  - cmake --build .
+  - ./squash_tests
