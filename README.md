@@ -13,6 +13,7 @@ On most systems you can build the library using the following commands,
     mkdir build && cd build
     cmake ..
     cmake --build .
+    ctest
 
 ## Contributing
 

@@ -9,4 +9,4 @@ build_script:
 
     cmake --build .
 
-    squash_tests
+    ctest
