@@ -1,0 +1,12 @@
+version: '{build}'
+build_script:
+- cmd: >-
+    cmake --version
+
+    mkdir build && cd build
+
+    cmake ..
+
+    cmake --build .
+
+    squash_tests

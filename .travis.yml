@@ -9,6 +9,7 @@ compiler:
   - clang
 
 script:
+  - cmake --version
   - mkdir build && cd build
   - cmake ..
   - cmake --build .
