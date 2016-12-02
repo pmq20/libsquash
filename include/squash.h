@@ -20,7 +20,7 @@ typedef struct {
 	uint32_t fragments_count;
 
 	uint16_t compression_method;
-	uint16_t block_size_log;
+	uint16_t block_log;
 	uint16_t flags;
 	uint16_t ids_count;
 	uint16_t major_version;

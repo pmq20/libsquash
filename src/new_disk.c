@@ -24,7 +24,7 @@ static void read_super_block(SQUASH_DISK * ret, const uint8_t * data)
 	ret->fragments_count = SQUASH_READ32(data + 16);
 
 	ret->compression_method = SQUASH_READ16(data + 20);
-	ret->block_size_log = SQUASH_READ16(data + 22);
+	ret->block_log = SQUASH_READ16(data + 22);
 	ret->flags = SQUASH_READ16(data + 24);
 	ret->ids_count = SQUASH_READ16(data + 26);
 	ret->major_version = SQUASH_READ16(data + 28);
@@ -42,6 +42,20 @@ static void read_super_block(SQUASH_DISK * ret, const uint8_t * data)
 	if (1 != ret->compression_method) {
 		squash_only_supports("gzip compressions");
 	}
+	
+	if ((uint16_t)0b0000000011000000 != ret->flags)
+	{
+		squash_only_supports("Squashfs filesystems with conditions of \
+\"Filesystem is exportable via NFS\", \
+\"Inodes are compressed\", \
+\"Data is compressed\", \
+\"Fragments are compressed\", \
+\"Always-use-fragments option is not specified\", \
+\"Xattrs are compressed\", and \
+\"Duplicates are removed\"");
+	}
+	
+	assert(ret->block_size == (1 << (ret->block_log)));
 }
 
 SQUASH_DISK *squash_new_disk(const uint8_t * data)
