@@ -8,12 +8,12 @@ environment:
     ARCH: 64
 
 build_script:
-- cmd: >-
+- ps: |
     cmake --version
 
     mkdir build && cd build
 
-    cmake ..
+    cmake -G"$env:GENERATOR" ..
 
     cmake --build .
 
