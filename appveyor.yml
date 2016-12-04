@@ -1,11 +1,19 @@
 version: '{build}'
+
+environment:
+  matrix:
+  - GENERATOR: "Visual Studio 11"
+    ARCH: 32
+  - GENERATOR: "Visual Studio 11 Win64"
+    ARCH: 64
+
 build_script:
 - cmd: >-
     cmake --version
 
     mkdir build && cd build
 
-    cmake ..
+    cmake -G"$env:GENERATOR" ..
 
     cmake --build .
 
