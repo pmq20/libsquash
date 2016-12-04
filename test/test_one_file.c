@@ -12,7 +12,8 @@
 
 void test_one_file()
 {
-	SQUASH_DISK *disk = squash_new_disk(fixtures_one_file, fixtures_one_file_size);
+	squash_disk_t *disk = squash_initialize_disk(fixtures_one_file, fixtures_one_file_size);
+
 	// version 4.0
 	assert(4 == disk->major_version);
 	assert(0 == disk->minor_version);
@@ -31,4 +32,6 @@ void test_one_file()
 	assert(1 == disk->fragments_count);
 	// Number of ids 1
 	assert(1 == disk->ids_count);
+
+	squash_destroy_disk(disk);
 }

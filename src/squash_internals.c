@@ -12,9 +12,18 @@
 #include "squash.h"
 #include "squash_internals.h"
 
-SQUASH_DISK *squash_only_supports(const char *feature)
+squash_disk_t *squash_only_support(const char *feature)
 {
 	fprintf(stderr, "Libsquash only supports %s for the moment.\n",
+		feature);
+	fprintf(stderr,
+		"Pull requests are welcome on GitHub at https://github.com/pmq20/libsquash.\n");
+	exit(120);
+}
+
+squash_disk_t *squash_not_support(const char *feature)
+{
+	fprintf(stderr, "Libsquash does not support %s for the moment.\n",
 		feature);
 	fprintf(stderr,
 		"Pull requests are welcome on GitHub at https://github.com/pmq20/libsquash.\n");

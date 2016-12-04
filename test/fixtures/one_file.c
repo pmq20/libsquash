@@ -24,6 +24,6 @@ const uint8_t fixtures_one_file[] =
 	    0, 0, 166, 0, 0, 0, 0, 0, 0, 0,
 	14, 0, 120, 218, 99, 96, 128, 0, 5, 40, 13, 0, 1, 16, 0, 33, 192, 0, 0,
 	    0, 0, 0, 0, 0, 4, 128, 232, 3, 0,
-	0, 216
+	0, 216, 0, 0, 0, 0, 0, 0, 0
 };
-const size_t fixtures_one_file_size = 223;
+const size_t fixtures_one_file_size = 230;

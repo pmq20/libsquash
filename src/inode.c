@@ -11,3 +11,9 @@
 #include "squash.h"
 #include "squash_internals.h"
 
+squash_inode_t *squash_read_inode(squash_disk_t *disk, uint64_t number)
+{
+	squash_inode_t *root = malloc(sizeof(squash_inode_t));
+	assert(root);
+	return root;
+}

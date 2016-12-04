@@ -17,6 +17,11 @@
 #define SQUASH_READ64(ptr) \
 	((uint64_t)SQUASH_READ32(ptr) | ((uint64_t)SQUASH_READ32(ptr+4)<<32))
 
-SQUASH_DISK *squash_only_supports(const char *feature);
+#define SQUASH_INODE_OFFSET(A) \
+	((unsigned int) ((A) & 0xffff))
+
+squash_disk_t *squash_only_support(const char *feature);
+squash_disk_t *squash_not_support(const char *feature);
+squash_inode_t *squash_read_inode(squash_disk_t *disk, uint64_t number);
 
 #endif

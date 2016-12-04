@@ -12,6 +12,37 @@
 #include <stdint.h>
 #include <stddef.h>
 
+typedef enum {
+	SQUASH_DIR,
+	SQUASH_REG,
+	SQUASH_SYMLINK,
+	SQUASH_BLKDEV,
+	SQUASH_CHRDEV,
+	SQUASH_FIFO,
+	SQUASH_SOCKET,
+	SQUASH_LDIR,
+	SQUASH_LREG,
+	SQUASH_LSYMLINK,
+	SQUASH_LBLKDEV,
+	SQUASH_LCHRDEV,
+	SQUASH_LFIFO,
+	SQUASH_LSOCKET
+} squash_inode_type_t;
+
+typedef struct {
+	squash_inode_type_t type;
+	uint16_t i_mode;
+	uint16_t i_opflags;
+	uint32_t i_uid;
+	uint32_t i_gid;
+	uint32_t i_flags;
+	uint32_t i_ino;
+	uint32_t i_nlink;
+	uint32_t i_atime;
+	uint32_t i_mtime;
+	uint32_t i_ctime;
+} squash_inode_t;
+
 typedef struct {
 	uint32_t inodes_count;
 	uint32_t created_at;
@@ -33,8 +64,16 @@ typedef struct {
 	uint64_t directory_table_start;
 	uint64_t fragment_table_start;
 	uint64_t lookup_table_start;
-} SQUASH_DISK;
 
-SQUASH_DISK *squash_new_disk(const uint8_t * data, size_t size);
+	uint64_t *xattr_id_table;
+	uint64_t *id_table;
+	uint64_t *lookup_table;
+	uint64_t *fragment_table;
+	
+	squash_inode_t *root;
+} squash_disk_t;
+
+squash_disk_t *squash_initialize_disk(const uint8_t * data, size_t size);
+void squash_destroy_disk(squash_disk_t * disk);
 
 #endif
