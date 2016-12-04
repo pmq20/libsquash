@@ -119,6 +119,6 @@ squash_disk_t *squash_initialize_disk(const uint8_t * data, size_t size)
 
 void squash_destroy_disk(squash_disk_t * disk)
 {
-	free(disk);
 	free(disk->root);
+	free(disk);
 }
