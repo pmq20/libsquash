@@ -13,7 +13,7 @@ build_script:
 
     mkdir build && cd build
 
-    cmake -G"$env:GENERATOR" ..
+    cmake ..
 
     cmake --build .
 
