@@ -12,13 +12,13 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define SQUASH_INODE_BASE_FIELDS		\
-	const squash_type_t	type;		\
-	const uint16_t		mode;		\
-	const uint16_t		uid;		\
-	const uint16_t		guid;		\
-	const uint32_t		modified_at;	\
-	const uint32_t		inode_number;
+#define SQUASH_INODE_BASE_FIELDS	\
+	const squash_type_t type;	\
+	const uint16_t mode;		\
+	const uint16_t uid;		\
+	const uint16_t guid;		\
+	const uint32_t modified_at;	\
+	const uint32_t inode_number;
 
 typedef enum {
 	SQUASH_DIR_TYPE,
@@ -60,27 +60,32 @@ typedef struct {
 } squash_super_t;
 
 typedef struct {
-SQUASH_INODE_BASE_FIELDS} squash_inode_base_t;
+	SQUASH_INODE_BASE_FIELDS;
+} squash_inode_base_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t links_count;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
 	const uint32_t rdev;
 } squash_inode_dev_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t links_count;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
 	const uint32_t rdev;
 	const uint32_t xattr;
 } squash_inode_ldev_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t links_count;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
 	const uint32_t sym_links_count;
 	const char *sym_link;
 } squash_inode_sym_link_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t start_block;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t start_block;
 	const uint32_t fragment;
 	const uint32_t offset;
 	const uint32_t file_size;
@@ -88,7 +93,8 @@ typedef struct {
 } squash_inode_reg_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint64_t start_block;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint64_t start_block;
 	const uint64_t file_size;
 	const uint64_t sparse;
 	const uint32_t links_count;
@@ -99,7 +105,8 @@ typedef struct {
 } squash_inode_lreg_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t start_block;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t start_block;
 	const uint32_t links_count;
 	const uint16_t file_size;
 	const uint16_t offset;
@@ -114,7 +121,8 @@ typedef struct {
 } squash_dir_index_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t links_count;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
 	const uint32_t file_size;
 	const uint32_t start_block;
 	const uint32_t parent;
@@ -125,16 +133,19 @@ typedef struct {
 } squash_inode_ldir_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t links_count;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
 } squash_inode_ipc_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS const uint32_t links_count;
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
 	const uint32_t xattr;
 } squash_inode_lipc_t;
 
 typedef union {
-	SQUASH_INODE_BASE_FIELDS const squash_inode_dev_t dev;
+	SQUASH_INODE_BASE_FIELDS;
+	const squash_inode_dev_t dev;
 	const squash_inode_ldev_t ldev;
 	const squash_inode_sym_link_t sym_link;
 	const squash_inode_reg_t reg;
