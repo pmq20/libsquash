@@ -45,7 +45,7 @@ static void read_super_block(SQUASH_DISK * ret, const uint8_t * data, size_t siz
 		squash_only_supports("gzip compressions");
 	}
 	
-	if ((uint16_t)0b0000000011000000 != ret->flags)
+	if ((uint16_t)192 != ret->flags)
 	{
 		squash_only_supports("Squashfs filesystems with conditions of \
 \"Filesystem is exportable via NFS\", \
