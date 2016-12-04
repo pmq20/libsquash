@@ -18,12 +18,12 @@
 	const uint16_t uid;		\
 	const uint16_t guid;		\
 	const uint32_t modified_at;	\
-	const uint32_t inode_number;
+	const uint32_t inode_number
 
 typedef enum {
 	SQUASH_DIR_TYPE,
 	SQUASH_REG_TYPE,
-	SQUASH_SYMLINK_TYPE,
+	SQUASH_SYM_LINK_TYPE,
 	SQUASH_BLKDEV_TYPE,
 	SQUASH_CHRDEV_TYPE,
 	SQUASH_FIFO_TYPE,
