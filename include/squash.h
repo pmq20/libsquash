@@ -10,8 +10,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
-
-typedef uint64_t squash_inode;
+#include <stddef.h>
 
 typedef struct {
 	uint32_t inodes_count;
@@ -26,7 +25,7 @@ typedef struct {
 	uint16_t major_version;
 	uint16_t minor_version;
 
-	squash_inode root_inode;
+	uint64_t root_inode;
 	uint64_t bytes_used;
 	uint64_t id_table_start;
 	uint64_t xattr_id_table_start;
@@ -36,6 +35,6 @@ typedef struct {
 	uint64_t lookup_table_start;
 } SQUASH_DISK;
 
-SQUASH_DISK *squash_new_disk(const uint8_t * data);
+SQUASH_DISK *squash_new_disk(const uint8_t * data, size_t size);
 
 #endif

@@ -12,7 +12,7 @@
 
 void test_one_file()
 {
-	SQUASH_DISK *disk = squash_new_disk(fixtures_one_file);
+	SQUASH_DISK *disk = squash_new_disk(fixtures_one_file, fixtures_one_file_size);
 	// version 4.0
 	assert(4 == disk->major_version);
 	assert(0 == disk->minor_version);

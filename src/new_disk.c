@@ -11,8 +11,10 @@
 #include "squash.h"
 #include "squash_internals.h"
 
-static void read_super_block(SQUASH_DISK * ret, const uint8_t * data)
+static void read_super_block(SQUASH_DISK * ret, const uint8_t * data, size_t size)
 {
+	assert(size > 88);
+
 	if (0x68 != data[0] || 0x73 != data[1] || 0x71 != data[2]
 	    || 0x73 != data[3]) {
 		squash_only_supports("little-endian Squashfs filesystems");
@@ -55,15 +57,17 @@ static void read_super_block(SQUASH_DISK * ret, const uint8_t * data)
 \"Duplicates are removed\"");
 	}
 	
+	assert(ret->block_size <= 1048576);
+	assert(ret->block_log <= 20);
 	assert(ret->block_size == (1 << (ret->block_log)));
 }
 
-SQUASH_DISK *squash_new_disk(const uint8_t * data)
+SQUASH_DISK *squash_new_disk(const uint8_t * data, size_t size)
 {
 	SQUASH_DISK *ret = malloc(sizeof(SQUASH_DISK));
 	assert(ret);
 
-	read_super_block(ret, data);
+	read_super_block(ret, data, size);
 
 	return ret;
 }

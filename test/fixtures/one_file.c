@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <stddef.h>
 
 const uint8_t fixtures_one_file[] =
     { 104, 115, 113, 115, 2, 0, 0, 0, 39, 12, 64, 88, 0, 0, 2, 0, 1, 0, 0, 0, 1,
@@ -25,3 +26,4 @@ const uint8_t fixtures_one_file[] =
 	    0, 0, 0, 0, 0, 4, 128, 232, 3, 0,
 	0, 216
 };
+const size_t fixtures_one_file_size = 223;
