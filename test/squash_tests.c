@@ -10,7 +10,6 @@
 
 int main(int argc, char const *argv[])
 {
-	test_squash_internals();
 	test_one_file();
 	return 0;
 }
