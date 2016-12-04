@@ -13,6 +13,6 @@
 
 squash_disk_t *squash_only_support(const char *feature);
 squash_disk_t *squash_not_support(const char *feature);
-squash_inode_t *squash_read_inode(squash_disk_t *disk, uint64_t number);
+squash_inode_t *squash_read_inode(squash_disk_t * disk, uint64_t number);
 
 #endif

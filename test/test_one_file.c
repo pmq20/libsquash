@@ -12,7 +12,8 @@
 
 void test_one_file()
 {
-	squash_disk_t *disk = squash_initialize_disk(fixtures_one_file, fixtures_one_file_size);
+	squash_disk_t *disk =
+	    squash_initialize_disk(fixtures_one_file, fixtures_one_file_size);
 
 	// version 4.0
 	assert(4 == disk->super->version_major);
