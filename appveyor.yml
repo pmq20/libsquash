@@ -15,7 +15,7 @@ build_script:
 - ps: |
     nuget install zlib
     
-    tree
+    tree /F
 
     cmake --version
 
