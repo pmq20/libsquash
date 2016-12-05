@@ -13,7 +13,7 @@ environment:
 
 build_script:
 - ps: |
-    Install-Package zlib
+    nuget install zlib
 
     cmake --version
 
