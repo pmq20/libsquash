@@ -14,8 +14,6 @@ environment:
 build_script:
 - ps: |
     nuget install zlib
-    
-    tree /F
 
     cmake --version
 
@@ -26,6 +24,8 @@ build_script:
     cmake -G"$env:GENERATOR" -DZLIB_INCLUDE_DIR:PATH=C:\projects\libsquash\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\include -DZLIB_LIBRARY_RELEASE:FILEPATH=C:\projects\libsquash\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\Win32\RelWithDebInfo\zlib.lib ..
 
     cmake --build .
+    
+    tree /F
     
     squash_tests
 
