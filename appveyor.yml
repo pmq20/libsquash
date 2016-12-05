@@ -13,6 +13,8 @@ environment:
 
 build_script:
 - ps: |
+    Install-Package zlib
+
     cmake --version
 
     mkdir build
