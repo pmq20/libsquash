@@ -23,7 +23,7 @@ build_script:
 
     cd build
 
-    cmake -G"$env:GENERATOR" ..
+    cmake -G"$env:GENERATOR" -DZLIB_INCLUDE_DIR:PATH=zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\include -DZLIB_LIBRARY_RELEASE:FILEPATH=zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\Win32\RelWithDebInfo\zlib.lib ..
 
     cmake --build .
 
