@@ -5,11 +5,8 @@
  * For full terms see the included LICENSE file
  */
 
-#include "squash.h"
-#include "squash_tests.h"
+#include <assert.h>
+#include <stdio.h>
 
-int main(int argc, char const *argv[])
-{
-	test_one_file();
-	return 0;
-}
+#include "squash.h"
+#include "squash_internals.h"

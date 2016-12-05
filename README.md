@@ -20,6 +20,10 @@ On most systems you can build the library using the following commands,
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/pmq20/libsquash.
 
+## Contributors
+
+* [pmq20](https://github.com/pmq20) - **Minqi Pan** &lt;pmq2001@gmail.com&gt;
+
 ## License
 
-Libsquash is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Copyright (c) 2016 Libsquash contributers, under terms of the [MIT License](http://opensource.org/licenses/MIT).
