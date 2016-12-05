@@ -9,6 +9,7 @@
 #define SQUASH_H_256A1657
 
 #include <stdlib.h>
+#include <stdint.h>
 #include <stddef.h>
 
 struct squash_disk_t;
