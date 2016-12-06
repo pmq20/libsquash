@@ -49,6 +49,10 @@ returning `0` on success.  On failure, `-1` is returned.
 Returns a pointer to the next directory entry.
 It returns `NULL` upon reaching the end of the directory or on error. 
 
+### `squash_rewinddir(dirp)`
+
+Resets the position of the named directory stream to the beginning of the directory.
+
 ### `squash_chdir(disk, path)`
 
 Causes the named directory to become the current working directory of the SquashFS `disk`,
