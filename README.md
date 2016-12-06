@@ -36,28 +36,47 @@ Opens the directory named by `filename` of the SquashFS `disk`,
 associates a directory stream with it and returns a pointer
 to be used to identify the directory stream in subsequent operations.
 The pointer `NULL` is returned if `filename` cannot be accessed,
-or if it cannot allocate enough memory to hold the whole thing.
+or if it cannot allocate enough memory to hold the whole thing,
+and sets the global variable `squash_errno` to indicate the error.
 The returned resource should later be freed by `squash_closedir`.
 
 ### `squash_closedir(dirp)`
 
 Closes the named directory stream and frees the structure associated with the `dirp` pointer,
-returning `0` on success.  On failure, `-1` is returned.
+returning `0` on success.
+On failure, `-1` is returned and the global variable `squash_errno` is set to indicate the error.
 
 ### `squash_readdir(dirp)`
 
 Returns a pointer to the next directory entry.
 It returns `NULL` upon reaching the end of the directory or on error. 
+In the event of an error, the global variable `squash_errno` is set to indicate the error.
 
 ### `squash_rewinddir(dirp)`
 
 Resets the position of the named directory stream to the beginning of the directory.
 
+### `squash_dirfd(dirp)`
+
+Returns the integer file descriptor associated with the named directory stream.
+On failure, `-1` is returned and the global variable `squash_errno` is set to indicate the error.
+
+### `squash_telldir(dirp)`
+
+Returns the current location associated with the named directory stream.
+
+### `squash_seekdir(dirp, loc)`
+
+Sets the position of the next `squash_readdir()` operation on the directory stream.
+The new position reverts to the one associated with the directory stream
+when the `squash_telldir()` operation was performed.
+
 ### `squash_chdir(disk, path)`
 
 Causes the named directory to become the current working directory of the SquashFS `disk`,
 that is, the starting point for path searches of pathnames not beginning with a slash, `/`.
-Upon successful completion, a value of `0` is returned. Otherwise, a value of `-1` is returned.
+Upon successful completion, a value of `0` is returned. Otherwise, a value of `-1` is returned
+and `squash_errno` is set to indicate the error.
 
 ### `squash_getcwd(disk, buf, size)`
 
