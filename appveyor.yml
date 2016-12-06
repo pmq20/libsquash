@@ -38,3 +38,7 @@ build_script:
     Debug\squash_tests
 
     ctest
+
+artifacts:
+- path: Build\Debug\squash_tests.exe
+  name: squash_tests.exe
