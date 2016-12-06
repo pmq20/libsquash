@@ -2,8 +2,8 @@
 
 User-land SquashFS that can be linked and embedded within your application.
 
-[![Build Status: Linux and Darwin](https://travis-ci.org/enclose-io/libsquash.svg?branch=master)](https://travis-ci.org/enclose-io/libsquash)
-[![Build status: Windows](https://ci.appveyor.com/api/projects/status/o6tp9y3l7haempkp?svg=true)](https://ci.appveyor.com/project/enclose-io/libsquash)
+[![Build status: Linux and Darwin](https://travis-ci.org/enclose-io/libsquash.svg?branch=master)](https://travis-ci.org/enclose-io/libsquash)
+[![Build status: Windows](https://ci.appveyor.com/api/projects/status/idimki81u783uab0?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash)
 [![Coverity Scan](https://scan.coverity.com/projects/11025/badge.svg)](https://scan.coverity.com/projects/pmq20-libsquash)
 
 ## Building
