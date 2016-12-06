@@ -47,19 +47,19 @@ while `squash_stat()` returns information about the file the link references.
 ### `squash_fstat(disk, fildes, buf)`
 
 Obtains the same information as `squash_stat()`
-about an open file known by the file descriptor `fildes`.
+about an open file known by the Libsquash file descriptor `fildes`.
 
 ### `squash_open(disk, path)`
 
 The file name specified by `path` of the SquashFS `disk` is opened for reading.
-If successful, `squash_open()` returns a non-negative integer, termed a file descriptor.
+If successful, `squash_open()` returns a non-negative integer, termed a Libsquash file descriptor.
 It returns `-1` on failure.
 The file pointer (used to mark the current position within the file) is set to the beginning of the file.
 The returned resource should later be closed by `squash_close()`.
 
 ### `squash_close(fildes)`
 
-Deletes a descriptor from the per-SquashFS-disk object reference table.
+Deletes a Libsquash file descriptor from the per-SquashFS-disk object reference table.
 If this is the last reference to the underlying object, the object will be deactivated.
 For example, on the last close of a file the current seek pointer associated with the file is lost.
 Upon successful completion, a value of `0` is returned.
@@ -93,7 +93,7 @@ Resets the position of the named directory stream to the beginning of the direct
 
 ### `squash_dirfd(dirp)`
 
-Returns the integer file descriptor associated with the named directory stream.
+Returns the integer Libsquash file descriptor associated with the named directory stream.
 On failure, `-1` is returned and the global variable `squash_errno` is set to indicate the error.
 
 ### `squash_telldir(dirp)`
