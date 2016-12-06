@@ -7,7 +7,6 @@
 
 #include <assert.h>
 
-#include "squash.h"
 #include "squash_internals.h"
 #include "squash_tests.h"
 

@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "squash.h"
 #include "squash_internals.h"
 
 void squash_only_support(const char *feature)

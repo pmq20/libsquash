@@ -10,7 +10,6 @@
 #include <string.h>
 #include <zlib.h>
 
-#include "squash.h"
 #include "squash_internals.h"
 
 void squash_read_meta(uint8_t * inode, size_t inode_size,

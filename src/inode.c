@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "squash.h"
 #include "squash_internals.h"
 
 squash_inode_t *squash_read_inode(squash_disk_t * disk, uint64_t number)

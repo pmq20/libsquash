@@ -8,7 +8,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "squash.h"
 #include "squash_internals.h"
 
 static void read_super_block(squash_disk_t * disk, const uint8_t * data,

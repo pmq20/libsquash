@@ -9,6 +9,7 @@
 #define SQUASH_INTERNALS_H_66FCE0B7
 
 #include <stdint.h>
+#include "squash.h"
 #include "squash_layout.h"
 
 #define SQUASH_METADATA_SIZE 8192

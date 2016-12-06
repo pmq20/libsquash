@@ -8,5 +8,4 @@
 #include <assert.h>
 #include <stdio.h>
 
-#include "squash.h"
 #include "squash_internals.h"
