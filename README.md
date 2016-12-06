@@ -8,12 +8,14 @@ User-land SquashFS that can be linked and embedded within your application.
 
 ## Building
 
-On most systems you can build the library using the following commands,
+On most systems you can build and test the library using the following commands,
 
     mkdir build
     cd build
+    
     cmake ..
     cmake --build .
+    
     ctest
 
 ## API
