@@ -152,4 +152,18 @@ typedef union {
 	const squash_inode_long_ipc_t long_ipc;
 } squash_inode_t;
 
+typedef struct {
+	const uint16_t offset;
+	const uint16_t inode_number;
+	const uint16_t type;
+	const uint16_t size;
+	char *name;
+} squash_dir_entry;
+
+typedef struct {
+	const uint32_t count;
+	const uint32_t start_block;
+	const uint32_t inode_number;
+} squash_dir_header;
+
 #endif

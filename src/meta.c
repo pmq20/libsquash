@@ -34,10 +34,10 @@ void squash_read_meta(uint8_t * inode, size_t inode_size,
 		       disk->super->directory_table_start);
 		next_block = block + 2 + length;
 		if (is_compressed) {
-			int res =
-			    uncompress(outbuf, &outbuf_len,
-				       ((uint8_t *) disk->super + block + 2),
-				       length);
+			int res = uncompress(outbuf, &outbuf_len,
+					     ((uint8_t *) disk->super + block +
+					      2),
+					     length);
 			assert(Z_OK == res);
 		} else {
 			outbuf =
