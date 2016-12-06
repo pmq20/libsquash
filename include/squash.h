@@ -15,7 +15,7 @@
 struct squash_disk_t;
 typedef struct squash_disk_t squash_disk_t;
 
-squash_disk_t *squash_new_disk(const uint8_t * data, size_t data_size);
-void squash_destroy_disk(squash_disk_t * disk);
+squash_disk_t *squash_opendisk(const uint8_t * data, size_t data_size);
+void squash_closedisk(squash_disk_t * disk);
 
 #endif

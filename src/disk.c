@@ -110,7 +110,7 @@ static void read_root(squash_disk_t * disk, const uint8_t * data,
 	assert(SQUASH_DIR_TYPE == disk->root->base.type);
 }
 
-squash_disk_t *squash_new_disk(const uint8_t * data, size_t data_size)
+squash_disk_t *squash_opendisk(const uint8_t * data, size_t data_size)
 {
 	squash_disk_t *disk = malloc(sizeof(squash_disk_t));
 	assert(disk);
@@ -127,7 +127,7 @@ squash_disk_t *squash_new_disk(const uint8_t * data, size_t data_size)
 	return disk;
 }
 
-void squash_destroy_disk(squash_disk_t * disk)
+void squash_closedisk(squash_disk_t * disk)
 {
 	free(disk->root);
 	free(disk);
