@@ -10,20 +10,20 @@
 
 #include <stdint.h>
 
-#define SQUASH_DIR_TYPE		1
-#define SQUASH_REG_TYPE		2
-#define SQUASH_SYM_LINK_TYPE	3
-#define SQUASH_BLKDEV_TYPE	4
-#define SQUASH_CHRDEV_TYPE	5
-#define SQUASH_FIFO_TYPE	6
-#define SQUASH_SOCKET_TYPE	7
-#define SQUASH_LDIR_TYPE	8
-#define SQUASH_LREG_TYPE	9
-#define SQUASH_LSYMLINK_TYPE	10
-#define SQUASH_LBLKDEV_TYPE	11
-#define SQUASH_LCHRDEV_TYPE	12
-#define SQUASH_LFIFO_TYPE	13
-#define SQUASH_LSOCKET_TYPE	14
+#define SQUASH_DIR_TYPE			1
+#define SQUASH_REGULAR_TYPE		2
+#define SQUASH_SYMLINK_TYPE		3
+#define SQUASH_BLKDEV_TYPE		4
+#define SQUASH_CHRDEV_TYPE		5
+#define SQUASH_FIFO_TYPE		6
+#define SQUASH_SOCKET_TYPE		7
+#define SQUASH_LONG_DIR_TYPE		8
+#define SQUASH_LONG_REGULAR_TYPE	9
+#define SQUASH_LONG_SYMLINK_TYPE	10
+#define SQUASH_LONG_BLKDEV_TYPE		11
+#define SQUASH_LONG_CHRDEV_TYPE		12
+#define SQUASH_LONG_FIFO_TYPE		13
+#define SQUASH_LONG_SOCKET_TYPE		14
 
 #define SQUASH_INODE_BASE_FIELDS	\
 	const uint16_t type;		\
@@ -60,45 +60,11 @@ typedef struct {
 } squash_inode_base_t;
 
 typedef struct {
-	SQUASH_INODE_BASE_FIELDS;
-	const uint32_t links_count;
-	const uint32_t rdev;
-} squash_inode_dev_t;
-
-typedef struct {
-	SQUASH_INODE_BASE_FIELDS;
-	const uint32_t links_count;
-	const uint32_t rdev;
-	const uint32_t xattr;
-} squash_inode_ldev_t;
-
-typedef struct {
-	SQUASH_INODE_BASE_FIELDS;
-	const uint32_t links_count;
-	const uint32_t sym_links_count;
-	const char *sym_link;
-} squash_inode_sym_link_t;
-
-typedef struct {
-	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t id;
 	const uint32_t start_block;
-	const uint32_t fragment;
-	const uint32_t offset;
-	const uint32_t file_size;
-	const uint16_t *blocks;
-} squash_inode_reg_t;
-
-typedef struct {
-	SQUASH_INODE_BASE_FIELDS;
-	const uint64_t start_block;
-	const uint64_t file_size;
-	const uint64_t sparse;
-	const uint32_t links_count;
-	const uint32_t fragment;
-	const uint32_t offset;
-	const uint32_t xattr;
-	const uint16_t *blocks;
-} squash_inode_lreg_t;
+	const uint32_t size;
+	const char *name;
+} squash_dir_index_t;
 
 typedef struct {
 	SQUASH_INODE_BASE_FIELDS;
@@ -110,13 +76,6 @@ typedef struct {
 } squash_inode_dir_t;
 
 typedef struct {
-	const uint32_t id;
-	const uint32_t start_block;
-	const uint32_t size;
-	const char *name;
-} squash_dir_index_t;
-
-typedef struct {
 	SQUASH_INODE_BASE_FIELDS;
 	const uint32_t links_count;
 	const uint32_t file_size;
@@ -126,7 +85,48 @@ typedef struct {
 	const uint16_t offset;
 	const uint32_t xattr;
 	const squash_dir_index_t *id;
-} squash_inode_ldir_t;
+} squash_inode_long_dir_t;
+
+typedef struct {
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t start_block;
+	const uint32_t fragment;
+	const uint32_t offset;
+	const uint32_t file_size;
+	const uint16_t *blocks;
+} squash_inode_regular_t;
+
+typedef struct {
+	SQUASH_INODE_BASE_FIELDS;
+	const uint64_t start_block;
+	const uint64_t file_size;
+	const uint64_t sparse;
+	const uint32_t links_count;
+	const uint32_t fragment;
+	const uint32_t offset;
+	const uint32_t xattr;
+	const uint16_t *blocks;
+} squash_inode_long_regular_t;
+
+typedef struct {
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
+	const uint32_t symlinks_count;
+	const char *symlink;
+} squash_inode_symlink_t;
+
+typedef struct {
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
+	const uint32_t rdev;
+} squash_inode_device_t;
+
+typedef struct {
+	SQUASH_INODE_BASE_FIELDS;
+	const uint32_t links_count;
+	const uint32_t rdev;
+	const uint32_t xattr;
+} squash_inode_long_device_t;
 
 typedef struct {
 	SQUASH_INODE_BASE_FIELDS;
@@ -137,19 +137,19 @@ typedef struct {
 	SQUASH_INODE_BASE_FIELDS;
 	const uint32_t links_count;
 	const uint32_t xattr;
-} squash_inode_lipc_t;
+} squash_inode_long_ipc_t;
 
 typedef union {
 	const squash_inode_base_t base;
-	const squash_inode_dev_t dev;
-	const squash_inode_ldev_t ldev;
-	const squash_inode_sym_link_t sym_link;
-	const squash_inode_reg_t reg;
-	const squash_inode_lreg_t lreg;
 	const squash_inode_dir_t dir;
-	const squash_inode_ldir_t ldir;
+	const squash_inode_long_dir_t long_dir;
+	const squash_inode_regular_t regular;
+	const squash_inode_long_regular_t long_regular;
+	const squash_inode_symlink_t symlink;
+	const squash_inode_device_t device;
+	const squash_inode_long_device_t long_device;
 	const squash_inode_ipc_t ipc;
-	const squash_inode_lipc_t lipc;
+	const squash_inode_long_ipc_t long_ipc;
 } squash_inode_t;
 
 #endif

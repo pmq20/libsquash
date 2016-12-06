@@ -11,10 +11,10 @@
 #include "squash_internals.h"
 #include "squash_tests.h"
 
-void test_one_file()
+void test_1file_disk()
 {
 	squash_disk_t *disk =
-	    squash_new_disk(fixtures_one_file, fixtures_one_file_size);
+	    squash_new_disk(fixtures_1file_disk, fixtures_1file_disk_size);
 
 	// version 4.0
 	assert(4 == disk->super->version_major);
@@ -39,6 +39,10 @@ void test_one_file()
 
 	// Root created at 2016-12-01 19:40:04 +0800
 	assert(1480592404 == disk->root->base.modified_at);
+	// Root number of links 2
+	assert(2 == disk->root->dir.links_count);
+	// Root size 28
+	assert(28 == disk->root->dir.file_size);
 
 	squash_destroy_disk(disk);
 }

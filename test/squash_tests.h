@@ -8,9 +8,10 @@
 #ifndef SQUASH_TESTS_H_AB287720
 #define SQUASH_TESTS_H_AB287720
 
-extern const uint8_t fixtures_one_file[];
-extern const size_t fixtures_one_file_size;
+extern const uint8_t fixtures_1file_disk[];
+extern const size_t fixtures_1file_disk_size;
 
-void test_one_file();
+void test_squash_internals();
+void test_1file_disk();
 
 #endif

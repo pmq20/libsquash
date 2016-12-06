@@ -46,11 +46,12 @@ struct squash_disk_t {
 	squash_inode_t *root;
 };
 
-squash_disk_t *squash_only_support(const char *feature);
-squash_disk_t *squash_not_support(const char *feature);
+void squash_only_support(const char *feature);
+void squash_not_support(const char *feature);
 
-void squash_read_meta(squash_inode_t * inode, squash_disk_t * disk,
-		      uint64_t block, uint32_t offset);
+void squash_read_meta(uint8_t * inode, size_t inode_size,
+		      squash_disk_t * disk, uint64_t block, uint32_t offset);
+
 squash_inode_t *squash_read_inode(squash_disk_t * disk, uint64_t number);
 
 #endif

@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-const uint8_t fixtures_one_file[] =
+const uint8_t fixtures_1file_disk[] =
     { 104, 115, 113, 115, 2, 0, 0, 0, 39, 12, 64, 88, 0, 0, 2, 0, 1, 0, 0, 0, 1,
 	0, 17, 0, 192, 0, 1, 0, 4, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 230, 0, 0,
 	0, 0, 0, 0, 0, 222, 0, 0, 0, 0, 0,
@@ -27,4 +27,4 @@ const uint8_t fixtures_one_file[] =
 	0, 216, 0, 0, 0, 0, 0, 0, 0
 };
 
-const size_t fixtures_one_file_size = 230;
+const size_t fixtures_1file_disk_size = 230;

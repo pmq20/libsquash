@@ -13,18 +13,18 @@
 #include "squash.h"
 #include "squash_internals.h"
 
-void squash_read_meta(squash_inode_t * inode, squash_disk_t * disk,
-		      uint64_t block, uint32_t offset)
+void squash_read_meta(uint8_t * inode, size_t inode_size,
+		      squash_disk_t * disk, uint64_t block, uint32_t offset)
 {
 	// TODO avoid reading such SQUASH_METADATA_SIZE things too many times
 	Bytef buffer[SQUASH_METADATA_SIZE];
 	Bytef *outbuf = buffer;
 	uLongf outbuf_len = SQUASH_METADATA_SIZE;
-	size_t delta_length, full_length = sizeof(squash_inode_base_t);
-	uint8_t *current = (uint8_t *) inode;
+	size_t delta_length;
+	uint8_t *current = inode;
 	uint64_t next_block;
-	while (full_length) {
-		assert(full_length > 0);
+	while (inode_size) {
+		assert(inode_size > 0);
 		assert(block + 2 <= disk->super->directory_table_start);
 		uint16_t length =
 		    SQUASH_READ16((uint8_t *) disk->super + block);
@@ -45,10 +45,10 @@ void squash_read_meta(squash_inode_t * inode, squash_disk_t * disk,
 			outbuf_len = length;
 		}
 		assert(offset < outbuf_len);
-		delta_length = SQUASH_MIN(outbuf_len - offset, full_length);
+		delta_length = SQUASH_MIN(outbuf_len - offset, inode_size);
 		memcpy(current, outbuf + offset, delta_length);
 		current += delta_length;
-		full_length -= delta_length;
+		inode_size -= delta_length;
 		block = next_block;
 	}
 }

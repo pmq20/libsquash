@@ -10,6 +10,7 @@
 
 int main(int argc, char const *argv[])
 {
-	test_one_file();
+	test_squash_internals();
+	test_1file_disk();
 	return 0;
 }
