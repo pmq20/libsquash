@@ -21,7 +21,7 @@ environment:
 
 build_script:
 - ps: |
-    nuget install zlib
+    nuget install zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn
 
     cmake --version
 
@@ -31,14 +31,8 @@ build_script:
 
     cmake -G"$env:GENERATOR" -DZLIB_INCLUDE_DIR:PATH=C:\projects\libsquash\zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\include -DZLIB_LIBRARY_RELEASE:FILEPATH=C:\projects\libsquash\zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\$env:PlatformToolset\windesktop\msvcstl\dyn\rt-dyn\$env:Platform\RelWithDebInfo\zlib.lib ..
 
-    cmake --build .
-    
-    tree /F
-    
-    Debug\squash_tests
+    cmake --build . --config Release
+
+    copy C:\projects\libsquash\zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\$env:PlatformToolset\windesktop\msvcstl\dyn\rt-dyn\$env:Platform\RelWithDebInfo\zlib.dll Release
 
     ctest
-
-artifacts:
-- path: Build\Debug\squash_tests.exe
-  name: squash_tests.exe
