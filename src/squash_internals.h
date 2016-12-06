@@ -35,7 +35,7 @@
 #define SQUASH_IS_UNCOMPRESSED(X) \
 	((X) & (1<<15))
 #define SQUASH_COMPRESSED_LENGTH(X) \
-	(((X) & ~(1<<15)) ? ((X) & ~(1<<15)) : (1<<15) ) 
+	(((X) & ~(1<<15)) ? ((X) & ~(1<<15)) : (1<<15) )
 
 struct squash_disk_t {
 	const squash_super_t *super;
@@ -49,7 +49,8 @@ struct squash_disk_t {
 squash_disk_t *squash_only_support(const char *feature);
 squash_disk_t *squash_not_support(const char *feature);
 
-void squash_read_meta(squash_inode_t * inode, squash_disk_t * disk, uint64_t block, uint32_t offset);
+void squash_read_meta(squash_inode_t * inode, squash_disk_t * disk,
+		      uint64_t block, uint32_t offset);
 squash_inode_t *squash_read_inode(squash_disk_t * disk, uint64_t number);
 
 #endif

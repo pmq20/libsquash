@@ -13,28 +13,35 @@
 #include "squash.h"
 #include "squash_internals.h"
 
-void squash_read_meta(squash_inode_t * inode, squash_disk_t * disk, uint64_t block, uint32_t offset)
+void squash_read_meta(squash_inode_t * inode, squash_disk_t * disk,
+		      uint64_t block, uint32_t offset)
 {
 	// TODO avoid reading such SQUASH_METADATA_SIZE things too many times
 	Bytef buffer[SQUASH_METADATA_SIZE];
 	Bytef *outbuf = buffer;
 	uLongf outbuf_len = SQUASH_METADATA_SIZE;
 	size_t delta_length, full_length = sizeof(squash_inode_base_t);
-	uint8_t * current = (uint8_t *)inode;
+	uint8_t *current = (uint8_t *) inode;
 	uint64_t next_block;
 	while (full_length) {
 		assert(full_length > 0);
 		assert(block + 2 <= disk->super->directory_table_start);
-		uint16_t length = SQUASH_READ16((uint8_t *)disk->super + block);
+		uint16_t length =
+		    SQUASH_READ16((uint8_t *) disk->super + block);
 		short is_compressed = !SQUASH_IS_UNCOMPRESSED(length);
 		length = SQUASH_COMPRESSED_LENGTH(length);
-		assert(block + 2 + length <= disk->super->directory_table_start);
+		assert(block + 2 + length <=
+		       disk->super->directory_table_start);
 		next_block = block + 2 + length;
 		if (is_compressed) {
-			int res = uncompress(outbuf, &outbuf_len, ((uint8_t *)disk->super + block + 2), length);
+			int res =
+			    uncompress(outbuf, &outbuf_len,
+				       ((uint8_t *) disk->super + block + 2),
+				       length);
 			assert(Z_OK == res);
 		} else {
-			outbuf = (Bytef *)((uint8_t *)disk->super + block + 2);
+			outbuf =
+			    (Bytef *) ((uint8_t *) disk->super + block + 2);
 			outbuf_len = length;
 		}
 		assert(offset < outbuf_len);

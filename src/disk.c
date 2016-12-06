@@ -102,9 +102,11 @@ static void read_fragment_table(squash_disk_t * disk, const uint8_t * data,
 	assert(disk->fragment_table[0] < disk->super->fragment_table_start);
 }
 
-static void read_root(squash_disk_t * disk, const uint8_t * data, size_t data_size)
+static void read_root(squash_disk_t * disk, const uint8_t * data,
+		      size_t data_size)
 {
-	assert(SQUASH_GET_BLOCK_OFFSET(disk->super->root_inode) <= SQUASH_METADATA_SIZE);
+	assert(SQUASH_GET_BLOCK_OFFSET(disk->super->root_inode) <=
+	       SQUASH_METADATA_SIZE);
 	disk->root = squash_read_inode(disk, disk->super->root_inode);
 	assert(SQUASH_DIR_TYPE == disk->root->base.type);
 }
