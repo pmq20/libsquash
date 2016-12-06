@@ -30,6 +30,14 @@ The returned resource should later be freed by `squash_closedisk`.
 Frees the memory allocated for `disk`.
 Note that the original referenced SquashFS data when creating `disk` will not be freed.
 
+### `squash_stat(disk, path, buf)`
+
+Obtains information about the file pointed to by `path` of the SquashFS `disk`.
+The `buf` argument is a pointer to a stat structure as defined by
+`<sys/stat.h>` and into which information is placed concerning the file.
+Upon successful completion a value of `0` is returned.
+Otherwise, a value of `-1` is returned.
+
 ### `squash_opendir(disk, filename)`
 
 Opens the directory named by `filename` of the SquashFS `disk`,
@@ -90,14 +98,6 @@ This space may later be `free`'d.
 
 Causes `dirname` to become the root directory of the SquashFS `disk`,
 that is, the starting point for path searches of pathnames beginning with `/`.
-
-### `squash_stat(disk, path, buf)`
-
-Obtains information about the file pointed to by `path` of the SquashFS `disk`.
-The `buf` argument is a pointer to a stat structure as defined by
-`<sys/stat.h>` and into which information is placed concerning the file.
-Upon successful completion a value of `0` is returned.
-Otherwise, a value of `-1` is returned.
 
 ## Contributing
 
