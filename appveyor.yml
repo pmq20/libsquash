@@ -27,6 +27,6 @@ build_script:
     
     tree /F
     
-    squash_tests
+    Debug\squash_tests
 
     ctest
