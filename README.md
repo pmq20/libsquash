@@ -28,7 +28,7 @@ The returned `squash_disk_t` instance should be later freed by calling `squash_d
 ### `squash_destroy_disk(disk)`
 
 Frees the memory allocated for `disk`.
-Note that the original referenced data of the SquashFS file will not be freed.
+Note that the original referenced SquashFS data when creating `disk` will not be freed.
 
 ## Contributing
 
