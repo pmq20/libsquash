@@ -37,8 +37,10 @@ void test_1file_disk()
 	// Number of ids 1
 	assert(1 == disk->super->ids_count);
 
+	// drwxrwxr-x
+	assert(0775 == disk->root->dir.mode);
 	// Root created at 2016-12-01 19:40:04 +0800
-	assert(1480592404 == disk->root->base.modified_at);
+	assert(1480592404 == disk->root->dir.modified_at);
 	// Root number of links 2
 	assert(2 == disk->root->dir.links_count);
 	// Root size 28

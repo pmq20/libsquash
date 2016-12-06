@@ -8,6 +8,27 @@
 #include <stdint.h>
 #include <stddef.h>
 
+/*
+Found a valid SQUASHFS 4:0 superblock on 1file.
+Creation or last append time Thu Dec  1 19:40:23 2016
+Filesystem size 0.22 Kbytes (0.00 Mbytes)
+Compression gzip
+Block size 131072
+Filesystem is exportable via NFS
+Inodes are compressed
+Data is compressed
+Fragments are compressed
+Always-use-fragments option is not specified
+Xattrs are compressed
+Duplicates are removed
+Number of fragments 1
+Number of inodes 2
+Number of ids 1
+
+drwxrwxr-x ubuntu/ubuntu            28 2016-12-01 19:40 squashfs-root
+-rw-rw-r-- ubuntu/ubuntu             4 2016-12-01 19:40 squashfs-root/minqi
+*/
+
 const uint8_t fixtures_1file_disk[] =
     { 104, 115, 113, 115, 2, 0, 0, 0, 39, 12, 64, 88, 0, 0, 2, 0, 1, 0, 0, 0, 1,
 	0, 17, 0, 192, 0, 1, 0, 4, 0, 0, 0, 32, 0, 0, 0, 0, 0, 0, 0, 230, 0, 0,
