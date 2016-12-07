@@ -12,8 +12,10 @@
 
 void test_1file_disk()
 {
+	squash_error_t errno;
 	squash_disk_t *disk =
-	    squash_opendisk(fixtures_1file_disk, fixtures_1file_disk_size);
+	    squash_opendisk(&errno, fixtures_1file_disk,
+			    fixtures_1file_disk_size);
 
 	// version 4.0
 	assert(4 == disk->super->version_major);
@@ -45,5 +47,5 @@ void test_1file_disk()
 	// Root size 28
 	assert(28 == disk->root->dir.file_size);
 
-	squash_closedisk(disk);
+	squash_closedisk(&errno, disk);
 }
