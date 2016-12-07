@@ -55,7 +55,7 @@ about an open file known by the Libsquash file descriptor `fildes`.
 
 ### `squash_open(errno, disk, path)`
 
-The file name specified by `path` of a SquashFS `disk` is opened for reading.
+Opens the file name specified by `path` of a SquashFS `disk` for reading.
 If successful, `squash_open()` returns a non-negative integer, termed a Libsquash file descriptor.
 It returns `-1` on failure and sets `errno` to the reason of the error.
 The file pointer (used to mark the current position within the file) is set to the beginning of the file.
@@ -68,6 +68,22 @@ If this is the last reference to the underlying object, the object will be deact
 For example, on the last close of a file the current seek pointer associated with the file is lost.
 Upon successful completion, a value of `0` is returned.
 Otherwise, a value of `-1` is returned and `errno` is set to the reason of the error.
+
+### `squash_scandir(errno, dirname, namelist, select, compar)`
+
+Reads the directory `dirname` and builds an array of pointers to directory entries using `malloc`.
+If successful it returns the number of entries in the array; 
+otherwise `-1` is returned and `errno` is set to the reason of the error.
+A pointer to the array of directory entries is stored in the location referenced by `namelist`
+(even if the number of entries is `0`),
+which should later be freed via `free()` by freeing each pointer in the array and then the array itself.
+The `select` argument is a pointer to a user supplied subroutine which is called by `scandir`
+to select which entries are to be included in the array. The `select` routine is passed a pointer to a directory entry
+and should return a non-zero value if the directory entry is to be included in the array.
+If `select` is `NULL`, then all the directory entries will be included.
+The `compar` argument is a pointer to a user supplied subroutine which is passed to `qsort`
+to sort the completed array. If this pointer is `NULL`, then the array is not sorted.
+
 
 ### `squash_opendir(errno, disk, filename)`
 
