@@ -121,11 +121,6 @@ The `size` argument is the size, in bytes, of the array referenced by `buf`.
 If `buf` is `NULL`, space is allocated as necessary to store the pathname.
 This space may later be `free`'d.
 
-### `squash_chroot(disk, dirname)`
-
-Causes `dirname` to become the root directory of the SquashFS `disk`,
-that is, the starting point for path searches of pathnames beginning with `/`.
-
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/enclose-io/libsquash.
