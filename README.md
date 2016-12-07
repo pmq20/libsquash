@@ -53,14 +53,6 @@ while `squash_stat()` returns information about the file the link references.
 Obtains the same information as `squash_stat()`
 about an open file known by the Libsquash file descriptor `fildes`.
 
-### `squash_readlink(errno, path, buf, bufsize)`
-
-Places the contents of the symbolic link `path` in the buffer
-`buf`, which has size `bufsize`.
-It does not append a NUL character to `buf`.
-If it succeeds the call returns the count of characters placed in the buffer;
-otherwise `-1` is returned and `errno` is set to the reason of the error.
-
 ### `squash_open(errno, disk, path)`
 
 Opens the file name specified by `path` of a SquashFS `disk` for reading.
@@ -101,6 +93,13 @@ Upon successful completion, it returns the resulting offset location as measured
 file.
 Otherwise, a value of `-1` is returned and `errno` is set to the reason of the error.
 
+### `squash_readlink(errno, path, buf, bufsize)`
+
+Places the contents of the symbolic link `path` in the buffer
+`buf`, which has size `bufsize`.
+It does not append a NUL character to `buf`.
+If it succeeds the call returns the count of characters placed in the buffer;
+otherwise `-1` is returned and `errno` is set to the reason of the error.
 
 ### `squash_scandir(errno, dirname, namelist, select, compar)`
 
