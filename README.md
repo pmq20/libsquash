@@ -53,6 +53,14 @@ while `squash_stat()` returns information about the file the link references.
 Obtains the same information as `squash_stat()`
 about an open file known by the Libsquash file descriptor `fildes`.
 
+### `squash_readlink(errno, path, buf, bufsize)`
+
+Places the contents of the symbolic link `path` in the buffer
+`buf`, which has size `bufsize`.
+It does not append a NUL character to `buf`.
+If it succeeds the call returns the count of characters placed in the buffer;
+otherwise `-1` is returned and `errno` is set to the reason of the error.
+
 ### `squash_open(errno, disk, path)`
 
 Opens the file name specified by `path` of a SquashFS `disk` for reading.
@@ -68,6 +76,31 @@ If this is the last reference to the underlying object, the object will be deact
 For example, on the last close of a file the current seek pointer associated with the file is lost.
 Upon successful completion, a value of `0` is returned.
 Otherwise, a value of `-1` is returned and `errno` is set to the reason of the error.
+
+### `squash_read(errno, fildes, buf, nbyte)`
+
+Attempts to read `nbyte` bytes of data from the object
+referenced by the SquashFS file descriptor `fildes`
+into the buffer pointed to by `buf`,
+starting at a position given by the pointer associated with `fildes` (see `squash_lseek`),
+which is then incremented by the number of bytes actually read upon return.
+When successful it returns the number of bytes actually read and placed in the buffer;
+upon reading end-of-file, zero is returned;
+Otherwise, a value of `-1` is returned and `errno` is set to the reason of the error.
+
+### `squash_lseek(errno, fildes, offset, whence)`
+
+Repositions the offset of the SquashFS file descriptor `fildes`
+to the argument `offset`, according to the directive `whence`
+(if `whence` is `SQUASH_SEEK_SET` then the offset is set to `offset` bytes;
+if `whence` is `SQUASH_SEEK_CUR`, the `offset` is set to its current location plus `offset` bytes;
+if `whence` is `SQUASH_SEEK_END`, the `offset` is set to the size of the file plus `offset` bytes
+and subsequent reads of the data return bytes of zeros).
+The argument `fildes` must be an open Libsquash file descriptor.
+Upon successful completion, it returns the resulting offset location as measured in bytes from the beginning of the
+file.
+Otherwise, a value of `-1` is returned and `errno` is set to the reason of the error.
+
 
 ### `squash_scandir(errno, dirname, namelist, select, compar)`
 
