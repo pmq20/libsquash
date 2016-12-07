@@ -6,7 +6,7 @@ INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
 LINK_LIBRARIES(${ZLIB_LIBRARIES})
 
 INCLUDE_DIRECTORIES(src include)
-FILE(GLOB SRC_H include/squash.h)
+FILE(GLOB SRC_H include/squash.h include/squash/*.h)
 FILE(GLOB SRC_SQUASH src/*.c src/*.h)
 ADD_LIBRARY(squash ${SRC_H} ${SRC_SQUASH})
 
@@ -17,3 +17,4 @@ ADD_EXECUTABLE(squash_tests ${SRC_H} ${SRC_SQUASH}
                             ${SRC_TEST} ${SRC_TEST_FIXTURES})
 ENABLE_TESTING()
 ADD_TEST(squash_tests squash_tests)
+
