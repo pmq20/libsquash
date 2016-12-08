@@ -17,7 +17,7 @@ static short read_super_block(squash_error_t * error, squash_disk_t * disk,
 			      const uint8_t * data, size_t data_size)
 {
 	if (data_size < sizeof(squash_super_t)) {
-		*error = SQUASH_ETOOSML;
+		*error = SQUASH_EBADSZ;
 		return 0;
 	}
 
@@ -72,7 +72,7 @@ static short read_super_block(squash_error_t * error, squash_disk_t * disk,
 	}
 
 	if (disk->super->size > data_size) {
-		*error = SQUASH_ETOOSML;
+		*error = SQUASH_EBADSZ;
 		return 0;
 	}
 

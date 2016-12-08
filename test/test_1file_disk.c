@@ -54,6 +54,6 @@ void test_1file_disk()
 	// Bad Cases
 
 	disk = squash_opendisk(&error, fixtures_1file_disk, 1);
-	squash_expect(NULL == disk && SQUASH_ETOOSML == error,
+	squash_expect(NULL == disk && SQUASH_EBADSZ == error,
 		      "otherwise NULL is returned and error is set to the reason of the error.");
 }

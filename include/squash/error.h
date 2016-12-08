@@ -11,7 +11,7 @@
 typedef enum {
 	SQUASH_ENOIMP,		/* Not implemented yet */
 	SQUASH_ECORRPT,		/* Corrputed data supplied */
-	SQUASH_ETOOSML,		/* Size of the supplied data is too small */
+	SQUASH_EBADSZ,		/* Size of the supplied data is too small */
 	SQUASH_EZLIB,		/* Zlib operation failed */
 	SQUASH_ENOENT,		/* No such file or directory */
 	SQUASH_EBADF,		/* Bad Libsquash file descriptor */
