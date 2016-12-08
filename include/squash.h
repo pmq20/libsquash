@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <sys/stat.h>
 
 #include "squash/version.h"
 #include "squash/error.h"
