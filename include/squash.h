@@ -30,7 +30,8 @@
 squash_disk_t *squash_opendisk(squash_error_t * error, const uint8_t * data,
 			       size_t data_size);
 
-/* squash_closedisk(error, disk)
+/* 
+ * squash_closedisk(error, disk)
  *
  * Closes the named SquashFS disk and frees the structures associated with it.
  * Note that the original referenced array of bytes of a SquashFS file
