@@ -158,22 +158,6 @@ Sets the position of the next `squash_readdir()` operation on the directory stre
 The new position reverts to the one associated with the directory stream
 when the `squash_telldir()` operation was performed.
 
-### `squash_chdir(error, disk, path)`
-
-Causes the named directory to become the current working directory of a SquashFS `disk`,
-that is, the starting point for path searches of pathnames not beginning with a slash, `/`.
-Upon successful completion, a value of `0` is returned. Otherwise, a value of `-1` is returned
-and `error` is set to the reason of the error.
-
-### `squash_getcwd(error, disk, buf, size)`
-
-Copies the absolute pathname of the current working directory of a SquashFS `disk`
-into the memory referenced by `buf` and returns a pointer to `buf`.
-The `size` argument is the size, in bytes, of the array referenced by `buf`.
-If `buf` is `NULL`, space is allocated as necessary to store the pathname.
-This space may later be `free`'d.
-On errors, a NULL pointer is returned and `error` is set to the reason of the error.
-
 ## Multithreading
 
 Libsquash maintains no global states at the library level.
