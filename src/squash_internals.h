@@ -51,11 +51,11 @@ struct squash_disk_t {
 void squash_only_support(const char *feature);
 void squash_not_support(const char *feature);
 
-short squash_read_meta(squash_error_t * errno, uint8_t * inode,
+short squash_read_meta(squash_error_t * error, uint8_t * inode,
 		       size_t inode_size, squash_disk_t * disk, uint64_t block,
 		       uint32_t offset);
 
-squash_inode_t *squash_read_inode(squash_error_t * errno, squash_disk_t * disk,
+squash_inode_t *squash_read_inode(squash_error_t * error, squash_disk_t * disk,
 				  uint64_t number);
 
 #endif

@@ -10,7 +10,7 @@
 #include <string.h>
 #include <zlib.h>
 
-short squash_read_meta(squash_error_t * errno, uint8_t * inode,
+short squash_read_meta(squash_error_t * error, uint8_t * inode,
 		       size_t inode_size, squash_disk_t * disk, uint64_t block,
 		       uint32_t offset)
 {
@@ -23,7 +23,7 @@ short squash_read_meta(squash_error_t * errno, uint8_t * inode,
 	uint64_t next_block;
 	while (inode_size) {
 		if (block + 2 > disk->super->directory_table_start) {
-			*errno = SQUASH_ECORRPT;
+			*error = SQUASH_ECORRPT;
 			return 0;
 		}
 		uint16_t length =
@@ -31,7 +31,7 @@ short squash_read_meta(squash_error_t * errno, uint8_t * inode,
 		short is_compressed = !SQUASH_IS_UNCOMPRESSED(length);
 		length = SQUASH_COMPRESSED_LENGTH(length);
 		if (block + 2 + length > disk->super->directory_table_start) {
-			*errno = SQUASH_ECORRPT;
+			*error = SQUASH_ECORRPT;
 			return 0;
 		}
 		next_block = block + 2 + length;
@@ -41,7 +41,7 @@ short squash_read_meta(squash_error_t * errno, uint8_t * inode,
 					      2),
 					     length);
 			if (Z_OK != res) {
-				*errno = SQUASH_EZLIB;
+				*error = SQUASH_EZLIB;
 				return 0;
 			}
 		} else {
@@ -50,7 +50,7 @@ short squash_read_meta(squash_error_t * errno, uint8_t * inode,
 			outbuf_len = length;
 		}
 		if (offset >= outbuf_len) {
-			*errno = SQUASH_ECORRPT;
+			*error = SQUASH_ECORRPT;
 			return 0;
 		}
 		delta_length = SQUASH_MIN(outbuf_len - offset, inode_size);

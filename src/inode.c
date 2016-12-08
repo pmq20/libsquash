@@ -7,12 +7,12 @@
 
 #include "squash_internals.h"
 
-squash_inode_t *squash_read_inode(squash_error_t * errno, squash_disk_t * disk,
+squash_inode_t *squash_read_inode(squash_error_t * error, squash_disk_t * disk,
 				  uint64_t number)
 {
 	squash_inode_t *inode = malloc(sizeof(squash_inode_t));
 	if (!inode) {
-		*errno = SQUASH_ENOMEM;
+		*error = SQUASH_ENOMEM;
 		return NULL;
 	}
 
@@ -20,14 +20,14 @@ squash_inode_t *squash_read_inode(squash_error_t * errno, squash_disk_t * disk,
 	    disk->super->inode_table_start + SQUASH_GET_BLOCK_NUMBER(number);
 	uint16_t offset = SQUASH_GET_BLOCK_OFFSET(number);
 	if (!squash_read_meta
-	    (errno, (uint8_t *) inode, sizeof(squash_inode_base_t), disk, block,
+	    (error, (uint8_t *) inode, sizeof(squash_inode_base_t), disk, block,
 	     offset)) {
 		return NULL;
 	}
 
 	switch (inode->base.type) {
 	case SQUASH_DIR_TYPE:{
-			if (!squash_read_meta(errno, (uint8_t *) inode,
+			if (!squash_read_meta(error, (uint8_t *) inode,
 					      sizeof(squash_inode_dir_t), disk,
 					      block, offset)) {
 				return NULL;
@@ -87,7 +87,7 @@ squash_inode_t *squash_read_inode(squash_error_t * errno, squash_disk_t * disk,
 			break;
 		}
 	default:
-		*errno = SQUASH_ECORRPT;
+		*error = SQUASH_ECORRPT;
 		return NULL;
 	}
 
