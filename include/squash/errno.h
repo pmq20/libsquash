@@ -9,6 +9,10 @@
 #define SQUASH__ERRNO_H_5F094343
 
 typedef enum {
+	SQUASH_ENOIMP,		/* Not implemented yet */
+	SQUASH_ECORRPT,		/* Corrputed data supplied */
+	SQUASH_ETOOSML,		/* Size of the supplied data is too small */
+	SQUASH_EZLIB,		/* Zlib operation failed */
 	SQUASH_ENOENT,		/* No such file or directory */
 	SQUASH_EBADF,		/* Bad Libsquash file descriptor */
 	SQUASH_ENOMEM,		/* Cannot allocate memory */

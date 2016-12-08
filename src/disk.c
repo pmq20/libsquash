@@ -5,24 +5,45 @@
  * For full terms see the included LICENSE file
  */
 
-#include <assert.h>
-#include <stdio.h>
-
 #include "squash_internals.h"
 
-static void read_super_block(squash_disk_t * disk, const uint8_t * data,
-			     size_t data_size)
+static short is_little_endian_cpu()
 {
-	assert(data_size >= sizeof(squash_super_t));
+	uint32_t x = 1;
+	return 1 == (uint32_t) (((char *)&x)[0]);
+}
+
+static short read_super_block(squash_error_t * errno, squash_disk_t * disk,
+			      const uint8_t * data, size_t data_size)
+{
+	if (data_size < sizeof(squash_super_t)) {
+		*errno = SQUASH_ETOOSML;
+		return 0;
+	}
 
 	disk->super = (squash_super_t *) data;
 
+	if (!is_little_endian_cpu()) {
+		squash_only_support("little endian CPUs");
+		*errno = SQUASH_ENOIMP;
+		return 0;
+	}
+
+	if (0x68 != data[0] ||
+	    0x73 != data[1] || 0x71 != data[2] || 0x73 != data[3]) {
+		squash_only_support("little endian SquashFS");
+		*errno = SQUASH_ENOIMP;
+		return 0;
+	}
 	if (0x73717368 != disk->super->magic_number) {
-		squash_only_support("little endian");
+		*errno = SQUASH_ECORRPT;
+		return 0;
 	}
 
 	if (1 != disk->super->compression_method) {
 		squash_only_support("gzip compressions");
+		*errno = SQUASH_ENOIMP;
+		return 0;
 	}
 
 	if ((uint16_t) 192 != disk->super->flags) {
@@ -38,7 +59,7 @@ static void read_super_block(squash_disk_t * disk, const uint8_t * data,
 		// 0 - CHECK
 		// 0 - NOD
 		// 0 - NOI
-		squash_only_support("flags of \
+		squash_only_support("SquashFS with flags of \
 \"Filesystem is exportable via NFS\", \
 \"Inodes are compressed\", \
 \"Data is compressed\", \
@@ -46,84 +67,139 @@ static void read_super_block(squash_disk_t * disk, const uint8_t * data,
 \"Always-use-fragments option is not specified\", \
 \"Xattrs are compressed\", and \
 \"Duplicates are removed\"");
+		*errno = SQUASH_ENOIMP;
+		return 0;
 	}
 
-	assert(disk->super->block_size <= 1048576);
-	assert(disk->super->block_log <= 20);
-	assert(disk->super->block_size == (1 << (disk->super->block_log)));
-	assert(disk->super->size >= 0 && disk->super->size <= data_size);
-	assert(disk->super->inode_table_start <
-	       disk->super->directory_table_start);
+	if (disk->super->size > data_size) {
+		*errno = SQUASH_ETOOSML;
+		return 0;
+	}
+
+	if (!(disk->super->block_size <= 1048576) ||
+	    !(disk->super->block_log <= 20) ||
+	    !(disk->super->block_size == (1 << (disk->super->block_log))) ||
+	    !(disk->super->inode_table_start <
+	      disk->super->directory_table_start)) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
+	return 1;
 }
 
-static void read_xattr_table(squash_disk_t * disk, const uint8_t * data,
-			     size_t data_size)
+static short read_xattr_table(squash_error_t * errno, squash_disk_t * disk,
+			      const uint8_t * data, size_t data_size)
 {
 	if ((uint64_t) (-1LL) == disk->super->xattr_table_start) {
 		disk->xattr_table = NULL;
-		return;
+		return 1;
 	}
 	squash_not_support("xattrs");
+	*errno = SQUASH_ENOIMP;
+	return 0;
 }
 
-static void read_id_table(squash_disk_t * disk, const uint8_t * data,
-			  size_t data_size)
+static short read_id_table(squash_error_t * errno, squash_disk_t * disk,
+			   const uint8_t * data, size_t data_size)
 {
-	assert(disk->super->ids_count > 0);
+	if (!(disk->super->ids_count > 0)) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
 	disk->id_table = (uint64_t *) (data + disk->super->id_table_start);
-	assert(disk->id_table[0] < disk->super->id_table_start);
-	assert(disk->super->id_table_start <= disk->super->size);
+	if (!(disk->id_table[0] < disk->super->id_table_start) ||
+	    !(disk->super->id_table_start <= disk->super->size)) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
+	return 1;
 }
 
-static void read_lookup_table(squash_disk_t * disk, const uint8_t * data,
-			      size_t data_size)
+static short read_lookup_table(squash_error_t * errno, squash_disk_t * disk,
+			       const uint8_t * data, size_t data_size)
 {
 	if ((uint64_t) (-1LL) == disk->super->lookup_table_start) {
 		disk->lookup_table = NULL;
-		return;
+		return 1;
 	}
 	disk->lookup_table =
 	    (uint64_t *) (data + disk->super->lookup_table_start);
-	assert(disk->lookup_table[0] < disk->super->lookup_table_start);
+	if (!(disk->lookup_table[0] < disk->super->lookup_table_start)) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
+	return 1;
 }
 
-static void read_fragment_table(squash_disk_t * disk, const uint8_t * data,
-				size_t data_size)
+static short read_fragment_table(squash_error_t * errno, squash_disk_t * disk,
+				 const uint8_t * data, size_t data_size)
 {
 	if (0 == disk->super->fragments_count) {
-		return;
+		return 1;
 	}
-	assert(disk->super->directory_table_start <=
-	       disk->super->fragment_table_start);
-	assert(disk->super->fragment_table_start <= disk->super->size);
+	if (!(disk->super->directory_table_start <=
+	      disk->super->fragment_table_start) ||
+	    !(disk->super->fragment_table_start <= disk->super->size)) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
 	disk->fragment_table =
 	    (uint64_t *) (data + disk->super->fragment_table_start);
-	assert(disk->fragment_table[0] < disk->super->fragment_table_start);
+	if (!(disk->fragment_table[0] < disk->super->fragment_table_start)) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
+	return 1;
 }
 
-static void read_root(squash_disk_t * disk, const uint8_t * data,
-		      size_t data_size)
+static short read_root(squash_error_t * errno, squash_disk_t * disk,
+		       const uint8_t * data, size_t data_size)
 {
-	assert(SQUASH_GET_BLOCK_OFFSET(disk->super->root_inode) <=
-	       SQUASH_METADATA_SIZE);
-	disk->root = squash_read_inode(disk, disk->super->root_inode);
-	assert(SQUASH_DIR_TYPE == disk->root->base.type);
+	if (!(SQUASH_GET_BLOCK_OFFSET(disk->super->root_inode) <=
+	      SQUASH_METADATA_SIZE)) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
+	disk->root = squash_read_inode(errno, disk, disk->super->root_inode);
+	if (!disk->root) {
+		return 0;
+	}
+	if (SQUASH_DIR_TYPE != disk->root->base.type) {
+		*errno = SQUASH_ECORRPT;
+		return 0;
+	}
+	return 1;
 }
 
-squash_disk_t *squash_opendisk(squash_error_t * errno,
-			       const uint8_t * data, size_t data_size)
+squash_disk_t *squash_opendisk(squash_error_t * errno, const uint8_t * data,
+			       size_t data_size)
 {
 	squash_disk_t *disk = malloc(sizeof(squash_disk_t));
-	assert(disk);
+	if (!disk) {
+		*errno = SQUASH_ENOMEM;
+		return NULL;
+	}
 
-	read_super_block(disk, data, data_size);
+	if (!read_super_block(errno, disk, data, data_size)) {
+		return NULL;
+	}
 
-	read_xattr_table(disk, data, data_size);
-	read_id_table(disk, data, data_size);
-	read_lookup_table(disk, data, data_size);
-	read_fragment_table(disk, data, data_size);
+	if (!read_xattr_table(errno, disk, data, data_size)) {
+		return NULL;
+	}
+	if (!read_id_table(errno, disk, data, data_size)) {
+		return NULL;
+	}
+	if (!read_lookup_table(errno, disk, data, data_size)) {
+		return NULL;
+	}
+	if (!read_fragment_table(errno, disk, data, data_size)) {
+		return NULL;
+	}
 
-	read_root(disk, data, data_size);
+	if (!read_root(errno, disk, data, data_size)) {
+		return NULL;
+	}
 
 	return disk;
 }
