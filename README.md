@@ -1,4 +1,4 @@
-# Deprecated: use libsquashfuse from https://github.com/vasi/squashfuse.git
+# Deprecated: use libsquashfuse from https://github.com/vasi/squashfuse instead
 
 Portable, User-land SquashFS that can be linked and embedded within your application.
 
