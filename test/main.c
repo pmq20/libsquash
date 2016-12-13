@@ -10,7 +10,6 @@
 
 #include <stdio.h>
 
-
 void squash_expect(short condition, const char *reason)
 {
 	if (condition) {

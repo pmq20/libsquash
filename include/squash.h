@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <sys/stat.h>
 
 #include "squash/version.h"
 #include "squash/error.h"
@@ -41,5 +42,37 @@ squash_disk_t *squash_opendisk(squash_error_t * error, const uint8_t * data,
  * the reason of the error.
  */
 int squash_closedisk(squash_error_t * error, squash_disk_t * disk);
+
+/* 
+ * squash_stat(error, disk, path, buf)
+ *
+ * Obtains information about the file pointed to by path of a SquashFS disk.
+ * The buf argument is a pointer to a stat structure as defined by
+ * <sys/stat.h> and into which information is placed concerning the file.
+ * Upon successful completion a value of 0 is returned.
+ * Otherwise, a value of -1 is returned and error is set to
+ * the reason of the error.
+ */
+int squash_stat(squash_error_t * errno, squash_disk_t * disk, const char *path,
+		struct stat *buf);
+
+/* 
+ * squash_lstat(error, disk, path, buf)
+ *
+ * Acts like squash_stat() except in the case where the named file
+ * is a symbolic link; squash_lstat() returns information about the link,
+ * while squash_stat() returns information about the file the link references.
+ */
+int squash_lstat(squash_error_t * errno, squash_disk_t * disk, const char *path,
+		 struct stat *buf);
+
+/* 
+ * squash_fstat(error, disk, fildes, buf)
+ *
+ * Obtains the same information as squash_stat() about an open file
+ * known by the Libsquash file descriptor fildes.
+ */
+int squash_fstat(squash_error_t * errno, squash_disk_t * disk, int fildes,
+		 struct stat *buf);
 
 #endif

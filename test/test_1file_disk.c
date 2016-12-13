@@ -51,6 +51,10 @@ void test_1file_disk()
 	squash_expect(0 == ret,
 		      "Upon successful completion, a value of 0 is returned.");
 
+	// Stat
+
+	
+
 	// Bad Cases
 
 	disk = squash_opendisk(&error, fixtures_1file_disk, 1);
