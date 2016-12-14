@@ -1,6 +1,6 @@
 # Libsquash
 
-Portable, User-land SquashFS that can be linked and embedded within your application.
+Portable, User-land SquashFS that can be linked and embedded within your application; a squashfuse fork.
 
 [![Build status: Linux and Darwin](https://travis-ci.org/enclose-io/libsquash.svg?branch=master)](https://travis-ci.org/enclose-io/libsquash)
 [![Build status: Windows](https://ci.appveyor.com/api/projects/status/idimki81u783uab0?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash)
@@ -11,6 +11,16 @@ Portable, User-land SquashFS that can be linked and embedded within your applica
 This project was forked from https://github.com/vasi/squashfuse with the following modifications.
 
 1. Introducing "Negative FD", add the ability to return virtual file descriptors (which is negative to distinguish from system FD's)
-2. Add ability to compile libsquashfuse without libfuse
+2. Add CMake for libsquashfuse to compile without libfuse
 3. Add travis-ci for Linux and Darwin CI
 4. Add appveyor for Windows CI
+
+## Building
+
+On most systems you could build and test the library using the following commands,
+
+    mkdir build
+    cd build
+    cmake ..
+    cmake --build .
+    ctest --verbose
