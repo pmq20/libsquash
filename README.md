@@ -2,7 +2,7 @@
 
 Portable, User-land SquashFS that can be linked and embedded within your application; a squashfuse fork.
 
-[![Build status: Linux and Darwin](https://travis-ci.org/enclose-io/libsquash.svg?branch=master)](https://travis-ci.org/enclose-io/libsquash)
+[![Build status: Linux and Darwin](https://travis-ci.org/pmq20/libsquash.svg?branch=master)](https://travis-ci.org/pmq20/libsquash)
 [![Build status: Windows](https://ci.appveyor.com/api/projects/status/idimki81u783uab0?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash)
 [![Coverity Scan](https://scan.coverity.com/projects/11025/badge.svg)](https://scan.coverity.com/projects/pmq20-libsquash)
 
