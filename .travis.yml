@@ -11,6 +11,6 @@ compiler:
 script:
   - cmake --version
   - mkdir build && cd build
-  - cmake ..
-  - cmake --build .
-  - ctest --verbose
+  - cmake .. || exit $?
+  - cmake --build . || exit $?
+  - ctest --verbose || exit $?
