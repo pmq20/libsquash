@@ -1,36 +1,34 @@
+.DS_Store
 build/
 *~
 
-# Object files
+/*.inc
+squashfuse
+squashfuse_ll
+squashfuse_ls
+squashfuse_extract
+*.dSYM
 *.o
-*.ko
-*.obj
-*.elf
-
-# Precompiled Headers
-*.gch
-*.pch
-
-# Libraries
-*.lib
-*.a
-*.la
 *.lo
+*.la
 
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
+*.tar.gz
 
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
+.libs
+.deps
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+build-aux
+/config.*
+configure
+libtool
+stamp-h1
 
-# Debug files
-*.dSYM/
-*.su
+win/Debug
+win/Release
+*.sdf
+*.opensdf
+*.suo
+*.vcxproj.user
