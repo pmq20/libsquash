@@ -28,18 +28,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "fixture.h"
 
 #define PROGNAME "squashfuse_ls"
 
 #define ERR_MISC	(-1)
 #define ERR_USAGE	(-2)
 #define ERR_OPEN	(-3)
-
-static void usage() {
-	fprintf(stderr, "%s (c) 2013 Dave Vasilevsky\n\n", PROGNAME);
-	fprintf(stderr, "Usage: %s ARCHIVE\n", PROGNAME);
-	exit(ERR_USAGE);
-}
 
 static void die(const char *msg) {
 	fprintf(stderr, "%s\n", msg);
@@ -52,11 +47,7 @@ int main(int argc, char *argv[]) {
 	sqfs fs;
 	char *image;
 
-	if (argc != 2)
-		usage();
-	image = argv[1];
-
-	if ((err = sqfs_open_image(&fs, image, 0)))
+	if ((err = sqfs_open_image(&fs, libsquash_fixture, 0)))
 		exit(ERR_OPEN);
 	
 	if ((err = sqfs_traverse_open(&trv, &fs, sqfs_inode_root(&fs))))

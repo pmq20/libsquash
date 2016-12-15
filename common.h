@@ -37,8 +37,8 @@
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;
 	typedef off_t sqfs_off_t;
-	typedef int sqfs_fd_t;
 #endif
+typedef uint8_t * sqfs_fd_t;
 
 typedef enum {
 	SQFS_OK,

@@ -34,6 +34,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "fixture.h"
+
 static const double SQFS_TIMEOUT = DBL_MAX;
 
 static void sqfs_ll_op_getattr(fuse_req_t req, fuse_ino_t ino,
@@ -368,7 +370,7 @@ static void sqfs_ll_unmount(sqfs_ll_chan *ch, const char *mountpoint) {
 	#endif
 }
 
-static sqfs_ll *sqfs_ll_open(const char *path, size_t offset) {
+static sqfs_ll *sqfs_ll_open(const uint8_t *path, size_t offset) {
 	sqfs_ll *ll;
 	
 	ll = malloc(sizeof(*ll));
@@ -438,7 +440,7 @@ int main(int argc, char *argv[]) {
 		sqfs_usage(argv[0], true);
 	
 	/* OPEN FS */
-	err = !(ll = sqfs_ll_open(opts.image, opts.offset));
+	err = !(ll = sqfs_ll_open(libsquash_fixture, opts.offset));
 	
 	/* STARTUP FUSE */
 	if (!err) {

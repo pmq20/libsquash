@@ -1,5 +1,9 @@
+#ifndef FIXTURE_H_B716AAB0
+#define FIXTURE_H_B716AAB0
+
 #include <stdint.h>
 #include <stddef.h>
 
-extern const uint8_t enclose_io_memfs[];
-extern const size_t enclose_io_memfs_size;
+extern const uint8_t libsquash_fixture[];
+
+#endif /* end of include guard: FIXTURE_H_B716AAB0 */

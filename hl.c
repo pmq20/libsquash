@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "fixture.h"
 
 typedef struct sqfs_hl sqfs_hl;
 struct sqfs_hl {
@@ -243,7 +244,7 @@ static int sqfs_hl_op_getxattr(const char *path, const char *name,
 	return real;
 }
 
-static sqfs_hl *sqfs_hl_open(const char *path, size_t offset) {
+static sqfs_hl *sqfs_hl_open(const uint8_t *path, size_t offset) {
 	sqfs_hl *hl;
 	
 	hl = malloc(sizeof(*hl));
@@ -304,7 +305,7 @@ int main(int argc, char *argv[]) {
 	if (!opts.image)
 		sqfs_usage(argv[0], true);
 	
-	hl = sqfs_hl_open(opts.image, opts.offset);
+	hl = sqfs_hl_open(libsquash_fixture, opts.offset);
 	if (!hl)
 		return -1;
 	
