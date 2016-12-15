@@ -45,7 +45,6 @@ int main(int argc, char *argv[]) {
 	sqfs_err err = SQFS_OK;
 	sqfs_traverse trv;
 	sqfs fs;
-	char *image;
 
 	if ((err = sqfs_open_image(&fs, libsquash_fixture, 0)))
 		exit(ERR_OPEN);

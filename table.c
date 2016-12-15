@@ -27,14 +27,12 @@
 #include "fs.h"
 #include "nonstd.h"
 #include "squashfs_fs.h"
-#include "swap.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 sqfs_err sqfs_table_init(sqfs_table *table, sqfs_fd_t fd, sqfs_off_t start, size_t each,
 		size_t count) {
-	size_t i;
 	size_t nblocks, bread;
 	
 	if (count == 0)
@@ -47,10 +45,6 @@ sqfs_err sqfs_table_init(sqfs_table *table, sqfs_fd_t fd, sqfs_off_t start, size
 	table->blocks = (uint64_t *)(fd + start);
 	
 	return SQFS_OK;
-	
-err:
-	table->blocks = NULL;
-	return SQFS_ERR;
 }
 
 void sqfs_table_destroy(sqfs_table *table) {

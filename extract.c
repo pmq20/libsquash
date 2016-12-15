@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include "squashfs_fs.h"
+#include "nonstd.h"
 
 #include "fixture.h"
 
@@ -102,12 +103,12 @@ int main(int argc, char *argv[]) {
         if (!trv.dir_end) {
             if ((startsWith(path_to_extract, trv.path) != 0) || (strcmp("-a", path_to_extract) == 0)){
                 fprintf(stderr, "trv.path: %s\n", trv.path);
-                fprintf(stderr, "sqfs_inode_id: %lu\n", trv.entry.inode);
+                fprintf(stderr, "sqfs_inode_id: %llu\n", trv.entry.inode);
                 sqfs_inode inode;
                 if (sqfs_inode_get(&fs, &inode, trv.entry.inode))
                     die("sqfs_inode_get error");
                 fprintf(stderr, "inode.base.inode_type: %i\n", inode.base.inode_type);
-                fprintf(stderr, "inode.xtra.reg.file_size: %lu\n", inode.xtra.reg.file_size);
+                fprintf(stderr, "inode.xtra.reg.file_size: %llu\n", inode.xtra.reg.file_size);
                 strcpy(prefixed_path_to_extract, "");
                 strcat(strcat(prefixed_path_to_extract, prefix), trv.path);
                 if (inode.base.inode_type == SQUASHFS_DIR_TYPE){

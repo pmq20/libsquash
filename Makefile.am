@@ -19,7 +19,7 @@ noinst_LTLIBRARIES = libsquashfuse.la
 libsquashfuse_la_SOURCES = fixture.c cache.c table.c dir.c file.c fs.c \
 	decompress.c xattr.c hash.c stack.c traverse.c util.c \
 	nonstd-stat.c \
-	squashfs_fs.h common.h nonstd-internal.h nonstd.h swap.h cache.h table.h \
+	squashfs_fs.h common.h nonstd-internal.h nonstd.h cache.h table.h \
 	dir.h file.h decompress.h xattr.h squashfuse.h hash.h stack.h traverse.h \
 	util.h fs.h
 libsquashfuse_la_CPPFLAGS = $(ZLIB_CPPFLAGS) $(XZ_CPPFLAGS) $(LZO_CPPFLAGS) \

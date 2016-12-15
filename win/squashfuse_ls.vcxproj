@@ -87,7 +87,6 @@
     <ClCompile Include="..\ls.c" />
     <ClCompile Include="..\nonstd-stat.c" />
     <ClCompile Include="..\stack.c" />
-    <ClCompile Include="..\swap.c" />
     <ClCompile Include="..\table.c" />
     <ClCompile Include="..\traverse.c" />
     <ClCompile Include="..\util.c" />
@@ -107,7 +106,6 @@
     <ClInclude Include="..\squashfs_fs.h" />
     <ClInclude Include="..\squashfuse.h" />
     <ClInclude Include="..\stack.h" />
-    <ClInclude Include="..\swap.h" />
     <ClInclude Include="..\table.h" />
     <ClInclude Include="..\traverse.h" />
     <ClInclude Include="..\util.h" />
@@ -116,8 +114,6 @@
     <ClInclude Include="win32.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\swap.c.inc" />
-    <None Include="..\swap.h.inc" />
     <None Include="win_decompress.c.inc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

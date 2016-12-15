@@ -26,7 +26,6 @@
 
 #include "fs.h"
 #include "nonstd.h"
-#include "swap.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -54,13 +53,10 @@ typedef enum {
 
 sqfs_err sqfs_xattr_init(sqfs *fs) {
 	sqfs_off_t start = fs->sb->xattr_id_table_start;
-	size_t bread;
 	if (start == SQUASHFS_INVALID_BLK)
 		return SQFS_OK;
 	
 	fs->xattr_info = (struct squashfs_xattr_id_table *)(fs->fd + start + fs->offset);
-	if (bread != sizeof(fs->xattr_info))
-		return SQFS_ERR;
 	
 	return sqfs_table_init(&fs->xattr_table, fs->fd,
 		start + sizeof(fs->xattr_info) + fs->offset, sizeof(struct squashfs_xattr_id),
