@@ -157,7 +157,7 @@ sqfs_err sqfs_md_block_read(sqfs *fs, sqfs_off_t pos, size_t *data_size,
 	
 	*data_size = 0;
 	
-	hdr = (uint16_t)(fs->fd + pos + fs->offset);
+	hdr = *(uint16_t *)(fs->fd + pos + fs->offset);
 	pos += sizeof(hdr);
 	*data_size += sizeof(hdr);
 	
