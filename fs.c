@@ -121,6 +121,7 @@ sqfs_err sqfs_block_read(sqfs *fs, sqfs_off_t pos, bool compressed,
 		return SQFS_ERR;
 	
 	(*block)->data = (void *)((fs->fd) + (pos + fs->offset));
+	(*block)->data_need_freeing = false;
 
 	if (compressed) {
 		char *decomp = malloc(outsize);
@@ -134,6 +135,7 @@ sqfs_err sqfs_block_read(sqfs *fs, sqfs_off_t pos, bool compressed,
 		}
 		(*block)->data = decomp;
 		(*block)->size = outsize;
+		(*block)->data_need_freeing = true;
 	} else {
 		(*block)->size = size;
 	}
@@ -209,6 +211,9 @@ sqfs_err sqfs_data_cache(sqfs *fs, sqfs_cache *cache, sqfs_off_t pos,
 }
 
 void sqfs_block_dispose(sqfs_block *block) {
+	if (block->data_need_freeing) {
+		free(block->data);
+	}
 	free(block);
 }
 

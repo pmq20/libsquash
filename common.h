@@ -59,6 +59,7 @@ typedef struct sqfs_inode sqfs_inode;
 typedef struct {
 	size_t size;
 	void *data;
+	bool data_need_freeing;
 } sqfs_block;
 
 typedef struct {
