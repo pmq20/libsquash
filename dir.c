@@ -25,7 +25,6 @@
 #include "dir.h"
 
 #include "fs.h"
-#include "swap.h"
 
 #include <string.h>
 #include <sys/stat.h>
@@ -60,7 +59,7 @@ sqfs_err sqfs_dir_open(sqfs *fs, sqfs_inode *inode, sqfs_dir *dir,
 
 	memset(dir, 0, sizeof(*dir));
 	dir->cur.block = inode->xtra.dir.start_block +
-		fs->sb.directory_table_start;
+		fs->sb->directory_table_start;
 	dir->cur.offset = inode->xtra.dir.offset;
 	dir->offset = 0;
 	dir->total = inode->xtra.dir.dir_size - 3;
@@ -134,13 +133,11 @@ bool sqfs_dir_next(sqfs *fs, sqfs_dir *dir, sqfs_dir_entry *entry,
 		
 		if ((*err = sqfs_dir_md_read(fs, dir, &dir->header, sizeof(dir->header))))
 			return false;
-		sqfs_swapin_dir_header(&dir->header);
 		++(dir->header.count); /* biased by one */
 	}
 	
 	if ((*err = sqfs_dir_md_read(fs, dir, &e, sizeof(e))))
 		return false;
-	sqfs_swapin_dir_entry(&e);
 	--(dir->header.count);
 	
 	entry->type = e.type;
@@ -174,14 +171,13 @@ static sqfs_err sqfs_dir_ff_header(sqfs *fs, sqfs_inode *inode,
 		
 		if ((err = sqfs_md_read(fs, &cur, &idx, sizeof(idx))))
 			return err;
-		sqfs_swapin_dir_index(&idx);
 		
 		if ((err = func(fs, &cur, &idx, &stop, arg)))
 			return err;
 		if (stop)
 			break;
 		
-		dir->cur.block = idx.start_block + fs->sb.directory_table_start;
+		dir->cur.block = idx.start_block + fs->sb->directory_table_start;
 		dir->offset = idx.index;
 	}
 

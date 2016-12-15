@@ -44,24 +44,16 @@ sqfs_err sqfs_table_init(sqfs_table *table, sqfs_fd_t fd, sqfs_off_t start, size
 	bread = nblocks * sizeof(uint64_t);
 	
 	table->each = each;
-	if (!(table->blocks = malloc(bread)))
-		goto err;
-	if (sqfs_pread(fd, table->blocks, bread, start) != bread)
-		goto err;
-	
-	for (i = 0; i < nblocks; ++i)
-		sqfs_swapin64(&table->blocks[i]);
+	table->blocks = (uint64_t *)(fd + start);
 	
 	return SQFS_OK;
 	
 err:
-	free(table->blocks);
 	table->blocks = NULL;
 	return SQFS_ERR;
 }
 
 void sqfs_table_destroy(sqfs_table *table) {
-	free(table->blocks);
 	table->blocks = NULL;
 }
 

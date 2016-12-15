@@ -85,7 +85,6 @@
     <ClCompile Include="..\fs.c" />
     <ClCompile Include="..\hash.c" />
     <ClCompile Include="..\ls.c" />
-    <ClCompile Include="..\nonstd-pread.c" />
     <ClCompile Include="..\nonstd-stat.c" />
     <ClCompile Include="..\stack.c" />
     <ClCompile Include="..\swap.c" />

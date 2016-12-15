@@ -26,7 +26,6 @@
 
 #include "file.h"
 #include "nonstd.h"
-#include "swap.h"
 #include "xattr.h"
 
 #include <stdlib.h>
@@ -45,12 +44,12 @@ void sqfs_version_supported(int *min_major, int *min_minor, int *max_major,
 }
 
 void sqfs_version(sqfs *fs, int *major, int *minor) {
-	*major = fs->sb.s_major;
-	*minor = fs->sb.s_minor;
+	*major = fs->sb->s_major;
+	*minor = fs->sb->s_minor;
 }
 
 sqfs_compression_type sqfs_compression(sqfs *fs) {
-	return fs->sb.compression;
+	return fs->sb->compression;
 }
 
 sqfs_err sqfs_init(sqfs *fs, sqfs_fd_t fd, size_t offset) {
@@ -59,29 +58,25 @@ sqfs_err sqfs_init(sqfs *fs, sqfs_fd_t fd, size_t offset) {
 	
 	fs->fd = fd;
 	fs->offset = offset;
-	if (sqfs_pread(fd, &fs->sb, sizeof(fs->sb), fs->offset) != sizeof(fs->sb))
-		return SQFS_BADFORMAT;
-	sqfs_swapin_super_block(&fs->sb);
+
+	fs->sb = (struct squashfs_super_block *)(fd + fs->offset);
 	
-	if (fs->sb.s_magic != SQUASHFS_MAGIC) {
-		if (fs->sb.s_magic != SQFS_MAGIC_SWAP)
-			return SQFS_BADFORMAT;
-		sqfs_swap16(&fs->sb.s_major);
-		sqfs_swap16(&fs->sb.s_minor);
+	if (fs->sb->s_magic != SQUASHFS_MAGIC) {
+		return SQFS_BADFORMAT;
 	}
-	if (fs->sb.s_major != SQUASHFS_MAJOR || fs->sb.s_minor > SQUASHFS_MINOR)
+	if (fs->sb->s_major != SQUASHFS_MAJOR || fs->sb->s_minor > SQUASHFS_MINOR)
 		return SQFS_BADVERSION;
 	
-	if (!(fs->decompressor = sqfs_decompressor_get(fs->sb.compression)))
+	if (!(fs->decompressor = sqfs_decompressor_get(fs->sb->compression)))
 		return SQFS_BADCOMP;
 	
-	err = sqfs_table_init(&fs->id_table, fd, fs->sb.id_table_start + fs->offset,
-		sizeof(uint32_t), fs->sb.no_ids);
-	err |= sqfs_table_init(&fs->frag_table, fd, fs->sb.fragment_table_start + fs->offset,
-		sizeof(struct squashfs_fragment_entry), fs->sb.fragments);
+	err = sqfs_table_init(&fs->id_table, fd, fs->sb->id_table_start + fs->offset,
+		sizeof(uint32_t), fs->sb->no_ids);
+	err |= sqfs_table_init(&fs->frag_table, fd, fs->sb->fragment_table_start + fs->offset,
+		sizeof(struct squashfs_fragment_entry), fs->sb->fragments);
 	if (sqfs_export_ok(fs)) {
-		err |= sqfs_table_init(&fs->export_table, fd, fs->sb.lookup_table_start + fs->offset,
-			sizeof(uint64_t), fs->sb.inodes);
+		err |= sqfs_table_init(&fs->export_table, fd, fs->sb->lookup_table_start + fs->offset,
+			sizeof(uint64_t), fs->sb->inodes);
 	}
 	err |= sqfs_xattr_init(fs);
 	err |= sqfs_block_cache_init(&fs->md_cache, SQUASHFS_CACHED_BLKS);
@@ -124,11 +119,8 @@ sqfs_err sqfs_block_read(sqfs *fs, sqfs_off_t pos, bool compressed,
 	sqfs_err err = SQFS_ERR;
 	if (!(*block = malloc(sizeof(**block))))
 		return SQFS_ERR;
-	if (!((*block)->data = malloc(size)))
-		goto error;
 	
-	if (sqfs_pread(fs->fd, (*block)->data, size, pos + fs->offset) != size)
-		goto error;
+	(*block)->data = (void *)((fs->fd) + (pos + fs->offset));
 
 	if (compressed) {
 		char *decomp = malloc(outsize);
@@ -140,7 +132,6 @@ sqfs_err sqfs_block_read(sqfs *fs, sqfs_off_t pos, bool compressed,
 			free(decomp);
 			goto error;
 		}
-		free((*block)->data);
 		(*block)->data = decomp;
 		(*block)->size = outsize;
 	} else {
@@ -164,11 +155,9 @@ sqfs_err sqfs_md_block_read(sqfs *fs, sqfs_off_t pos, size_t *data_size,
 	
 	*data_size = 0;
 	
-	if (sqfs_pread(fs->fd, &hdr, sizeof(hdr), pos + fs->offset) != sizeof(hdr))
-		return SQFS_ERR;
+	hdr = (uint16_t)(fs->fd + pos + fs->offset);
 	pos += sizeof(hdr);
 	*data_size += sizeof(hdr);
-	sqfs_swapin16(&hdr);
 	
 	sqfs_md_header(hdr, &compressed, &size);
 	
@@ -184,7 +173,7 @@ sqfs_err sqfs_data_block_read(sqfs *fs, sqfs_off_t pos, uint32_t hdr,
 	uint32_t size;
 	sqfs_data_header(hdr, &compressed, &size);
 	return sqfs_block_read(fs, pos, compressed, size,
-		fs->sb.block_size, block);
+		fs->sb->block_size, block);
 }
 
 sqfs_err sqfs_md_cache(sqfs *fs, sqfs_off_t *pos, sqfs_block **block) {
@@ -220,7 +209,6 @@ sqfs_err sqfs_data_cache(sqfs *fs, sqfs_cache *cache, sqfs_off_t pos,
 }
 
 void sqfs_block_dispose(sqfs_block *block) {
-	free(block->data);
 	free(block);
 }
 
@@ -269,7 +257,6 @@ sqfs_err sqfs_id_get(sqfs *fs, uint16_t idx, sqfs_id_t *id) {
 	sqfs_err err = sqfs_table_get(&fs->id_table, fs, idx, &rid);
 	if (err)
 		return err;
-	sqfs_swapin32(&rid);
 	*id = (sqfs_id_t)rid;
 	return SQFS_OK;
 }
@@ -296,7 +283,7 @@ sqfs_err sqfs_readlink(sqfs *fs, sqfs_inode *inode, char *buf, size_t *size) {
 }
 
 int sqfs_export_ok(sqfs *fs) {
-	return fs->sb.lookup_table_start != SQUASHFS_INVALID_BLK;
+	return fs->sb->lookup_table_start != SQUASHFS_INVALID_BLK;
 }
 
 sqfs_err sqfs_export_inode(sqfs *fs, sqfs_inode_num n, sqfs_inode_id *i) {
@@ -309,13 +296,12 @@ sqfs_err sqfs_export_inode(sqfs *fs, sqfs_inode_num n, sqfs_inode_id *i) {
 	err = sqfs_table_get(&fs->export_table, fs, n - 1, &r);
 	if (err)
 		return err;
-	sqfs_swapin64(&r);
 	*i = r;
 	return SQFS_OK;
 }
 
 sqfs_inode_id sqfs_inode_root(sqfs *fs) {
-	return fs->sb.root_inode;
+	return fs->sb->root_inode;
 }
 
 /* Turn the internal format of a device number to our system's dev_t
@@ -330,8 +316,7 @@ static void sqfs_decode_dev(sqfs_inode *i, uint32_t rdev) {
 #define INODE_TYPE(_type) \
 	struct squashfs_##_type##_inode x; \
 	err = sqfs_md_read(fs, &inode->next, &x, sizeof(x)); \
-	if (err) return err; \
-	sqfs_swapin_##_type##_inode(&x)
+	if (err) return err
 
 sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 	sqfs_md_cursor cur;
@@ -340,13 +325,12 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 	memset(inode, 0, sizeof(*inode));
 	inode->xattr = SQUASHFS_INVALID_XATTR;
 	
-	sqfs_md_cursor_inode(&cur, id, fs->sb.inode_table_start);
+	sqfs_md_cursor_inode(&cur, id, fs->sb->inode_table_start);
 	inode->next = cur;
 	
 	err = sqfs_md_read(fs, &cur, &inode->base, sizeof(inode->base));
 	if (err)
 		return err;
-	sqfs_swapin_base_inode(&inode->base);
 	
 	inode->base.mode |= sqfs_mode(inode->base.inode_type);
 	switch (inode->base.inode_type) {
@@ -405,7 +389,6 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 				err = sqfs_md_read(fs, &cur, &inode->xattr, sizeof(inode->xattr));
 				if (err)
 					return err;
-				sqfs_swapin32(&inode->xattr);
 			}
 			break;
 		}

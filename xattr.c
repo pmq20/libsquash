@@ -53,37 +53,34 @@ typedef enum {
 } sqfs_xattr_curs;
 
 sqfs_err sqfs_xattr_init(sqfs *fs) {
-	sqfs_off_t start = fs->sb.xattr_id_table_start;
+	sqfs_off_t start = fs->sb->xattr_id_table_start;
 	size_t bread;
 	if (start == SQUASHFS_INVALID_BLK)
 		return SQFS_OK;
 	
-	bread = sqfs_pread(fs->fd, &fs->xattr_info, sizeof(fs->xattr_info),
-		start + fs->offset);
+	fs->xattr_info = (struct squashfs_xattr_id_table *)(fs->fd + start + fs->offset);
 	if (bread != sizeof(fs->xattr_info))
 		return SQFS_ERR;
-	sqfs_swapin_xattr_id_table(&fs->xattr_info);
 	
 	return sqfs_table_init(&fs->xattr_table, fs->fd,
 		start + sizeof(fs->xattr_info) + fs->offset, sizeof(struct squashfs_xattr_id),
-		fs->xattr_info.xattr_ids);
+		fs->xattr_info->xattr_ids);
 }
 
 sqfs_err sqfs_xattr_open(sqfs *fs, sqfs_inode *inode, sqfs_xattr *x) {
 	sqfs_err err;
 	
 	x->remain = 0; /* assume none exist */
-	if (fs->xattr_info.xattr_ids == 0 || inode->xattr == SQUASHFS_INVALID_XATTR)
+	if (fs->xattr_info->xattr_ids == 0 || inode->xattr == SQUASHFS_INVALID_XATTR)
 		return SQFS_OK;
 	
 	err = sqfs_table_get(&fs->xattr_table, fs, inode->xattr,
 		&x->info);
 	if (err)
 		return SQFS_ERR;
-	sqfs_swapin_xattr_id(&x->info);
 	
 	sqfs_md_cursor_inode(&x->c_next, x->info.xattr,
-		fs->xattr_info.xattr_table_start);
+		fs->xattr_info->xattr_table_start);
 	
 	x->fs = fs;
 	x->remain = x->info.count;
@@ -106,7 +103,6 @@ sqfs_err sqfs_xattr_read(sqfs_xattr *x) {
 	x->c_name = x->c_next;
 	if ((err = sqfs_md_read(x->fs, &x->c_name, &x->entry, sizeof(x->entry))))
 		return err;
-	sqfs_swapin_xattr_entry(&x->entry);
 	
 	x->type = x->entry.type & SQUASHFS_XATTR_PREFIX_MASK;
 	x->ool = x->entry.type & SQUASHFS_XATTR_VALUE_OOL;
@@ -149,21 +145,18 @@ sqfs_err sqfs_xattr_value_size(sqfs_xattr *x, size_t *size) {
 	x->c_val = x->c_vsize;
 	if ((err = sqfs_md_read(x->fs, &x->c_val, &x->val, sizeof(x->val))))
 		return err;
-	sqfs_swapin_xattr_val(&x->val);
 	
 	if (x->ool) {
 		uint64_t pos;
 		x->c_next = x->c_val;
 		if ((err = sqfs_md_read(x->fs, &x->c_next, &pos, sizeof(pos))))
 			return err;
-		sqfs_swapin64(&pos);
 		x->cursors |= CURS_NEXT;
 		
 		sqfs_md_cursor_inode(&x->c_val, pos,
-			x->fs->xattr_info.xattr_table_start);
+			x->fs->xattr_info->xattr_table_start);
 		if ((err = sqfs_md_read(x->fs, &x->c_val, &x->val, sizeof(x->val))))
 			return err;
-		sqfs_swapin_xattr_val(&x->val);
 	}
 	
 	if (size)

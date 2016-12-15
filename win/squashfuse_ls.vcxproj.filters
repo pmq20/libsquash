@@ -45,9 +45,6 @@
     <ClCompile Include="..\hash.c">
       <Filter>Common sources</Filter>
     </ClCompile>
-    <ClCompile Include="..\nonstd-pread.c">
-      <Filter>Common sources</Filter>
-    </ClCompile>
     <ClCompile Include="..\nonstd-stat.c">
       <Filter>Common sources</Filter>
     </ClCompile>

@@ -30,6 +30,7 @@
 
 sqfs_err sqfs_fd_open(const uint8_t *path, sqfs_fd_t *fd, bool print) {
 	*fd = path;
+  return SQFS_OK;
 }
 
 void sqfs_fd_close(sqfs_fd_t fd) {

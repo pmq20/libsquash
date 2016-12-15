@@ -376,7 +376,7 @@ sqfs_err sqfs_ll_stat(sqfs_ll *ll, sqfs_inode *inode, struct stat *st) {
 			inode->xtra.dev.minor);
 	}
 	
-	st->st_blksize = ll->fs.sb.block_size; /* seriously? */
+	st->st_blksize = ll->fs.sb->block_size; /* seriously? */
 	
 	err = sqfs_id_get(&ll->fs, inode->base.uid, &id);
 	if (err)

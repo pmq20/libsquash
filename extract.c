@@ -55,7 +55,7 @@ sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st) {
 		st->st_size = inode->xtra.symlink_size;
 	}
 	
-	st->st_blksize = fs->sb.block_size; /* seriously? */
+	st->st_blksize = fs->sb->block_size; /* seriously? */
 	
 	err = sqfs_id_get(fs, inode->base.uid, &id);
 	if (err)
