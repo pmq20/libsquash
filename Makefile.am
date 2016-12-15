@@ -8,7 +8,7 @@ export COPYFILE_DISABLE = 1
 endif
 
 dist_man_MANS =
-EXTRA_DIST = gen_swap.sh autogen.sh LICENSE CONFIGURATION PLATFORMS NEWS win
+EXTRA_DIST = autogen.sh LICENSE CONFIGURATION PLATFORMS NEWS win
 
 bin_PROGRAMS =
 noinst_PROGRAMS =
@@ -16,7 +16,7 @@ noinst_PROGRAMS =
 noinst_LTLIBRARIES = libsquashfuse.la
 
 # Main library: libsquashfuse
-libsquashfuse_la_SOURCES = fixture.c swap.c cache.c table.c dir.c file.c fs.c \
+libsquashfuse_la_SOURCES = fixture.c cache.c table.c dir.c file.c fs.c \
 	decompress.c xattr.c hash.c stack.c traverse.c util.c \
 	nonstd-stat.c \
 	squashfs_fs.h common.h nonstd-internal.h nonstd.h swap.h cache.h table.h \
@@ -67,10 +67,3 @@ squashfuse_extract_SOURCES = extract.c
 squashfuse_extract_LDADD = libsquashfuse.la libfuseprivate.la $(COMPRESSION_LIBS) \
   $(FUSE_LIBS)
 endif
-
-# Handle generation of swap include files
-CLEANFILES = swap.h.inc swap.c.inc
-EXTRA_DIST += swap.h.inc swap.c.inc
-$(libsquashfuse_la_OBJECTS): swap.h.inc
-swap.h.inc swap.c.inc: gen_swap.sh squashfs_fs.h Makefile
-	SED="$(SED)" $(srcdir)/gen_swap.sh $(srcdir)/squashfs_fs.h
