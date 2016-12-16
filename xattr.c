@@ -67,6 +67,9 @@ sqfs_err sqfs_xattr_open(sqfs *fs, sqfs_inode *inode, sqfs_xattr *x) {
 	sqfs_err err;
 	
 	x->remain = 0; /* assume none exist */
+	if (NULL == fs->xattr_info) {
+		return SQFS_OK;
+	}
 	if (fs->xattr_info->xattr_ids == 0 || inode->xattr == SQUASHFS_INVALID_XATTR)
 		return SQFS_OK;
 	
