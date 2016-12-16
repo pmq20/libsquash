@@ -25,3 +25,7 @@ On most systems you could build and test the library using the following command
     cmake ..
     cmake --build .
     ctest --verbose
+
+## Acknowledgment
+
+Thank you Dave Vasilevsky for the excellent work!
