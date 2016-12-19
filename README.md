@@ -3,8 +3,8 @@
 Portable, User-land SquashFS that can be linked and embedded within your application; a [squashfuse](https://github.com/vasi/squashfuse) fork.
 
 [![Build status: Linux and Darwin](https://travis-ci.org/enclose-io/libsquash.svg?branch=master)](https://travis-ci.org/enclose-io/libsquash)
-[![Build status: Windows](https://ci.appveyor.com/api/projects/status/abpql5aoghb2ei9d?svg=true)](https://ci.appveyor.com/project/enclose-io/libsquash)
-[![Coverity Scan](https://scan.coverity.com/projects/11025/badge.svg)](https://scan.coverity.com/projects/enclose-io-libsquash)
+[![Build status: Windows](https://ci.appveyor.com/api/projects/status/297rm0xhcfyyu9uo?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash)
+[![Coverity Scan](https://scan.coverity.com/projects/11215/badge.svg)](https://scan.coverity.com/projects/enclose-io-libsquash)
 
 ## About this fork
 
@@ -16,6 +16,7 @@ This project was forked from https://github.com/vasi/squashfuse with the followi
 1. Compile on 3 platforms without libfuse: Windows, Mac OS X and Linux
 1. Add travis-ci for Linux and Darwin CI
 1. Add appveyor for Windows CI
+1. Add Coverity Scan
 
 ## Building
 
