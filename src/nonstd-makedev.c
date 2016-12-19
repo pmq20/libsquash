@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "config.h"
+#include "squash/config.h"
 
 #ifdef QNX_MAKEDEV
 	#include <sys/types.h>
@@ -33,7 +33,7 @@
 	}
 #else
 	#define SQFEATURE NONSTD_MAKEDEV_DEF
-	#include "nonstd-internal.h"
+	#include "squash/nonstd-internal.h"
 
 	#include <sys/types.h>
 	#ifdef HAVE_SYS_MKDEV_H

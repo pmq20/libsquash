@@ -22,20 +22,25 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef SQFS_TABLE_H
-#define SQFS_TABLE_H
+#ifndef SQFS_DECOMPRESS_H
+#define SQFS_DECOMPRESS_H
 
-#include "common.h"
+#include "squash/common.h"
 
-typedef struct {
-	size_t each;
-	uint64_t *blocks;
-} sqfs_table;
+#define SQFS_COMP_UNKNOWN	0
+#define SQFS_COMP_MAX		16
 
-sqfs_err sqfs_table_init(sqfs_table *table, sqfs_fd_t fd, sqfs_off_t start, size_t each,
-	size_t count);
-void sqfs_table_destroy(sqfs_table *table);
+typedef int sqfs_compression_type;
 
-sqfs_err sqfs_table_get(sqfs_table *table, sqfs *fs, size_t idx, void *buf);
+char *sqfs_compression_name(sqfs_compression_type type);
+
+/* put supported compression types into an array */
+void sqfs_compression_supported(sqfs_compression_type *types);
+
+
+typedef sqfs_err (*sqfs_decompressor)(void *in, size_t insz,
+	void *out, size_t *outsz);
+
+sqfs_decompressor sqfs_decompressor_get(sqfs_compression_type type);
 
 #endif

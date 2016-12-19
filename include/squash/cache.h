@@ -22,42 +22,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef SQFS_HASH_H
-#define SQFS_HASH_H
+#ifndef SQFS_CACHE_H
+#define SQFS_CACHE_H
 
-#include "common.h"
+#include "squash/common.h"
 
-/* Simple hashtable
- *	- Keys are integers
- *	- Values are opaque data
- *
- * Implementation
- *	- Hash function is modulus
- *	- Chaining for duplicates
- *	- Sizes are powers of two
+/* Really simplistic cache
+ *  - Linear search
+ *  - Linear eviction
+ *  - No thread safety
+ *  - Misses are caller's responsibility
  */
-typedef uint32_t sqfs_hash_key;
-typedef void *sqfs_hash_value;
+#define SQFS_CACHE_IDX_INVALID 0
 
-typedef struct sqfs_hash_bucket {
-	struct sqfs_hash_bucket *next;
-	sqfs_hash_key key;
-	char value[1]; /* extended to size */
-} sqfs_hash_bucket;
+typedef uint64_t sqfs_cache_idx;
+typedef void (*sqfs_cache_dispose)(void* data);
 
 typedef struct {
-	size_t value_size;
-	size_t capacity;
-	size_t size;
-	sqfs_hash_bucket **buckets;
-} sqfs_hash;
+	sqfs_cache_idx *idxs;
+	uint8_t *buf;
+	
+	sqfs_cache_dispose dispose;
+	
+	size_t size, count;
+	size_t next; /* next block to evict */
+} sqfs_cache;
 
-sqfs_err sqfs_hash_init(sqfs_hash *h, size_t vsize, size_t initial);
-void sqfs_hash_destroy(sqfs_hash *h);
+sqfs_err sqfs_cache_init(sqfs_cache *cache, size_t size, size_t count,
+	sqfs_cache_dispose dispose);
+void sqfs_cache_destroy(sqfs_cache *cache);
 
-sqfs_hash_value sqfs_hash_get(sqfs_hash *h, sqfs_hash_key k);
+void *sqfs_cache_get(sqfs_cache *cache, sqfs_cache_idx idx);
+void *sqfs_cache_add(sqfs_cache *cache, sqfs_cache_idx idx);
 
-sqfs_err sqfs_hash_add(sqfs_hash *h, sqfs_hash_key k, sqfs_hash_value v);
-sqfs_err sqfs_hash_remove(sqfs_hash *h, sqfs_hash_key k);
+
+typedef struct {
+	sqfs_block *block;
+	size_t data_size;
+} sqfs_block_cache_entry;
+
+sqfs_err sqfs_block_cache_init(sqfs_cache *cache, size_t count);
 
 #endif

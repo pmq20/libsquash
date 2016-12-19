@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014 Dave Vasilevsky <dave@vasilevsky.ca>
+ * Copyright (c) 2012 Dave Vasilevsky <dave@vasilevsky.ca>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -22,20 +22,42 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef SQFS_UTIL_H
-#define SQFS_UTIL_H
+#ifndef SQFS_HASH_H
+#define SQFS_HASH_H
 
-#include "common.h"
+#include "squash/common.h"
 
-#include <stdio.h>
+/* Simple hashtable
+ *	- Keys are integers
+ *	- Values are opaque data
+ *
+ * Implementation
+ *	- Hash function is modulus
+ *	- Chaining for duplicates
+ *	- Sizes are powers of two
+ */
+typedef uint32_t sqfs_hash_key;
+typedef void *sqfs_hash_value;
 
-/* Open a file, and optionally print a message on failure */
-sqfs_err sqfs_fd_open(const uint8_t *path, sqfs_fd_t *fd, bool print);
+typedef struct sqfs_hash_bucket {
+	struct sqfs_hash_bucket *next;
+	sqfs_hash_key key;
+	char value[1]; /* extended to size */
+} sqfs_hash_bucket;
 
-/* Close a file */
-void sqfs_fd_close(sqfs_fd_t fd);
+typedef struct {
+	size_t value_size;
+	size_t capacity;
+	size_t size;
+	sqfs_hash_bucket **buckets;
+} sqfs_hash;
 
-/* Open a filesystem and print errors to stderr. */
-sqfs_err sqfs_open_image(sqfs *fs, const uint8_t *image, size_t offset);
+sqfs_err sqfs_hash_init(sqfs_hash *h, size_t vsize, size_t initial);
+void sqfs_hash_destroy(sqfs_hash *h);
+
+sqfs_hash_value sqfs_hash_get(sqfs_hash *h, sqfs_hash_key k);
+
+sqfs_err sqfs_hash_add(sqfs_hash *h, sqfs_hash_key k, sqfs_hash_value v);
+sqfs_err sqfs_hash_remove(sqfs_hash *h, sqfs_hash_key k);
 
 #endif

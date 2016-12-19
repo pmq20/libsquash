@@ -22,49 +22,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef SQFS_COMMON_H
-#define SQFS_COMMON_H
+#ifndef SQFS_XATTR_H
+#define SQFS_XATTR_H
 
-#include "config.h"
+#include "squash/common.h"
 
-#include <stdbool.h>
-#include <stdint.h>
-#include <sys/types.h>
+#include "squash/squashfs_fs.h"
 
-#ifdef _WIN32
-	#include <win32.h>
-#else
-	typedef mode_t sqfs_mode_t;
-	typedef uid_t sqfs_id_t;
-	typedef off_t sqfs_off_t;
-#endif
-typedef const uint8_t * sqfs_fd_t;
 
-typedef enum {
-	SQFS_OK,
-	SQFS_ERR,
-	SQFS_BADFORMAT,		/* unsupported file format */
-	SQFS_BADVERSION,	/* unsupported squashfs version */
-	SQFS_BADCOMP,		/* unsupported compression method */
-	SQFS_UNSUP			/* unsupported feature */
-} sqfs_err;
+/* Initialize xattr handling for this fs */
+sqfs_err sqfs_xattr_init(sqfs *fs);
 
-#define SQFS_INODE_ID_BYTES 6
-typedef uint64_t sqfs_inode_id;
-typedef uint32_t sqfs_inode_num;
 
-typedef struct sqfs sqfs;
-typedef struct sqfs_inode sqfs_inode;
-
+/* xattr iterator */
 typedef struct {
-	size_t size;
-	void *data;
-	bool data_need_freeing;
-} sqfs_block;
+	sqfs *fs;	
+	int cursors;
+	sqfs_md_cursor c_name, c_vsize, c_val, c_next;
+	
+	size_t remain;
+	struct squashfs_xattr_id info;
+	
+	uint16_t type;
+	bool ool;
+	struct squashfs_xattr_entry entry;
+	struct squashfs_xattr_val val;
+} sqfs_xattr;
 
-typedef struct {
-	sqfs_off_t block;
-	size_t offset;
-} sqfs_md_cursor;
+/* Get xattr iterator for this inode */
+sqfs_err sqfs_xattr_open(sqfs *fs, sqfs_inode *inode, sqfs_xattr *x);
+
+/* Get new xattr entry. Call while x->remain > 0 */
+sqfs_err sqfs_xattr_read(sqfs_xattr *x);
+
+/* Accessors on xattr entry. No null-termination! */
+size_t sqfs_xattr_name_size(sqfs_xattr *x);
+sqfs_err sqfs_xattr_name(sqfs_xattr *x, char *name, bool prefix);
+sqfs_err sqfs_xattr_value_size(sqfs_xattr *x, size_t *size);
+/* Yield first 'size' bytes */
+sqfs_err sqfs_xattr_value(sqfs_xattr *x, void *buf);
+
+/* Find an xattr entry */
+sqfs_err sqfs_xattr_find(sqfs_xattr *x, const char *name, bool *found);
+
+/* Helper to find an xattr value on an inode.
+   Returns in 'size' the size of the xattr, if found, or zero if not found.
+   Does not touch 'buf' if it's not big enough. */
+sqfs_err sqfs_xattr_lookup(sqfs *fs, sqfs_inode *inode, const char *name,
+	void *buf, size_t *size);
 
 #endif

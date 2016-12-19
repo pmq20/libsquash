@@ -25,7 +25,7 @@
 #ifndef SQFS_STD_H
 #define SQFS_STD_H
 
-#include "common.h"
+#include "squash/common.h"
 
 /* Non-standard functions that we need */
 

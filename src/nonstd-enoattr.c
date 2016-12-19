@@ -22,10 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "config.h"
+#include "squash/config.h"
 
 #define SQFEATURE NONSTD_ENOATTR_DEF
-#include "nonstd-internal.h"
+#include "squash/nonstd-internal.h"
 
 #ifdef HAVE_ATTR_XATTR_H
 	#include <sys/types.h>

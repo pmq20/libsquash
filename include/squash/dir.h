@@ -25,9 +25,9 @@
 #ifndef SQFS_DIR_H
 #define SQFS_DIR_H
 
-#include "common.h"
+#include "squash/common.h"
 
-#include "squashfs_fs.h"
+#include "squash/squashfs_fs.h"
 
 typedef struct {
 	sqfs_md_cursor cur;

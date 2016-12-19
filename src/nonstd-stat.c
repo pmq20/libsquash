@@ -22,15 +22,15 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "config.h"
+#include "squash/config.h"
 
 #define SQFEATURE NONSTD_S_IFSOCK_DEF
-#include "nonstd-internal.h"
+#include "squash/nonstd-internal.h"
 
 #include <sys/stat.h>
 
-#include "common.h"
-#include "squashfs_fs.h"
+#include "squash/common.h"
+#include "squash/squashfs_fs.h"
 
 /* S_IF* are not standard */
 sqfs_mode_t sqfs_mode(int inode_type) {

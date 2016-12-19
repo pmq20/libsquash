@@ -22,7 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "private.h"
+#include "squash/private.h"
 
 #include <ctype.h>
 #include <errno.h>
@@ -30,7 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "nonstd.h"
+#include "squash/nonstd.h"
 
 sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st) {
 	sqfs_err err = SQFS_OK;

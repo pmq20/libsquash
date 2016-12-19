@@ -22,53 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef SQFS_XATTR_H
-#define SQFS_XATTR_H
+#ifndef SQFS_TABLE_H
+#define SQFS_TABLE_H
 
-#include "common.h"
+#include "squash/common.h"
 
-#include "squashfs_fs.h"
-
-
-/* Initialize xattr handling for this fs */
-sqfs_err sqfs_xattr_init(sqfs *fs);
-
-
-/* xattr iterator */
 typedef struct {
-	sqfs *fs;	
-	int cursors;
-	sqfs_md_cursor c_name, c_vsize, c_val, c_next;
-	
-	size_t remain;
-	struct squashfs_xattr_id info;
-	
-	uint16_t type;
-	bool ool;
-	struct squashfs_xattr_entry entry;
-	struct squashfs_xattr_val val;
-} sqfs_xattr;
+	size_t each;
+	uint64_t *blocks;
+} sqfs_table;
 
-/* Get xattr iterator for this inode */
-sqfs_err sqfs_xattr_open(sqfs *fs, sqfs_inode *inode, sqfs_xattr *x);
+sqfs_err sqfs_table_init(sqfs_table *table, sqfs_fd_t fd, sqfs_off_t start, size_t each,
+	size_t count);
+void sqfs_table_destroy(sqfs_table *table);
 
-/* Get new xattr entry. Call while x->remain > 0 */
-sqfs_err sqfs_xattr_read(sqfs_xattr *x);
-
-/* Accessors on xattr entry. No null-termination! */
-size_t sqfs_xattr_name_size(sqfs_xattr *x);
-sqfs_err sqfs_xattr_name(sqfs_xattr *x, char *name, bool prefix);
-sqfs_err sqfs_xattr_value_size(sqfs_xattr *x, size_t *size);
-/* Yield first 'size' bytes */
-sqfs_err sqfs_xattr_value(sqfs_xattr *x, void *buf);
-
-/* Find an xattr entry */
-sqfs_err sqfs_xattr_find(sqfs_xattr *x, const char *name, bool *found);
-
-/* Helper to find an xattr value on an inode.
-   Returns in 'size' the size of the xattr, if found, or zero if not found.
-   Does not touch 'buf' if it's not big enough. */
-sqfs_err sqfs_xattr_lookup(sqfs *fs, sqfs_inode *inode, const char *name,
-	void *buf, size_t *size);
+sqfs_err sqfs_table_get(sqfs_table *table, sqfs *fs, size_t idx, void *buf);
 
 #endif

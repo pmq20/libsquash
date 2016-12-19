@@ -22,9 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "util.h"
+#include "squash/util.h"
 
-#include "fs.h"
+#include "squash/fs.h"
 
 #include <stdio.h>
 

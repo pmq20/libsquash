@@ -22,9 +22,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "decompress.h"
+#include "squash/decompress.h"
 
-#include "squashfs_fs.h"
+#include "squash/squashfs_fs.h"
 
 #include <string.h>
 

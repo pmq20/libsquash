@@ -25,13 +25,13 @@
 #ifndef SQFS_FS_H
 #define SQFS_FS_H
 
-#include "common.h"
+#include "squash/common.h"
 
-#include "squashfs_fs.h"
+#include "squash/squashfs_fs.h"
 
-#include "cache.h"
-#include "decompress.h"
-#include "table.h"
+#include "squash/cache.h"
+#include "squash/decompress.h"
+#include "squash/table.h"
 
 struct sqfs {
 	sqfs_fd_t fd;

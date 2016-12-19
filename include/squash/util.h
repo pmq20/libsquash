@@ -22,14 +22,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#ifndef SQFS_LIBSQUASH_H
-#define SQFS_LIBSQUASH_H
+#ifndef SQFS_UTIL_H
+#define SQFS_UTIL_H
 
-#include "dir.h"
-#include "file.h"
-#include "fs.h"
-#include "traverse.h"
-#include "util.h"
-#include "xattr.h"
+#include "squash/common.h"
+
+#include <stdio.h>
+
+/* Open a file, and optionally print a message on failure */
+sqfs_err sqfs_fd_open(const uint8_t *path, sqfs_fd_t *fd, bool print);
+
+/* Close a file */
+void sqfs_fd_close(sqfs_fd_t fd);
+
+/* Open a filesystem and print errors to stderr. */
+sqfs_err sqfs_open_image(sqfs *fs, const uint8_t *image, size_t offset);
 
 #endif

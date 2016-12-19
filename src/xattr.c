@@ -22,10 +22,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "xattr.h"
+#include "squash/xattr.h"
 
-#include "fs.h"
-#include "nonstd.h"
+#include "squash/fs.h"
+#include "squash/nonstd.h"
 
 #include <string.h>
 #include <stdlib.h>
