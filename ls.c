@@ -40,26 +40,3 @@ static void die(const char *msg) {
 	fprintf(stderr, "%s\n", msg);
 	exit(ERR_MISC);
 }
-
-int main(int argc, char *argv[]) {
-	sqfs_err err = SQFS_OK;
-	sqfs_traverse trv;
-	sqfs fs;
-
-	if ((err = sqfs_open_image(&fs, libsquash_fixture, 0)))
-		exit(ERR_OPEN);
-	
-	if ((err = sqfs_traverse_open(&trv, &fs, sqfs_inode_root(&fs))))
-		die("sqfs_traverse_open error");
-	while (sqfs_traverse_next(&trv, &err)) {
-		if (!trv.dir_end) {
-			printf("%s\n", trv.path);
-		}
-	}
-	if (err)
-		die("sqfs_traverse_next error");
-	sqfs_traverse_close(&trv);
-	
-	sqfs_fd_close(fs.fd);
-	return 0;
-}
