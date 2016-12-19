@@ -39,9 +39,7 @@
 	#ifdef HAVE_SYS_MKDEV_H
 		#include <sys/mkdev.h>
 	#endif
-	#ifdef HAVE_SYS_SYSMACROS_H
-		#include <sys/sysmacros.h>
-	#endif
+	#include <sys/sysmacros.h>
 
 	dev_t sqfs_makedev(int maj, int min) {
 		return makedev(maj, min);
