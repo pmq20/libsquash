@@ -21,7 +21,6 @@ Makefile.in
 aclocal.m4
 autom4te.cache
 build-aux
-/config.*
 configure
 libtool
 stamp-h1
@@ -32,3 +31,7 @@ win/Release
 *.opensdf
 *.suo
 *.vcxproj.user
+
+/config.h.in
+/config.log
+/config.status
