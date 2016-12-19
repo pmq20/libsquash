@@ -27,8 +27,6 @@
 
 #include "libsquash.h"
 
-#include <fuse.h>
-
 #include <sys/stat.h>
 
 /* Common functions for FUSE high- and low-level clients */
@@ -38,18 +36,5 @@ sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st);
 
 /* Populate an xattr list. Return an errno value. */
 int sqfs_listxattr(sqfs *fs, sqfs_inode *inode, char *buf, size_t *size);
-
-/* Print a usage string */
-void sqfs_usage(char *progname, bool fuse_usage);
-
-/* Parse command-line arguments */
-typedef struct {
-	char *progname;
-	const char *image;
-	int mountpoint;
-	size_t offset;
-} sqfs_opts;
-int sqfs_opt_proc(void *data, const char *arg, int key,
-	struct fuse_args *outargs);
 
 #endif

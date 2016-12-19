@@ -11,22 +11,9 @@
 
 #include "fixture.h"
 
-#define PROGNAME "squashfuse_extract"
-
 #define ERR_MISC	(1)
 #define ERR_USAGE	(2)
 #define ERR_OPEN	(3)
-
-static void usage() {
-    fprintf(stderr, "Usage: %s ARCHIVE PATH_TO_EXTRACT\n", PROGNAME);
-    fprintf(stderr, "       %s ARCHIVE -a\n", PROGNAME);
-    exit(ERR_USAGE);
-}
-
-static void die(const char *msg) {
-    fprintf(stderr, "%s\n", msg);
-    exit(ERR_MISC);
-}
 
 bool startsWith(const char *pre, const char *str)
 {
