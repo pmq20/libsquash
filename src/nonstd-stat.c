@@ -32,6 +32,16 @@
 #include "squash/common.h"
 #include "squash/squashfs_fs.h"
 
+#ifndef S_IFDIR
+#define	S_IFDIR		0040000		/* [XSI] directory */
+#define	S_IFREG		0100000		/* [XSI] regular */
+#define	S_IFLNK		0120000		/* [XSI] symbolic link */
+#define	S_IFBLK		0060000		/* [XSI] block special */
+#define	S_IFCHR		0020000		/* [XSI] character special */
+#define	S_IFIFO		0010000		/* [XSI] named pipe (fifo) */
+#define	S_IFSOCK	0140000		/* [XSI] socket */
+#endif
+
 /* S_IF* are not standard */
 sqfs_mode_t sqfs_mode(int inode_type) {
 	switch (inode_type) {
