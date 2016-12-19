@@ -1,4 +1,4 @@
-#include "squashfuse.h"
+#include "libsquash.h"
 
 #include <fcntl.h>
 #include <stdio.h>

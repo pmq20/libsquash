@@ -1,30 +1,8 @@
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Version of FUSE API to use */
-#define FUSE_USE_VERSION 26
-
-/* Define if FUSE xattr operations take a position argument */
-#define FUSE_XATTR_POSITION 1
-
 /* Define to 1 if you have the <attr/xattr.h> header file. */
 /* #undef HAVE_ATTR_XATTR_H */
-
-/* Define to 1 if you have the declaration of `fuse_add_dirent', and to 0 if
-   you don't. */
-#define HAVE_DECL_FUSE_ADD_DIRENT 0
-
-/* Define to 1 if you have the declaration of `fuse_add_direntry', and to 0 if
-   you don't. */
-#define HAVE_DECL_FUSE_ADD_DIRENTRY 1
-
-/* Define to 1 if you have the declaration of `fuse_daemonize', and to 0 if
-   you don't. */
-#define HAVE_DECL_FUSE_DAEMONIZE 1
-
-/* Define to 1 if you have the declaration of `fuse_session_remove_chan', and
-   to 0 if you don't. */
-#define HAVE_DECL_FUSE_SESSION_REMOVE_CHAN 1
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
@@ -46,9 +24,6 @@
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
-
-/* Define if we have two-argument fuse_unmount */
-#define HAVE_NEW_FUSE_UNMOUNT 1
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -99,19 +74,19 @@
 /* #undef NONSTD_S_IFSOCK_DEF */
 
 /* Name of package */
-#define PACKAGE "squashfuse"
+#define PACKAGE "libsquash"
 
 /* Define to the address where bug reports for this package should be sent. */
 #define PACKAGE_BUGREPORT "dave@vasilevsky.ca"
 
 /* Define to the full name of this package. */
-#define PACKAGE_NAME "squashfuse"
+#define PACKAGE_NAME "libsquash"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "squashfuse 0.1.100"
+#define PACKAGE_STRING "libsquash 0.1.100"
 
 /* Define to the one symbol short name of this package. */
-#define PACKAGE_TARNAME "squashfuse"
+#define PACKAGE_TARNAME "libsquash"
 
 /* Define to the home page for this package. */
 #define PACKAGE_URL ""

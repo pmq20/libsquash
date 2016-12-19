@@ -25,7 +25,7 @@
 #ifndef SQFS_LL_H
 #define SQFS_LL_H
 
-#include "squashfuse.h"
+#include "libsquash.h"
 
 #include <fuse_lowlevel.h>
 

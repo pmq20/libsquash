@@ -23,7 +23,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "ll.h"
-#include "fuseprivate.h"
+#include "private.h"
 
 #include "nonstd.h"
 

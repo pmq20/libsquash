@@ -22,8 +22,8 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "squashfuse.h"
-#include "fuseprivate.h"
+#include "libsquash.h"
+#include "private.h"
 
 #include "nonstd.h"
 
