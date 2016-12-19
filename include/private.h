@@ -29,8 +29,6 @@
 
 #include <sys/stat.h>
 
-/* Common functions for FUSE high- and low-level clients */
-
 /* Fill in a stat structure. Does not set st_ino */
 sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st);
 
