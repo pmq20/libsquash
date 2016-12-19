@@ -13,3 +13,4 @@ script:
   - mkdir build && cd build
   - cmake .. || exit $?
   - cmake --build . || exit $?
+  - ctest --verbose || exit $?
