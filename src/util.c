@@ -68,21 +68,7 @@ sqfs_err sqfs_open_image(sqfs *fs, const uint8_t *image, size_t offset) {
 			break;
 		}
 		case SQFS_BADCOMP: {
-			bool first = true;
-			int i;
-			sqfs_compression_type sup[SQFS_COMP_MAX],
-				comp = sqfs_compression(fs);
-			sqfs_compression_supported(sup);
-			fprintf(stderr, "Squashfs image uses %s compression, this version "
-				"supports only ", sqfs_compression_name(comp));
-			for (i = 0; i < SQFS_COMP_MAX; ++i) {
-				if (sup[i] == SQFS_COMP_UNKNOWN)
-					continue;
-				if (!first)
-					fprintf(stderr, ", ");
-				fprintf(stderr, "%s", sqfs_compression_name(sup[i]));
-				first = false;
-			}
+			fprintf(stderr, "Squashfs image uses ? compression");
 			fprintf(stderr, ".\n");
 			break;
 		}

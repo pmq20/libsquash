@@ -25,8 +25,6 @@
 #ifndef SQFS_COMMON_H
 #define SQFS_COMMON_H
 
-#include "squash/config.h"
-
 #include <stdbool.h>
 #include <stdint.h>
 #include <sys/types.h>

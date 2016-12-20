@@ -22,28 +22,12 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-#include "squash/config.h"
 
-#ifdef QNX_MAKEDEV
-	#include <sys/types.h>
+#include <sys/types.h>
+#ifdef __linux__
 	#include <sys/sysmacros.h>
-	#include <sys/netmgr.h>
-	dev_t sqfs_makedev(int maj, int min) {
-		return makedev(ND_LOCAL_NODE, maj, min);
-	}
-#else
-	#define SQFEATURE NONSTD_MAKEDEV_DEF
-	#include "squash/nonstd-internal.h"
-
-	#include <sys/types.h>
-	#ifdef HAVE_SYS_MKDEV_H
-		#include <sys/mkdev.h>
-	#endif
-	#ifdef __linux__
-		#include <sys/sysmacros.h>
-	#endif
-
-	dev_t sqfs_makedev(int maj, int min) {
-		return makedev(maj, min);
-	}
 #endif
+
+dev_t sqfs_makedev(int maj, int min) {
+	return makedev(maj, min);
+}

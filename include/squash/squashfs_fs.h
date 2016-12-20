@@ -28,7 +28,7 @@
 #ifndef SQUASHFS_FS
 #define SQUASHFS_FS
 
-#ifdef HAVE_LINUX_TYPES_LE16
+#ifdef __linux__
 	#include <linux/types.h>
 #else
 	#include <stdint.h>
@@ -122,10 +122,6 @@
  * definitions for structures on disk
  */
 #define ZLIB_COMPRESSION	1
-#define LZMA_COMPRESSION	2
-#define LZO_COMPRESSION		3
-#define XZ_COMPRESSION		4
-#define LZ4_COMPRESSION		5
 
 struct squashfs_super_block {
 	__le32			s_magic;

@@ -31,6 +31,4 @@
 
 dev_t sqfs_makedev(int maj, int min);
 
-int sqfs_enoattr();
-
 #endif

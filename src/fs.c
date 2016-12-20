@@ -26,7 +26,6 @@
 
 #include "squash/file.h"
 #include "squash/nonstd.h"
-#include "squash/xattr.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -78,7 +77,6 @@ sqfs_err sqfs_init(sqfs *fs, sqfs_fd_t fd, size_t offset) {
 		err |= sqfs_table_init(&fs->export_table, fd, fs->sb->lookup_table_start + fs->offset,
 			sizeof(uint64_t), fs->sb->inodes);
 	}
-	err |= sqfs_xattr_init(fs);
 	err |= sqfs_block_cache_init(&fs->md_cache, SQUASHFS_CACHED_BLKS);
 	err |= sqfs_block_cache_init(&fs->data_cache, DATA_CACHED_BLKS);
 	err |= sqfs_block_cache_init(&fs->frag_cache, FRAG_CACHED_BLKS);
@@ -328,7 +326,6 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 	sqfs_err err = SQFS_OK;
 	
 	memset(inode, 0, sizeof(*inode));
-	inode->xattr = SQUASHFS_INVALID_XATTR;
 	
 	sqfs_md_cursor_inode(&cur, id, fs->sb->inode_table_start);
 	inode->next = cur;
@@ -355,7 +352,6 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 			inode->xtra.reg.file_size = x.file_size;
 			inode->xtra.reg.frag_idx = x.fragment;
 			inode->xtra.reg.frag_off = x.offset;
-			inode->xattr = x.xattr;
 			break;
 		}
 		case SQUASHFS_DIR_TYPE: {
@@ -376,7 +372,6 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 			inode->xtra.dir.dir_size = x.file_size;
 			inode->xtra.dir.idx_count = x.i_count;
 			inode->xtra.dir.parent_inode = x.parent_inode;
-			inode->xattr = x.xattr;
 			break;
 		}
 		case SQUASHFS_SYMLINK_TYPE:
@@ -389,9 +384,6 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 				/* skip symlink target */
 				cur = inode->next;
 				err = sqfs_md_read(fs, &cur, NULL, inode->xtra.symlink_size);
-				if (err)
-					return err;
-				err = sqfs_md_read(fs, &cur, &inode->xattr, sizeof(inode->xattr));
 				if (err)
 					return err;
 			}
@@ -409,7 +401,6 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 			INODE_TYPE(ldev);
 			inode->nlink = x.nlink;
 			sqfs_decode_dev(inode, x.rdev);
-			inode->xattr = x.xattr;
 			break;
 		}
 		case SQUASHFS_SOCKET_TYPE:
@@ -422,7 +413,6 @@ sqfs_err sqfs_inode_get(sqfs *fs, sqfs_inode *inode, sqfs_inode_id id) {
 		case SQUASHFS_LFIFO_TYPE: {
 			INODE_TYPE(lipc);
 			inode->nlink = x.nlink;
-			inode->xattr = x.xattr;
 			break;
 		}
 		

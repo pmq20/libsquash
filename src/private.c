@@ -65,30 +65,3 @@ sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st) {
 	
 	return SQFS_OK;
 }
-
-int sqfs_listxattr(sqfs *fs, sqfs_inode *inode, char *buf, size_t *size) {
-	sqfs_xattr x;
-	size_t count = 0;
-	
-	if (sqfs_xattr_open(fs, inode, &x))
-		return -EIO;
-	
-	while (x.remain) {
-		size_t n;
-		if (sqfs_xattr_read(&x))
-			 return EIO;
-		n = sqfs_xattr_name_size(&x);
-		count += n + 1;
-		
-		if (buf) {
-			if (count > *size)
-				return ERANGE;
-			if (sqfs_xattr_name(&x, buf, true))
-				return EIO;
-			buf += n;
-			*buf++ = '\0';
-		}
-	}
-	*size = count;
-	return 0;
-}

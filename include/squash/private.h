@@ -32,7 +32,4 @@
 /* Fill in a stat structure. Does not set st_ino */
 sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st);
 
-/* Populate an xattr list. Return an errno value. */
-int sqfs_listxattr(sqfs *fs, sqfs_inode *inode, char *buf, size_t *size);
-
 #endif

@@ -28,13 +28,9 @@
 
 #include <string.h>
 
-#if _WIN32
-	#include "win_decompress.c.inc"
-#endif
-
-
-#ifdef HAVE_ZLIB_H
 #include <zlib.h>
+
+#include <assert.h>
 
 static sqfs_err sqfs_decompressor_zlib(void *in, size_t insz,
 		void *out, size_t *outsz) {
@@ -45,100 +41,8 @@ static sqfs_err sqfs_decompressor_zlib(void *in, size_t insz,
 	*outsz = zout;
 	return SQFS_OK;
 }
-#define CAN_DECOMPRESS_ZLIB 1
-#endif
-
-
-#ifdef HAVE_LZMA_H
-#include <lzma.h>
-
-static sqfs_err sqfs_decompressor_xz(void *in, size_t insz,
-		void *out, size_t *outsz) {
-	/* FIXME: Save stream state, to minimize setup time? */
-	uint64_t memlimit = UINT64_MAX;
-	size_t inpos = 0, outpos = 0;
-	lzma_ret err = lzma_stream_buffer_decode(&memlimit, 0, NULL, in, &inpos, insz,
-		out, &outpos, *outsz);
-	if (err != LZMA_OK)
-		return SQFS_ERR;
-	*outsz = outpos;
-	return SQFS_OK;
-}
-#define CAN_DECOMPRESS_XZ 1
-#endif
-
-
-#ifdef HAVE_LZO_LZO1X_H
-#include <lzo/lzo1x.h>
-
-static sqfs_err sqfs_decompressor_lzo(void *in, size_t insz,
-		void *out, size_t *outsz) {
-	lzo_uint lzout = *outsz;
-	int err = lzo1x_decompress_safe(in, insz, out, &lzout, NULL);
-	if (err != LZO_E_OK)
-		return SQFS_ERR;
-	*outsz = lzout;
-	return SQFS_OK;
-}
-#define CAN_DECOMPRESS_LZO 1
-#endif
-
-
-#ifdef HAVE_LZ4_H
-#include <lz4.h>
-static sqfs_err sqfs_decompressor_lz4(void *in, size_t insz,
-		void *out, size_t *outsz) {
-	int lz4out = LZ4_decompress_safe (in, out, insz, *outsz);
-	if (lz4out < 0)
-		return SQFS_ERR;
-	*outsz = lz4out;
-	return SQFS_OK;
-}
-#define CAN_DECOMPRESS_LZ4 1
-#endif
-
 
 sqfs_decompressor sqfs_decompressor_get(sqfs_compression_type type) {
-	switch (type) {
-#ifdef CAN_DECOMPRESS_ZLIB
-		case ZLIB_COMPRESSION: return &sqfs_decompressor_zlib;
-#endif
-#ifdef CAN_DECOMPRESS_XZ
-		case XZ_COMPRESSION: return &sqfs_decompressor_xz;
-#endif
-#ifdef CAN_DECOMPRESS_LZO
-		case LZO_COMPRESSION: return &sqfs_decompressor_lzo;
-#endif
-#ifdef CAN_DECOMPRESS_LZ4
-		case LZ4_COMPRESSION: return &sqfs_decompressor_lz4;
-#endif
-		default: return NULL;
-	}
-}
-
-static char *const sqfs_compression_names[SQFS_COMP_MAX] = {
-	NULL, "zlib", "lzma", "lzo", "xz", "lz4",
-};
-
-char *sqfs_compression_name(sqfs_compression_type type) {
-	if (type < 0 || type >= SQFS_COMP_MAX)
-		return NULL;
-	return sqfs_compression_names[type];
-}
-
-void sqfs_compression_supported(sqfs_compression_type *types) {
-	size_t i = 0;
-	memset(types, SQFS_COMP_UNKNOWN, SQFS_COMP_MAX * sizeof(*types));
-#ifdef CAN_DECOMPRESS_LZO
-	types[i++] = LZO_COMPRESSION;
-#endif
-#ifdef CAN_DECOMPRESS_XZ
-	types[i++] = XZ_COMPRESSION;
-#endif
-#ifdef CAN_DECOMPRESS_ZLIB
-	types[i++] = ZLIB_COMPRESSION;
-#endif
-#ifdef CAN_DECOMPRESS_LZ4
-	types[i++] = LZ4_COMPRESSION;
-#endif
+	assert(ZLIB_COMPRESSION == type);
+	return &sqfs_decompressor_zlib;
 }

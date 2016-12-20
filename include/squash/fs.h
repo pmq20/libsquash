@@ -45,16 +45,11 @@ struct sqfs {
 	sqfs_cache frag_cache;
 	sqfs_cache blockidx;
 	sqfs_decompressor decompressor;
-	
-	struct squashfs_xattr_id_table *xattr_info;
-	sqfs_table xattr_table;
 };
 
-typedef uint32_t sqfs_xattr_idx;
 struct sqfs_inode {
 	struct squashfs_base_inode base;
 	int nlink;
-	sqfs_xattr_idx xattr;
 	
 	sqfs_md_cursor next;
 	
