@@ -22,6 +22,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#include "squash/common.h"
 #include "squash/private.h"
 
 #include <ctype.h>
@@ -44,15 +45,12 @@ sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st) {
 	if (S_ISREG(st->st_mode)) {
 		/* FIXME: do symlinks, dirs, etc have a size? */
 		st->st_size = inode->xtra.reg.file_size;
-		st->st_blocks = st->st_size / 512;
 	} else if (S_ISBLK(st->st_mode) || S_ISCHR(st->st_mode)) {
 		st->st_rdev = sqfs_makedev(inode->xtra.dev.major,
 			inode->xtra.dev.minor);
 	} else if (S_ISLNK(st->st_mode)) {
 		st->st_size = inode->xtra.symlink_size;
 	}
-	
-	st->st_blksize = fs->sb->block_size; /* seriously? */
 	
 	err = sqfs_id_get(fs, inode->base.uid, &id);
 	if (err)
