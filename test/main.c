@@ -51,9 +51,15 @@ int main(int argc, char const *argv[])
 	expect(SQFS_OK == ret, "happy sqfs_stat");
 	expect(S_ISDIR(st.st_mode), "stat thinks root is a dir");
 
-	// "/what_the.f" => not found
+	// "/what/the/f" => not found
 	memcpy(&node, &root, sizeof(sqfs_inode));
-	ret = sqfs_lookup_path(&fs, &node, "/what_the.f", &found);
+	ret = sqfs_lookup_path(&fs, &node, "/what/the/f", &found);
+	expect(SQFS_OK == ret, "sqfs_lookup_path is still happy");
+	expect(!found, "but this thing does not exist");
+
+	// "even_without_leading_slash" => not found
+	memcpy(&node, &root, sizeof(sqfs_inode));
+	ret = sqfs_lookup_path(&fs, &node, "even_without_leading_slash", &found);
 	expect(SQFS_OK == ret, "sqfs_lookup_path is still happy");
 	expect(!found, "but this thing does not exist");
 
