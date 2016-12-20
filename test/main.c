@@ -52,5 +52,7 @@ int main(int argc, char const *argv[])
 	expect(SQFS_OK == ret, "happy sqfs_stat");
 	expect(S_ISDIR(st.st_mode), "stat thinks root is a dir");
 
+	// RIP.
+	sqfs_destroy(&fs);
 	return 0;
 }
