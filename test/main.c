@@ -25,7 +25,7 @@ int main(int argc, char const *argv[])
 {
 	sqfs fs;
 	sqfs_err ret;
-	sqfs_inode node;
+	sqfs_inode root, node;
 	bool found;
 	struct stat st;
 
@@ -36,21 +36,26 @@ int main(int argc, char const *argv[])
 	expect(1481779989 == fs.sb->mkfs_time, "fs made at 2016-12-15 13:33:09 +0800");
 	
 	// sqfs => root sqfs_inode
-	memset(&node, 0, sizeof(sqfs_inode));
-	ret = sqfs_inode_get(&fs, &node, sqfs_inode_root(&fs));
+	memset(&root, 0, sizeof(sqfs_inode));
+	ret = sqfs_inode_get(&fs, &root, sqfs_inode_root(&fs));
 	expect(SQFS_OK == ret, "successfully read the root inode");
-	expect(SQUASHFS_DIR_TYPE == node.base.inode_type, "got a dir as the root");
-	expect(1481778144 == node.base.mtime, "2016-12-15 13:02:24 +0800");
+	expect(SQUASHFS_DIR_TYPE == root.base.inode_type, "got a dir as the root");
+	expect(1481778144 == root.base.mtime, "2016-12-15 13:02:24 +0800");
 	
-	// '/' => sqfs_inode
+	// "/" => sqfs_inode and stat
+	memcpy(&node, &root, sizeof(sqfs_inode));
 	ret = sqfs_lookup_path(&fs, &node, "/", &found);
 	expect(found, "of course we can find root");
 	expect(SQFS_OK == ret, "happy sqfs_lookup_path");
-	
-	// sqfs_inode => stat
 	ret = sqfs_stat(&fs, &node, &st);
 	expect(SQFS_OK == ret, "happy sqfs_stat");
 	expect(S_ISDIR(st.st_mode), "stat thinks root is a dir");
+
+	// "/what_the.f" => not found
+	memcpy(&node, &root, sizeof(sqfs_inode));
+	ret = sqfs_lookup_path(&fs, &node, "/what_the.f", &found);
+	expect(SQFS_OK == ret, "sqfs_lookup_path is still happy");
+	expect(!found, "but this thing does not exist");
 
 	// RIP.
 	sqfs_destroy(&fs);
