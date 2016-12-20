@@ -32,15 +32,7 @@
 #include <unistd.h>
 
 #ifdef _WIN32
-	#include <Windows.h>
-	#include <stdint.h>
-
-	typedef unsigned short sqfs_mode_t;
-	typedef uint32_t sqfs_id_t; /* Internal uids/gids are 32-bits */
-
-	typedef SSIZE_T ssize_t;
-	typedef DWORD64 sqfs_off_t;
-	typedef uint32_t uid_t;		/* [???] user IDs */
+	#include "squash/windows.h"
 #else
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;

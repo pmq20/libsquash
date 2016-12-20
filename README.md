@@ -30,5 +30,20 @@ On most systems you could build and test the library using the following command
 
 ## Acknowledgment
 
-Thank you Dave Vasilevsky for the excellent work!
+Thank you [Dave Vasilevsky](https://github.com/vasi) for the excellent work of squashfuse!
 
+## Contributing
+
+Bug reports and pull requests are welcome on GitHub at https://github.com/enclose-io/libsquash.
+
+## Contributors
+
+* [pmq20](https://github.com/pmq20) - **Minqi Pan** &lt;pmq2001@gmail.com&gt;
+
+## License
+
+Squashfuse is copyright (c) 2012-2014 Dave Vasilevsky <dave@vasilevsky.ca>
+
+The following license applies to Libsquash, a fork of squashfuse.
+
+Copyright (c) 2016 Libsquash contributors, under terms of the [MIT License](http://opensource.org/licenses/MIT).
