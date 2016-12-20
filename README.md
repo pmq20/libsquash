@@ -6,7 +6,7 @@ Portable, User-land SquashFS that can be linked and embedded within your applica
 [![Build status: Windows](https://ci.appveyor.com/api/projects/status/297rm0xhcfyyu9uo?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash)
 [![Coverity Scan](https://scan.coverity.com/projects/11215/badge.svg)](https://scan.coverity.com/projects/enclose-io-libsquash)
 
-## About this fork
+## About the fork
 
 This project was forked from https://github.com/vasi/squashfuse with the following modifications.
 
