@@ -25,6 +25,8 @@
 #ifndef SQFS_SQUASH_H
 #define SQFS_SQUASH_H
 
+#include <stdbool.h>
+
 #include "squash/dir.h"
 #include "squash/file.h"
 #include "squash/fs.h"
@@ -82,5 +84,11 @@ ssize_t squash_read(sqfs_err *error, sqfs *fs, int vfd, void *buf, size_t nbyte)
  * error is set to the reason of the error.
  */
 off_t squash_lseek(sqfs_err *error, sqfs *fs, int vfd, off_t offset, int whence);
+
+/*
+ * Checks whether provided vfd is a valid virtual file descriptor or not, i.e,
+ * whether it was allocated by libsquash or not.
+ */
+bool squash_valid_vfd(sqfs *fs, int vfd);
 
 #endif
