@@ -21,7 +21,7 @@ static void expect(short condition, const char *reason)
 	fflush(stderr);
 }
 
-int main(int argc, char const *argv[])
+static void test_basic_func()
 {
 	sqfs fs;
 	sqfs_err ret;
@@ -36,6 +36,9 @@ int main(int argc, char const *argv[])
 	size_t name_size = sizeof(name);
 	char buffer[1024];
 	size_t size;
+
+	fprintf(stderr, "Testing basic functionalities\n");
+	fflush(stderr);
 
 	// libsquash_fixture => sqfs
 	memset(&fs, 0, sizeof(sqfs));
@@ -138,5 +141,28 @@ int main(int argc, char const *argv[])
 
 	// RIP.
 	sqfs_destroy(&fs);
+
+	fprintf(stderr, "\n");
+	fflush(stderr);
+}
+
+static void test_virtual_fd()
+{
+	sqfs fs;
+	sqfs_err ret;
+
+	fprintf(stderr, "Testing virtual file descriptors\n");
+	fflush(stderr);
+
+
+
+	fprintf(stderr, "\n");
+	fflush(stderr);
+}
+
+int main(int argc, char const *argv[])
+{
+	test_basic_func();
+	test_virtual_fd();
 	return 0;
 }
