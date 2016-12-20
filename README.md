@@ -17,6 +17,7 @@ This project was forked from https://github.com/vasi/squashfuse with the followi
 1. Add travis-ci for Linux and Darwin CI
 1. Add appveyor for Windows CI
 1. Add Coverity Scan
+1. Add a test fixture and numerous tests
 
 ## Building
 
@@ -43,7 +44,5 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/enclos
 ## License
 
 Squashfuse is copyright (c) 2012-2014 Dave Vasilevsky <dave@vasilevsky.ca>
-
-The following license applies to Libsquash, a fork of squashfuse.
 
 Copyright (c) 2016 Libsquash contributors, under terms of the [MIT License](http://opensource.org/licenses/MIT).
