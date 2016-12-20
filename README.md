@@ -17,6 +17,7 @@ This project was forked from https://github.com/vasi/squashfuse with the followi
 1. Add travis-ci for Linux and Darwin CI
 1. Add appveyor for Windows CI
 1. Add Coverity Scan
+1. Add a test fixture and numerous tests
 
 ## Building
 
