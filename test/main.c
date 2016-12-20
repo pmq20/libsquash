@@ -34,6 +34,8 @@ int main(int argc, char const *argv[])
 	bool has_next;
 	struct stat st;
 	size_t name_size = sizeof(name);
+	char buffer[1024];
+	size_t size;
 
 	// libsquash_fixture => sqfs
 	memset(&fs, 0, sizeof(sqfs));
@@ -120,6 +122,19 @@ int main(int argc, char const *argv[])
 	ret = sqfs_readlink(&fs, &node, name, &name_size);
 	expect(SQFS_OK == ret, "sqfs_readlink is happy");
 	expect(0 == strcmp(name, ".0.0.4@something4"), "something4 links to .0.0.4@something4");
+
+	// read "/bombing"
+	memcpy(&node, &root, sizeof(sqfs_inode));
+	sqfs_lookup_path(&fs, &node, "/bombing", &found);
+	expect(found, "we can find /bombing");
+	sqfs_stat(&fs, &node, &st);
+	expect(S_ISREG(node.base.mode), "/bombing is a regular file");
+	expect(998 == node.xtra.reg.file_size, "bombing is of size 998");
+	size = node.xtra.reg.file_size;
+	ret = sqfs_read_range(&fs, &node, 0, &size, buffer);
+	expect(buffer == strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
+	expect(NULL != strstr(buffer, "Iraq and the Levant"), "read some content of the file");
+	expect('\0' == buffer[node.xtra.reg.file_size], "has correctly ended the string");
 
 	// RIP.
 	sqfs_destroy(&fs);
