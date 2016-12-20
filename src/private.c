@@ -51,14 +51,5 @@ sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st) {
 		st->st_size = inode->xtra.symlink_size;
 	}
 	
-	err = sqfs_id_get(fs, inode->base.uid, &id);
-	if (err)
-		return err;
-	st->st_uid = id;
-	err = sqfs_id_get(fs, inode->base.guid, &id);
-	st->st_gid = id;
-	if (err)
-		return err;
-	
 	return SQFS_OK;
 }

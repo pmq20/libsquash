@@ -30,5 +30,6 @@
 #include "squash/fs.h"
 #include "squash/traverse.h"
 #include "squash/util.h"
+#include "squash/private.h"
 
 #endif
