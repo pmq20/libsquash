@@ -28,13 +28,32 @@
 #include "squash/common.h"
 #include "squash/squashfs_fs.h"
 
+/*
+ * [XSI] The symbolic names for file modes for use as values of mode_t
+ * shall be defined as described in <sys/stat.h>
+ */
+#ifndef S_IFMT
+#define	S_IFMT		0170000		/* [XSI] type of file mask */
+#endif
+#ifndef S_IFIFO
+#define	S_IFIFO		0010000		/* [XSI] named pipe (fifo) */
+#endif
+#ifndef S_IFCHR
+#define	S_IFCHR		0020000		/* [XSI] character special */
+#endif
 #ifndef S_IFDIR
 #define	S_IFDIR		0040000		/* [XSI] directory */
-#define	S_IFREG		0100000		/* [XSI] regular */
-#define	S_IFLNK		0120000		/* [XSI] symbolic link */
+#endif
+#ifndef S_IFBLK
 #define	S_IFBLK		0060000		/* [XSI] block special */
-#define	S_IFCHR		0020000		/* [XSI] character special */
-#define	S_IFIFO		0010000		/* [XSI] named pipe (fifo) */
+#endif
+#ifndef S_IFREG
+#define	S_IFREG		0100000		/* [XSI] regular */
+#endif
+#ifndef S_IFLNK
+#define	S_IFLNK		0120000		/* [XSI] symbolic link */
+#endif
+#ifndef S_IFSOCK
 #define	S_IFSOCK	0140000		/* [XSI] socket */
 #endif
 
