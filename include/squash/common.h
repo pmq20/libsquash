@@ -29,7 +29,6 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 #ifdef _WIN32
 	#include <Windows.h>
@@ -42,6 +41,7 @@
 	typedef DWORD64 sqfs_off_t;
 	typedef uint32_t uid_t;		/* [???] user IDs */
 #else
+	#include <unistd.h>
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;
 	typedef off_t sqfs_off_t;
