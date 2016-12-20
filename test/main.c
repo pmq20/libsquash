@@ -33,6 +33,7 @@ int main(int argc, char const *argv[])
 	bool found;
 	bool has_next;
 	struct stat st;
+	size_t name_size = sizeof(name);
 
 	// libsquash_fixture => sqfs
 	memset(&fs, 0, sizeof(sqfs));
@@ -84,6 +85,41 @@ int main(int argc, char const *argv[])
 	expect(has_next, "dir1/ -> EOF");
 	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
 	expect(!has_next, "EOF");
+
+	// ls "/dir1"
+	memcpy(&node, &root, sizeof(sqfs_inode));
+	sqfs_lookup_path(&fs, &node, "/dir1", &found);
+	ret = sqfs_dir_open(&fs, &node, &dir, 0);
+	expect(SQFS_OK == ret, "sqfs dir open is happy");
+	sqfs_dentry_init(&entry, name);
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(0 == strcmp(sqfs_dentry_name(&entry), ".0.0.4@something4"), "/.0.0.4@something4/");
+	expect(S_ISDIR(sqfs_dentry_mode(&entry)), ".0.0.4@something4 is a dir");
+	expect(has_next, ".0.0.4@something4 -> .bin");
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(0 == strcmp(sqfs_dentry_name(&entry), ".bin"), "/.bin/");
+	expect(S_ISDIR(sqfs_dentry_mode(&entry)), ".bin is a dir");
+	expect(has_next, ".bin -> @minqi");
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(0 == strcmp(sqfs_dentry_name(&entry), "@minqi"), "/@minqi/");
+	expect(S_ISDIR(sqfs_dentry_mode(&entry)), "@minqi is a dir");
+	expect(has_next, "@minqi -> something4");
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(0 == strcmp(sqfs_dentry_name(&entry), "something4"), "/something4");
+	expect(S_ISLNK(sqfs_dentry_mode(&entry)), "something4 is a symlink");
+	expect(has_next, ".0.0.4@something4 -> EOF");
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(!has_next, "EOF");
+
+	// readlink "/dir1/something4"
+	memcpy(&node, &root, sizeof(sqfs_inode));
+	sqfs_lookup_path(&fs, &node, "/dir1/something4", &found);
+	expect(found, "we can find /dir1/something4");
+	sqfs_stat(&fs, &node, &st);
+	expect(S_ISLNK(node.base.mode), "/dir1/something4 is a link");
+	ret = sqfs_readlink(&fs, &node, name, &name_size);
+	expect(SQFS_OK == ret, "sqfs_readlink is happy");
+	expect(0 == strcmp(name, ".0.0.4@something4"), "something4 links to .0.0.4@something4");
 
 	// RIP.
 	sqfs_destroy(&fs);
