@@ -44,13 +44,13 @@ It returns `-1` on failure and sets `error` to the reason of the error.
 The file pointer (used to mark the current position within the file) is set to the beginning of the file.
 The returned vfd should later be closed by `squash_close()`.
 
-### `squash_close(error, fs, vfd)`
+### `squash_close(error, vfd)`
 
 Deletes a `vfd`(virtual file descriptor) from the per-process object reference table.
 Upon successful completion, a value of `0` is returned.
 Otherwise, a value of `-1` is returned and `error` is set to the reason of the error.
 
-### `squash_read(error, fs, vfd, buf, nbyte)`
+### `squash_read(error, vfd, buf, nbyte)`
 
 Attempts to read `nbyte` bytes of data from the object
 referenced by `vfs` into the buffer pointed to by `buf`,
@@ -60,7 +60,7 @@ When successful it returns the number of bytes actually read and placed in the b
 upon reading end-of-file, zero is returned;
 Otherwise, a value of `-1` is returned and `error` is set to the reason of the error.
 
-### `squash_lseek(error, fs, vfd, offset, whence)`
+### `squash_lseek(error, vfd, offset, whence)`
 
 Repositions the offset of `vfs` to the argument `offset`, according to the directive `whence`.
 If `whence` is `SQUASH_SEEK_SET` then the offset is set to `offset` bytes;
@@ -72,7 +72,7 @@ Upon successful completion,
 it returns the resulting offset location as measured in bytes from the beginning of the file.
 Otherwise, a value of `-1` is returned and `error` is set to the reason of the error.
 
-### `squash_valid_vfd(fs, vfd)`
+### `squash_valid_vfd(vfd)`
 
 Checks whether provided `vfd` is a valid virtual file descriptor or not, i.e,
 whether it was allocated by libsquash or not.
