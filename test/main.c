@@ -26,7 +26,12 @@ int main(int argc, char const *argv[])
 	sqfs fs;
 	sqfs_err ret;
 	sqfs_inode root, node;
+	sqfs_dir dir;
+	sqfs_dir_entry entry;
+	sqfs_name name;
+
 	bool found;
+	bool has_next;
 	struct stat st;
 
 	// libsquash_fixture => sqfs
@@ -62,6 +67,23 @@ int main(int argc, char const *argv[])
 	ret = sqfs_lookup_path(&fs, &node, "even_without_leading_slash", &found);
 	expect(SQFS_OK == ret, "sqfs_lookup_path is still happy");
 	expect(!found, "but this thing does not exist");
+
+	// ls "/"
+	memcpy(&node, &root, sizeof(sqfs_inode));
+	sqfs_lookup_path(&fs, &node, "/", &found);
+	ret = sqfs_dir_open(&fs, &node, &dir, 0);
+	expect(SQFS_OK == ret, "sqfs dir open is happy");
+	sqfs_dentry_init(&entry, name);
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(0 == strcmp(sqfs_dentry_name(&entry), "bombing"), "/bombing");
+	expect(S_ISREG(sqfs_dentry_mode(&entry)), "bombing is a regular file");
+	expect(has_next, "bombing -> dir1/");
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(0 == strcmp(sqfs_dentry_name(&entry), "dir1"), "/dir1/");
+	expect(S_ISDIR(sqfs_dentry_mode(&entry)), "dir1/ is a dir");
+	expect(has_next, "dir1/ -> EOF");
+	has_next = sqfs_dir_next(&fs, &dir, &entry, &ret);
+	expect(!has_next, "EOF");
 
 	// RIP.
 	sqfs_destroy(&fs);
