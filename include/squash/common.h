@@ -29,11 +29,11 @@
 #include <stdint.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
 
 #ifdef _WIN32
 	#include "squash/windows.h"
 #else
+	#include <unistd.h>
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;
 	typedef off_t sqfs_off_t;
