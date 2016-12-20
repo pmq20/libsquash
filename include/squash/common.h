@@ -39,7 +39,6 @@
 
 	typedef SSIZE_T ssize_t;
 	typedef DWORD64 sqfs_off_t;
-	typedef HANDLE sqfs_fd_t;
 #else
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;
