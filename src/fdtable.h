@@ -8,6 +8,8 @@
 #ifndef FDTABLE_H_60F13289
 #define FDTABLE_H_60F13289
 
+#include "squash/common.h"
+
 struct squash_file {
 	const char *path;
 	sqfs_inode *inode;
