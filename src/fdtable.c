@@ -5,7 +5,7 @@
  * For full terms see the included LICENSE file
  */
 
-#include "fdtable.h"
+#include "squash/fdtable.h"
 
 struct squash_fdtable * squash_alloc_fdtable(unsigned int nr)
 {

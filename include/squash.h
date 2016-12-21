@@ -33,6 +33,7 @@
 #include "squash/traverse.h"
 #include "squash/util.h"
 #include "squash/private.h"
+#include "squash/fdtable.h"
 
 /*
  * Opens the file name specified by path of fs for reading.
