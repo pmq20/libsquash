@@ -11,18 +11,18 @@
 #include "squash/common.h"
 
 struct squash_file {
-	const char *path;
-	sqfs_inode *inode;
+	sqfs_inode node;
+	struct stat st;
 	uint64_t pos;
 };
 
 struct squash_fdtable {
-	unsigned int nr;
+	size_t nr;
 	struct squash_file **fds;
 };
 
-struct squash_fdtable * squash_alloc_fdtable(unsigned int nr);
+extern struct squash_fdtable squash_global_fdtable;
 
-extern struct squash_fdtable *squash_fdt;
+sqfs_err squash_fdtable_realloc(size_t nr);
 
 #endif /* end of include guard: FDTABLE_H_60F13289 */

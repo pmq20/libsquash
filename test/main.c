@@ -149,13 +149,39 @@ static void test_basic_func()
 
 static void test_virtual_fd()
 {
+	int fd, fd2, fd3;
 	sqfs fs;
-	sqfs_err ret;
+	sqfs_err error;
+	int ret;
 
 	fprintf(stderr, "Testing virtual file descriptors\n");
 	fflush(stderr);
 
-
+	// open "/bombing"
+	memset(&fs, 0, sizeof(sqfs));
+	sqfs_open_image(&fs, libsquash_fixture, 0);
+	fd = squash_open(&error, &fs, "/bombing");
+	expect(fd > 0, "successfully got a fd");
+	fd2 = squash_open(&error, &fs, "/bombing");
+	expect(fd2 > 0, "successfully got yet another fd");
+	expect(fd2 != fd, "it is indeed another fd");
+	fd3 = squash_open(&error, &fs, "/shen/me/gui");
+	expect(-1 == fd3, "on failure returns -1");
+	expect(SQFS_NOENT == error, "no such file");
+	expect(squash_valid_vfd(fd), "fd is ours");
+	expect(squash_valid_vfd(fd2), "fd2 is also ours");
+	expect(!squash_valid_vfd(0), "0 is not ours");
+	expect(!squash_valid_vfd(1), "1 is not ours");
+	expect(!squash_valid_vfd(2), "2 is not ours");
+	ret = squash_close(&error, fd);
+	expect(0 == ret, "RIP: fd");
+	ret = squash_close(&error, fd2);
+	expect(0 == ret, "RIP: fd2");
+	ret = squash_close(&error, 0);
+	expect(-1 == ret, "cannot close something we do not own");
+	expect(SQFS_INVALFD == error, "invalid vfd is the reason");
+	expect(!squash_valid_vfd(fd), "fd is no longer ours");
+	expect(!squash_valid_vfd(fd2), "fd2 is no longer ours");
 
 	fprintf(stderr, "\n");
 	fflush(stderr);
