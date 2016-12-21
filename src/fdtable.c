@@ -118,3 +118,30 @@ ssize_t squash_read(sqfs_err *error, int vfd, void *buf, size_t nbyte)
 	file->pos += nbyte;
 	return nbyte;
 }
+
+off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence)
+{
+	if (!squash_valid_vfd(vfd))
+	{
+		*error = SQFS_INVALFD;
+		return -1;
+	}
+	struct squash_file *file = squash_global_fdtable.fds[vfd];
+	if (SQUASH_SEEK_SET == whence)
+	{
+		file->pos = offset;
+	}
+	else if (SQUASH_SEEK_CUR == whence)
+	{
+		file->pos += offset;
+	}
+	else if (SQUASH_SEEK_END == whence)
+	{
+		if (!S_ISREG(file->node.base.mode)) {
+			*error = SQFS_ERR;
+			return -1;
+		}
+		file->pos = file->node.xtra.reg.file_size;
+	}
+	return file->pos;
+}

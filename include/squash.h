@@ -35,6 +35,10 @@
 #include "squash/private.h"
 #include "squash/fdtable.h"
 
+#define SQUASH_SEEK_SET    0   /* set file offset to offset */
+#define SQUASH_SEEK_CUR    1   /* set file offset to current plus offset */
+#define SQUASH_SEEK_END    2   /* set file offset to EOF plus offset */
+
 /*
  * Opens the file name specified by path of fs for reading.
  * If successful, squash_open() returns a non-negative integer,
@@ -75,7 +79,7 @@ ssize_t squash_read(sqfs_err *error, int vfd, void *buf, size_t nbyte);
  * if whence is SQUASH_SEEK_CUR, the offset is set to
  * its current location plus offset bytes;
  * if whence is SQUASH_SEEK_END, the offset is set to
- * the size of the file plus offset bytes and
+ * the size of the file and
  * subsequent reads of the data return bytes of zeros.
  * The argument fildes` must be an open virtual file descriptor.
  * Upon successful completion,

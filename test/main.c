@@ -188,6 +188,22 @@ static void test_virtual_fd()
 	ssize = squash_read(&error, fd4, buffer, 1024);
 	expect(-1 == ssize, "not something we can read");
 
+	// read with lseek
+	ret = squash_lseek(&error, fd, 3, SQUASH_SEEK_SET);
+	expect(3 == ret, "Upon successful completion, it returns the resulting offset location as measured in bytes from the beginning of the file.");
+	ssize = squash_read(&error, fd, buffer, 1024);
+	expect(size - 3 == ssize, "When successful it returns the number of bytes actually read");
+	expect(buffer != strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
+	expect(buffer == strstr(buffer, "roseya Church bombing"), "read some content of the file");
+	ssize = squash_read(&error, fd2, buffer, 100);
+	ret = squash_lseek(&error, fd2, 10, SQUASH_SEEK_CUR);
+	expect(110 == ret, " the offset is set to its current location plus offset bytes");
+	ssize = squash_read(&error, fd2, buffer, 100);
+	expect(buffer == strstr(buffer, "s at St. Peter"), "read from offset 110");
+	ret = squash_lseek(&error, fd2, 0, SQUASH_SEEK_END);
+	ssize = squash_read(&error, fd2, buffer, 1024);
+	expect(0 == ssize, "upon reading end-of-file, zero is returned");
+
 	// various close
 	ret = squash_close(&error, fd);
 	expect(0 == ret, "RIP: fd");
