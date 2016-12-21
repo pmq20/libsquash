@@ -15,6 +15,12 @@ struct squash_file {
 };
 
 struct squash_fdtable {
+	unsigned int nr;
+	struct squash_file **fds;
 };
+
+struct squash_fdtable * squash_alloc_fdtable(unsigned int nr);
+
+extern struct squash_fdtable *squash_fdt;
 
 #endif /* end of include guard: FDTABLE_H_60F13289 */
