@@ -63,6 +63,7 @@ int squash_open(sqfs_err *error, sqfs *fs, const char *path)
 	{
 		goto failure;
 	}
+	file->fs = fs;
 	file->pos = 0;
 
 	// get a dummy fd from the system
@@ -98,4 +99,22 @@ int squash_close(sqfs_err *error, int vfd)
 bool squash_valid_vfd(int vfd)
 {
 	return NULL != squash_global_fdtable.fds[vfd];
+}
+
+ssize_t squash_read(sqfs_err *error, int vfd, void *buf, size_t nbyte)
+{
+	if (!squash_valid_vfd(vfd))
+	{
+		*error = SQFS_INVALFD;
+		return -1;
+	}
+	struct squash_file *file = squash_global_fdtable.fds[vfd];
+
+	*error = sqfs_read_range(file->fs, &file->node, file->pos, &nbyte, buf);
+	if (SQFS_OK != *error)
+	{
+		return -1;
+	}
+	file->pos += nbyte;
+	return nbyte;
 }

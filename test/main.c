@@ -149,10 +149,13 @@ static void test_basic_func()
 
 static void test_virtual_fd()
 {
-	int fd, fd2, fd3;
+	int fd, fd2, fd3, fd4;
 	sqfs fs;
 	sqfs_err error;
 	int ret;
+	ssize_t ssize;
+	char buffer[1024];
+	size_t size;
 
 	fprintf(stderr, "Testing virtual file descriptors\n");
 	fflush(stderr);
@@ -173,6 +176,19 @@ static void test_virtual_fd()
 	expect(!squash_valid_vfd(0), "0 is not ours");
 	expect(!squash_valid_vfd(1), "1 is not ours");
 	expect(!squash_valid_vfd(2), "2 is not ours");
+	
+	// read on and on
+	size = squash_global_fdtable.fds[fd]->node.xtra.reg.file_size;
+	ssize = squash_read(&error, fd, buffer, 1024);
+	expect(size == ssize, "When successful it returns the number of bytes actually read");
+	expect(buffer == strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
+	ssize = squash_read(&error, fd, buffer, 1024);
+	expect(0 == ssize, "upon reading end-of-file, zero is returned");
+	fd4 = squash_open(&error, &fs, "/");
+	ssize = squash_read(&error, fd4, buffer, 1024);
+	expect(-1 == ssize, "not something we can read");
+
+	// various close
 	ret = squash_close(&error, fd);
 	expect(0 == ret, "RIP: fd");
 	ret = squash_close(&error, fd2);
@@ -182,6 +198,9 @@ static void test_virtual_fd()
 	expect(SQFS_INVALFD == error, "invalid vfd is the reason");
 	expect(!squash_valid_vfd(fd), "fd is no longer ours");
 	expect(!squash_valid_vfd(fd2), "fd2 is no longer ours");
+
+	// RIP.
+	sqfs_destroy(&fs);
 
 	fprintf(stderr, "\n");
 	fflush(stderr);

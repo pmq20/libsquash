@@ -11,6 +11,7 @@
 #include "squash/common.h"
 
 struct squash_file {
+	sqfs *fs;
 	sqfs_inode node;
 	struct stat st;
 	uint64_t pos;
