@@ -2,9 +2,8 @@
 
 Portable, User-land SquashFS that can be easily linked and embedded within your application; a [squashfuse](https://github.com/vasi/squashfuse) fork.
 
-[![Build status: Linux and Darwin](https://travis-ci.org/enclose-io/libsquash.svg?branch=master)](https://travis-ci.org/enclose-io/libsquash)
-[![Build status: Windows](https://ci.appveyor.com/api/projects/status/297rm0xhcfyyu9uo?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash)
-[![Coverity Scan](https://scan.coverity.com/projects/11215/badge.svg)](https://scan.coverity.com/projects/enclose-io-libsquash)
+[![Build status: Linux and Darwin](https://travis-ci.org/pmq20/libsquash.svg?branch=master)](https://travis-ci.org/pmq20/libsquash)
+[![Build status: Windows](https://ci.appveyor.com/api/projects/status/f4htq948gag3l2k8/branch/master?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash/branch/master)
 
 ## About the fork
 
@@ -21,7 +20,7 @@ other ordinary file descriptors of the process.
 1. Added extra API's, see below.
 1. Added CMake so that Xcode and Vistual Studio Projects could be easily generated
 1. Made it compile on 3 platforms simultanesly: Windows, Mac OS X and Linux
-1. Added travis-ci for Linux and Darwin CI; appveyor for Windows CI; and Coverity Scan
+1. Added travis-ci for Linux and Darwin CI; appveyor for Windows CI
 1. Added test fixtures and C-level tests
 
 ## Building
@@ -83,14 +82,10 @@ Thank you [Dave Vasilevsky](https://github.com/vasi) for the excellent work of s
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/enclose-io/libsquash.
-
-## Contributors
-
-* [pmq20](https://github.com/pmq20) - **Minqi Pan** &lt;pmq2001@gmail.com&gt;
+Bug reports and pull requests are welcome on GitHub at https://github.com/pmq20/libsquash.
 
 ## License
 
 Squashfuse is copyright (c) 2012-2014 Dave Vasilevsky <dave@vasilevsky.ca>
 
-Copyright (c) 2016-2017 Libsquash contributors, under terms of the [MIT License](http://opensource.org/licenses/MIT).
+Copyright (c) 2016-2017 Minqi Pan, under terms of the [MIT License](http://opensource.org/licenses/MIT).
