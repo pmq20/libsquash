@@ -93,4 +93,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/enclos
 
 Squashfuse is copyright (c) 2012-2014 Dave Vasilevsky <dave@vasilevsky.ca>
 
-Copyright (c) 2016 Libsquash contributors, under terms of the [MIT License](http://opensource.org/licenses/MIT).
+Copyright (c) 2016-2017 Libsquash contributors, under terms of the [MIT License](http://opensource.org/licenses/MIT).
