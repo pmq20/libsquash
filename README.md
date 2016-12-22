@@ -65,7 +65,7 @@ Otherwise, a value of `-1` is returned and `error` is set to the reason of the e
 Repositions the offset of `vfs` to the argument `offset`, according to the directive `whence`.
 If `whence` is `SQUASH_SEEK_SET` then the offset is set to `offset` bytes;
 if `whence` is `SQUASH_SEEK_CUR`, the `offset` is set to its current location plus `offset` bytes;
-if `whence` is `SQUASH_SEEK_END`, the `offset` is set to the size of the file plus `offset` bytes
+if `whence` is `SQUASH_SEEK_END`, the `offset` is set to the size of the file
 and subsequent reads of the data return bytes of zeros.
 The argument `fildes` must be an open virtual file descriptor.
 Upon successful completion,

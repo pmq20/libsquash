@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "squash.h"
 #include "fixture.h"
 
@@ -17,6 +18,7 @@ static void expect(short condition, const char *reason)
 	else {
 		fprintf(stderr, "x");
 		fprintf(stderr, "\nFAILED: %s\n", reason);
+		exit(1);
 	}
 	fflush(stderr);
 }
@@ -137,7 +139,6 @@ static void test_basic_func()
 	ret = sqfs_read_range(&fs, &node, 0, &size, buffer);
 	expect(buffer == strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
 	expect(NULL != strstr(buffer, "Iraq and the Levant"), "read some content of the file");
-	expect('\0' == buffer[node.xtra.reg.file_size], "has correctly ended the string");
 
 	// RIP.
 	sqfs_destroy(&fs);
@@ -148,13 +149,74 @@ static void test_basic_func()
 
 static void test_virtual_fd()
 {
+	int fd, fd2, fd3, fd4;
 	sqfs fs;
-	sqfs_err ret;
+	sqfs_err error;
+	int ret;
+	ssize_t ssize;
+	char buffer[1024];
+	size_t size;
 
 	fprintf(stderr, "Testing virtual file descriptors\n");
 	fflush(stderr);
 
+	// open "/bombing"
+	memset(&fs, 0, sizeof(sqfs));
+	sqfs_open_image(&fs, libsquash_fixture, 0);
+	fd = squash_open(&error, &fs, "/bombing");
+	expect(fd > 0, "successfully got a fd");
+	fd2 = squash_open(&error, &fs, "/bombing");
+	expect(fd2 > 0, "successfully got yet another fd");
+	expect(fd2 != fd, "it is indeed another fd");
+	fd3 = squash_open(&error, &fs, "/shen/me/gui");
+	expect(-1 == fd3, "on failure returns -1");
+	expect(SQFS_NOENT == error, "no such file");
+	expect(squash_valid_vfd(fd), "fd is ours");
+	expect(squash_valid_vfd(fd2), "fd2 is also ours");
+	expect(!squash_valid_vfd(0), "0 is not ours");
+	expect(!squash_valid_vfd(1), "1 is not ours");
+	expect(!squash_valid_vfd(2), "2 is not ours");
+	
+	// read on and on
+	size = squash_global_fdtable.fds[fd]->node.xtra.reg.file_size;
+	ssize = squash_read(&error, fd, buffer, 1024);
+	expect(size == ssize, "When successful it returns the number of bytes actually read");
+	expect(buffer == strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
+	ssize = squash_read(&error, fd, buffer, 1024);
+	expect(0 == ssize, "upon reading end-of-file, zero is returned");
+	fd4 = squash_open(&error, &fs, "/");
+	ssize = squash_read(&error, fd4, buffer, 1024);
+	expect(-1 == ssize, "not something we can read");
 
+	// read with lseek
+	ret = squash_lseek(&error, fd, 3, SQUASH_SEEK_SET);
+	expect(3 == ret, "Upon successful completion, it returns the resulting offset location as measured in bytes from the beginning of the file.");
+	ssize = squash_read(&error, fd, buffer, 1024);
+	expect(size - 3 == ssize, "When successful it returns the number of bytes actually read");
+	expect(buffer != strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
+	expect(buffer == strstr(buffer, "roseya Church bombing"), "read some content of the file");
+	ssize = squash_read(&error, fd2, buffer, 100);
+	ret = squash_lseek(&error, fd2, 10, SQUASH_SEEK_CUR);
+	expect(110 == ret, " the offset is set to its current location plus offset bytes");
+	ssize = squash_read(&error, fd2, buffer, 100);
+	expect(buffer == strstr(buffer, "s at St. Peter"), "read from offset 110");
+	ret = squash_lseek(&error, fd2, 0, SQUASH_SEEK_END);
+	ssize = squash_read(&error, fd2, buffer, 1024);
+	expect(0 == ssize, "upon reading end-of-file, zero is returned");
+
+	// various close
+	ret = squash_close(&error, fd);
+	expect(0 == ret, "RIP: fd");
+	ret = squash_close(&error, fd2);
+	expect(0 == ret, "RIP: fd2");
+	ret = squash_close(&error, 0);
+	expect(-1 == ret, "cannot close something we do not own");
+	expect(SQFS_INVALFD == error, "invalid vfd is the reason");
+	expect(!squash_valid_vfd(fd), "fd is no longer ours");
+	expect(!squash_valid_vfd(fd2), "fd2 is no longer ours");
+
+	// RIP.
+	sqfs_destroy(&fs);
 
 	fprintf(stderr, "\n");
 	fflush(stderr);
