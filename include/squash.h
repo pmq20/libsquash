@@ -39,7 +39,7 @@
 #define SQUASH_SEEK_CUR    1   /* set file offset to current plus offset */
 #define SQUASH_SEEK_END    2   /* set file offset to EOF plus offset */
 
-#define SQUASH_VALID_VFD(vfd) (NULL != squash_global_fdtable.fds[(vfd)])
+#define SQUASH_VALID_VFD(vfd) ((vfd) < squash_global_fdtable.nr && NULL != squash_global_fdtable.fds[(vfd)])
 #define SQUASH_VFD_FILE(vfd) (squash_global_fdtable.fds[(vfd)])
 
 /*
