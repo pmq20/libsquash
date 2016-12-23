@@ -96,6 +96,6 @@ off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence);
  */
 bool squash_valid_vfd(int vfd);
 
-struct squash_file *squash_vfd_file(int vfd);
+#define SQUASH_VFD_FILE(vfd) (squash_global_fdtable.fds[(vfd)])
 
 #endif

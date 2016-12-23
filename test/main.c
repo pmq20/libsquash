@@ -181,7 +181,7 @@ static void test_virtual_fd()
 	expect(!squash_valid_vfd(2), "2 is not ours");
 	
 	// read on and on
-	file = squash_vfd_file(fd);
+	file = SQUASH_VFD_FILE(fd);
 	offset = file->node.xtra.reg.file_size;
 	ssize = squash_read(&error, fd, buffer, 1024);
 	expect(offset == ssize, "When successful it returns the number of bytes actually read");

@@ -145,7 +145,3 @@ off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence)
 	}
 	return file->pos;
 }
-
-struct squash_file *squash_vfd_file(int vfd) {
-	return squash_global_fdtable.fds[vfd];
-}
