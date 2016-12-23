@@ -90,6 +90,14 @@ Upon successful completion,
 it returns the resulting offset location as measured in bytes from the beginning of the file.
 Otherwise, a value of `-1` is returned and `error` is set to the reason of the error.
 
+### `squash_readlink(error, fs, path, buf, bufsize)`
+
+Places the contents of the symbolic link `path` of a SquashFS `fs`
+in the buffer `buf`, which has size `bufsize`.
+It does not append a NUL character to `buf`.
+If it succeeds the call returns the count of characters placed in the buffer;
+otherwise `-1` is returned and `error` is set to the reason of the error.
+
 ## Acknowledgment
 
 Thank you [Dave Vasilevsky](https://github.com/vasi) for the excellent work of squashfuse!
