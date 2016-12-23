@@ -5,10 +5,12 @@
  * For full terms see the included LICENSE file
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "squash.h"
 #include "fixture.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static void expect(short condition, const char *reason)
 {
@@ -37,7 +39,7 @@ static void test_basic_func()
 	struct stat st;
 	size_t name_size = sizeof(name);
 	char buffer[1024];
-	size_t size;
+	sqfs_off_t offset;
 
 	fprintf(stderr, "Testing basic functionalities\n");
 	fflush(stderr);
@@ -135,8 +137,8 @@ static void test_basic_func()
 	sqfs_stat(&fs, &node, &st);
 	expect(S_ISREG(node.base.mode), "/bombing is a regular file");
 	expect(998 == node.xtra.reg.file_size, "bombing is of size 998");
-	size = node.xtra.reg.file_size;
-	ret = sqfs_read_range(&fs, &node, 0, &size, buffer);
+	offset = node.xtra.reg.file_size;
+	ret = sqfs_read_range(&fs, &node, 0, &offset, buffer);
 	expect(buffer == strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
 	expect(NULL != strstr(buffer, "Iraq and the Levant"), "read some content of the file");
 
@@ -155,7 +157,8 @@ static void test_virtual_fd()
 	int ret;
 	ssize_t ssize;
 	char buffer[1024];
-	size_t size;
+	sqfs_off_t offset;
+	struct squash_file *file;
 
 	fprintf(stderr, "Testing virtual file descriptors\n");
 	fflush(stderr);
@@ -178,9 +181,10 @@ static void test_virtual_fd()
 	expect(!squash_valid_vfd(2), "2 is not ours");
 	
 	// read on and on
-	size = squash_global_fdtable.fds[fd]->node.xtra.reg.file_size;
+	file = squash_vfd_file(fd);
+	offset = file->node.xtra.reg.file_size;
 	ssize = squash_read(&error, fd, buffer, 1024);
-	expect(size == ssize, "When successful it returns the number of bytes actually read");
+	expect(offset == ssize, "When successful it returns the number of bytes actually read");
 	expect(buffer == strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
 	ssize = squash_read(&error, fd, buffer, 1024);
 	expect(0 == ssize, "upon reading end-of-file, zero is returned");
@@ -192,7 +196,7 @@ static void test_virtual_fd()
 	ret = squash_lseek(&error, fd, 3, SQUASH_SEEK_SET);
 	expect(3 == ret, "Upon successful completion, it returns the resulting offset location as measured in bytes from the beginning of the file.");
 	ssize = squash_read(&error, fd, buffer, 1024);
-	expect(size - 3 == ssize, "When successful it returns the number of bytes actually read");
+	expect(offset - 3 == ssize, "When successful it returns the number of bytes actually read");
 	expect(buffer != strstr(buffer, "Botroseya Church bombing"), "read some content of the file");
 	expect(buffer == strstr(buffer, "roseya Church bombing"), "read some content of the file");
 	ssize = squash_read(&error, fd2, buffer, 100);

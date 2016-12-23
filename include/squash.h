@@ -71,7 +71,7 @@ int squash_close(sqfs_err *error, int vfd);
  * Otherwise, a value of -1 is returned and error is set to
  * the reason of the error.
  */
-ssize_t squash_read(sqfs_err *error, int vfd, void *buf, size_t nbyte);
+ssize_t squash_read(sqfs_err *error, int vfd, void *buf, sqfs_off_t nbyte);
 
 /*
  * Repositions the offset of vfs to the argument offset, according to the directive whence.
@@ -95,5 +95,7 @@ off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence);
  * whether it was allocated by libsquash or not.
  */
 bool squash_valid_vfd(int vfd);
+
+struct squash_file *squash_vfd_file(int vfd);
 
 #endif

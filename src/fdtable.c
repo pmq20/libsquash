@@ -101,7 +101,7 @@ bool squash_valid_vfd(int vfd)
 	return NULL != squash_global_fdtable.fds[vfd];
 }
 
-ssize_t squash_read(sqfs_err *error, int vfd, void *buf, size_t nbyte)
+ssize_t squash_read(sqfs_err *error, int vfd, void *buf, sqfs_off_t nbyte)
 {
 	if (!squash_valid_vfd(vfd))
 	{
@@ -144,4 +144,8 @@ off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence)
 		file->pos = file->node.xtra.reg.file_size;
 	}
 	return file->pos;
+}
+
+struct squash_file *squash_vfd_file(int vfd) {
+	return squash_global_fdtable.fds[vfd];
 }
