@@ -43,6 +43,17 @@ The `buf` argument is a pointer to a stat structure as defined by
 Upon successful completion a value of `0` is returned.
 Otherwise, a value of `-1` is returned and `error` is set to the reason of the error.
 
+### `squash_lstat(error, fs, path, buf)`
+
+Acts like `squash_stat()` except in the case where the named file is a symbolic link;
+`squash_lstat()` returns information about the link,
+while `squash_stat()` returns information about the file the link references.
+
+### `squash_fstat(error, fs, vfd, buf)`
+
+Obtains the same information as `squash_stat()`
+about an open file known by the virtual file descriptor `vfd`.
+
 ### `squash_open(error, fs, path)`
 
 Opens the file name specified by `path` of a SquashFS `fs` for reading.

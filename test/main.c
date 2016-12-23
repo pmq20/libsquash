@@ -155,6 +155,7 @@ static void test_stat()
 	struct stat st;
 	sqfs_err error;
 	int ret;
+	int fd;
 
 	fprintf(stderr, "Testing stat functions\n");
 	fflush(stderr);
@@ -165,12 +166,25 @@ static void test_stat()
 	ret = squash_stat(&error, &fs, "/", &st);
 	expect(0 == ret, "Upon successful completion a value of 0 is returned");
 	expect(S_ISDIR(st.st_mode), "/ is a dir");
+	ret = squash_lstat(&error, &fs, "/", &st);
+	expect(0 == ret, "Upon successful completion a value of 0 is returned");
+	expect(S_ISDIR(st.st_mode), "/ is a dir");
 	
 	// stat "/bombing"
 	ret = squash_stat(&error, &fs, "/bombing", &st);
 	expect(0 == ret, "Upon successful completion a value of 0 is returned");
 	expect(S_ISREG(st.st_mode), "/bombing is a regular file");
-
+	ret = squash_lstat(&error, &fs, "/bombing", &st);
+	expect(0 == ret, "Upon successful completion a value of 0 is returned");
+	expect(S_ISREG(st.st_mode), "/bombing is a regular file");
+	fd = squash_open(&error, &fs, "/bombing");
+	ret = squash_fstat(&error, &fs, fd, &st);
+	expect(0 == ret, "Upon successful completion a value of 0 is returned");
+	expect(S_ISREG(st.st_mode), "/bombing is a regular file");
+	squash_close(&error, fd);
+	
+	// TODO test a link
+	
 	// RIP.
 	sqfs_destroy(&fs);
 

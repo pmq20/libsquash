@@ -53,6 +53,19 @@
 int squash_stat(sqfs_err *error, sqfs *fs, const char *path, struct stat *buf);
 
 /*
+ * Acts like squash_stat() except in the case where the named file
+ * is a symbolic link; squash_lstat() returns information about the link,
+ * while squash_stat() returns information about the file the link references.
+ */
+int squash_lstat(sqfs_err *error, sqfs *fs, const char *path, struct stat *buf);
+
+/*
+ * Obtains the same information as squash_stat()
+ * about an open file known by the virtual file descriptor vfd.
+ */
+int squash_fstat(sqfs_err *error, sqfs *fs, int vfd, struct stat *buf);
+
+/*
  * Opens the file name specified by path of fs for reading.
  * If successful, squash_open() returns a non-negative integer,
  * termed a vfd(virtual file descriptor).
