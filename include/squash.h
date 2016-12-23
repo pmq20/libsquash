@@ -39,6 +39,19 @@
 #define SQUASH_SEEK_CUR    1   /* set file offset to current plus offset */
 #define SQUASH_SEEK_END    2   /* set file offset to EOF plus offset */
 
+#define SQUASH_VALID_VFD(vfd) (NULL != squash_global_fdtable.fds[(vfd)])
+#define SQUASH_VFD_FILE(vfd) (squash_global_fdtable.fds[(vfd)])
+
+/*
+ * Obtains information about the file pointed to by path of a SquashFS fs.
+ * The buf argument is a pointer to a stat structure as defined by
+ * <sys/stat.h> and into which information is placed concerning the file.
+ * Upon successful completion a value of 0 is returned.
+ * Otherwise, a value of -1 is returned and
+ * error is set to the reason of the error.
+ */
+int squash_stat(sqfs_err *error, sqfs *fs, const char *path, struct stat *buf);
+
 /*
  * Opens the file name specified by path of fs for reading.
  * If successful, squash_open() returns a non-negative integer,
@@ -89,13 +102,5 @@ ssize_t squash_read(sqfs_err *error, int vfd, void *buf, sqfs_off_t nbyte);
  * error is set to the reason of the error.
  */
 off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence);
-
-/*
- * Checks whether provided vfd is a valid virtual file descriptor or not, i.e,
- * whether it was allocated by libsquash or not.
- */
-bool squash_valid_vfd(int vfd);
-
-#define SQUASH_VFD_FILE(vfd) (squash_global_fdtable.fds[(vfd)])
 
 #endif

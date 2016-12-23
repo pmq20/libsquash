@@ -17,11 +17,11 @@ and be loaded into memory in advance.
 1. Introduced vfd(virtual file descriptor) as a handle for follow-up
 libsquash operations. The vfd is a non-negative integer that lives together with
 other ordinary file descriptors of the process.
-1. Added extra API's, see below.
 1. Added CMake so that Xcode and Vistual Studio Projects could be easily generated
 1. Made it compile on 3 platforms simultanesly: Windows, Mac OS X and Linux
 1. Added travis-ci for Linux and Darwin CI; appveyor for Windows CI
 1. Added test fixtures and C-level tests
+1. Added extra API's, see below.
 
 ## Building
 
@@ -35,9 +35,17 @@ On most systems you could build and test the library using the following command
 
 ## Extra API's
 
+### `squash_stat(error, fs, path, buf)`
+
+Obtains information about the file pointed to by `path` of a SquashFS `fs`.
+The `buf` argument is a pointer to a stat structure as defined by
+`<sys/stat.h>` and into which information is placed concerning the file.
+Upon successful completion a value of `0` is returned.
+Otherwise, a value of `-1` is returned and `error` is set to the reason of the error.
+
 ### `squash_open(error, fs, path)`
 
-Opens the file name specified by `path` of `fs` for reading.
+Opens the file name specified by `path` of a SquashFS `fs` for reading.
 If successful, `squash_open()` returns a non-negative integer, termed a vfd(virtual file descriptor).
 It returns `-1` on failure and sets `error` to the reason of the error.
 The file pointer (used to mark the current position within the file) is set to the beginning of the file.
@@ -70,11 +78,6 @@ The argument `fildes` must be an open virtual file descriptor.
 Upon successful completion,
 it returns the resulting offset location as measured in bytes from the beginning of the file.
 Otherwise, a value of `-1` is returned and `error` is set to the reason of the error.
-
-### `squash_valid_vfd(vfd)`
-
-Checks whether provided `vfd` is a valid virtual file descriptor or not, i.e,
-whether it was allocated by libsquash or not.
 
 ## Acknowledgment
 

@@ -149,6 +149,35 @@ static void test_basic_func()
 	fflush(stderr);
 }
 
+static void test_stat()
+{
+	sqfs fs;
+	struct stat st;
+	sqfs_err error;
+	int ret;
+
+	fprintf(stderr, "Testing stat functions\n");
+	fflush(stderr);
+	memset(&fs, 0, sizeof(sqfs));
+	sqfs_open_image(&fs, libsquash_fixture, 0);
+	
+	// stat "/"
+	ret = squash_stat(&error, &fs, "/", &st);
+	expect(0 == ret, "Upon successful completion a value of 0 is returned");
+	expect(S_ISDIR(st.st_mode), "/ is a dir");
+	
+	// stat "/bombing"
+	ret = squash_stat(&error, &fs, "/bombing", &st);
+	expect(0 == ret, "Upon successful completion a value of 0 is returned");
+	expect(S_ISREG(st.st_mode), "/bombing is a regular file");
+
+	// RIP.
+	sqfs_destroy(&fs);
+
+	fprintf(stderr, "\n");
+	fflush(stderr);
+}
+
 static void test_virtual_fd()
 {
 	int fd, fd2, fd3, fd4;
@@ -162,10 +191,10 @@ static void test_virtual_fd()
 
 	fprintf(stderr, "Testing virtual file descriptors\n");
 	fflush(stderr);
-
-	// open "/bombing"
 	memset(&fs, 0, sizeof(sqfs));
 	sqfs_open_image(&fs, libsquash_fixture, 0);
+
+	// open "/bombing"
 	fd = squash_open(&error, &fs, "/bombing");
 	expect(fd > 0, "successfully got a fd");
 	fd2 = squash_open(&error, &fs, "/bombing");
@@ -174,11 +203,11 @@ static void test_virtual_fd()
 	fd3 = squash_open(&error, &fs, "/shen/me/gui");
 	expect(-1 == fd3, "on failure returns -1");
 	expect(SQFS_NOENT == error, "no such file");
-	expect(squash_valid_vfd(fd), "fd is ours");
-	expect(squash_valid_vfd(fd2), "fd2 is also ours");
-	expect(!squash_valid_vfd(0), "0 is not ours");
-	expect(!squash_valid_vfd(1), "1 is not ours");
-	expect(!squash_valid_vfd(2), "2 is not ours");
+	expect(SQUASH_VALID_VFD(fd), "fd is ours");
+	expect(SQUASH_VALID_VFD(fd2), "fd2 is also ours");
+	expect(!SQUASH_VALID_VFD(0), "0 is not ours");
+	expect(!SQUASH_VALID_VFD(1), "1 is not ours");
+	expect(!SQUASH_VALID_VFD(2), "2 is not ours");
 	
 	// read on and on
 	file = SQUASH_VFD_FILE(fd);
@@ -216,8 +245,8 @@ static void test_virtual_fd()
 	ret = squash_close(&error, 0);
 	expect(-1 == ret, "cannot close something we do not own");
 	expect(SQFS_INVALFD == error, "invalid vfd is the reason");
-	expect(!squash_valid_vfd(fd), "fd is no longer ours");
-	expect(!squash_valid_vfd(fd2), "fd2 is no longer ours");
+	expect(!SQUASH_VALID_VFD(fd), "fd is no longer ours");
+	expect(!SQUASH_VALID_VFD(fd2), "fd2 is no longer ours");
 
 	// RIP.
 	sqfs_destroy(&fs);
@@ -229,6 +258,7 @@ static void test_virtual_fd()
 int main(int argc, char const *argv[])
 {
 	test_basic_func();
+	test_stat();
 	test_virtual_fd();
 	return 0;
 }
