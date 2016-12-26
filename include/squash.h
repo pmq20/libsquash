@@ -26,7 +26,6 @@
 #define SQFS_SQUASH_H
 
 #include <stdbool.h>
-#include <dirent.h>
 
 #include "squash/dir.h"
 #include "squash/file.h"
