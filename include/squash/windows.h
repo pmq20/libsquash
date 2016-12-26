@@ -77,7 +77,7 @@ struct squash_windows_dirent
 };
 
 #ifndef dirent
-#define dirent squash_windows_dirent;
+#define dirent squash_windows_dirent
 #endif
 
 #endif /* end of include guard: WINDOWS_H_A80B5674 */
