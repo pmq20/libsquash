@@ -20,14 +20,4 @@ typedef struct {
 	long	td;	/* telldir position recording */
 } SQUASH_DIR;
 
-struct squash_dirent
-{
-	uint64_t  ino;		/* file number of entry */
-	uint64_t  seekoff;	/* seek offset (optional, used by servers) */
-	uint16_t  reclen;	/* length of this record */
-	uint16_t  namlen;	/* length of string in d_name */
-	uint8_t   type;		/* file type, see below */
-	char      name[1024];	/* entry name (up to MAXPATHLEN bytes) */
-};
-
 #endif /* end of include guard: DIRENT_H_245C4278 */

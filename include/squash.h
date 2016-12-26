@@ -144,19 +144,19 @@ SQUASH_DIR * squash_opendir(sqfs_err *error, sqfs *fs, const char *filename);
  * returning 0 on success.
  * On failure, -1 is returned and error is set to the reason of the error.
  */
-int squash_closedir(sqfs_err *error, DIR *dirp);
+int squash_closedir(sqfs_err *error, SQUASH_DIR *dirp);
 
 /*
  * Returns a pointer to the next directory entry.
  * It returns NULL upon reaching the end of the directory or on error. 
  * In the event of an error, error is set to the reason of the error.
  */
-struct squash_dirent * squash_readdir(sqfs_err *error, DIR *dirp);
+struct dirent * squash_readdir(sqfs_err *error, SQUASH_DIR *dirp);
 
 /*
  * Returns the current location associated with the named directory stream.
  */
-long squash_telldir(DIR *dirp);
+long squash_telldir(SQUASH_DIR *dirp);
 
 /*
  * Sets the position of the next squash_readdir() operation
@@ -164,20 +164,20 @@ long squash_telldir(DIR *dirp);
  * The new position reverts to the one associated with the directory stream
  * when the squash_telldir() operation was performed.
  */
-void squash_seekdir(DIR *dirp, long loc);
+void squash_seekdir(SQUASH_DIR *dirp, long loc);
 
 /*
  * Resets the position of the named directory stream to
  * the beginning of the directory.
  */
-void squash_rewinddir(DIR *dirp);
+void squash_rewinddir(SQUASH_DIR *dirp);
 
 /*
  * Returns the integer Libsquash file descriptor
  * associated with the named directory stream.
  * On failure, -1 is returned and error is set to the reason of the error.
  */
-int squash_dirfd(sqfs_err *error, DIR *dirp);
+int squash_dirfd(sqfs_err *error, SQUASH_DIR *dirp);
 
 /*
  * Reads the directory dirname of a SquashFS fs and

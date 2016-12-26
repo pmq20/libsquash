@@ -66,4 +66,18 @@ typedef uint32_t uid_t;		/* [???] user IDs */
 #define	makedev(x,y)	((dev_t)(((x) << 24) | (y)))
 #endif
 
+struct squash_windows_dirent
+{
+	long d_namlen;
+	ino_t d_ino;
+	char *d_name;
+	char *d_altname; /* short name */
+	short d_altlen;
+	uint8_t d_type;
+};
+
+#ifndef dirent
+#define dirent squash_windows_dirent;
+#endif
+
 #endif /* end of include guard: WINDOWS_H_A80B5674 */

@@ -11,41 +11,41 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-DIR * squash_opendir(sqfs_err *error, sqfs *fs, const char *filename)
+SQUASH_DIR *squash_opendir(sqfs_err *error, sqfs *fs, const char *filename)
 {
 	// WIP
 	return NULL;
 }
 
-int squash_closedir(sqfs_err *error, DIR *dirp)
+int squash_closedir(sqfs_err *error, SQUASH_DIR *dirp)
 {
 	// WIP
 	return -1;
 }
 
-struct dirent * squash_readdir(sqfs_err *error, DIR *dirp)
+struct dirent * squash_readdir(sqfs_err *error, SQUASH_DIR *dirp)
 {
 	// WIP
 	return NULL;
 }
 
-long squash_telldir(DIR *dirp)
+long squash_telldir(SQUASH_DIR *dirp)
 {
 	// WIP
 	return 0;
 }
 
-void squash_seekdir(DIR *dirp, long loc)
+void squash_seekdir(SQUASH_DIR *dirp, long loc)
 {
 	// WIP
 }
 
-void squash_rewinddir(DIR *dirp)
+void squash_rewinddir(SQUASH_DIR *dirp)
 {
 	// WIP
 }
 
-int squash_dirfd(sqfs_err *error, DIR *dirp)
+int squash_dirfd(sqfs_err *error, SQUASH_DIR *dirp)
 {
 	// WIP
 	return 0;
