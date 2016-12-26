@@ -198,7 +198,7 @@ int squash_dirfd(sqfs_err *error, DIR *dirp);
  * which is passed to qsort to sort the completed array.
  * If this pointer is NULL, then the array is not sorted.
  */
-int scandir(sqfs_err *error, sqfs *fs, const char *dirname, struct dirent ***namelist,
+int squash_scandir(sqfs_err *error, sqfs *fs, const char *dirname, struct dirent ***namelist,
 	int (*select)(const struct dirent *),
 	int (*compar)(const struct dirent **, const struct dirent **));
 

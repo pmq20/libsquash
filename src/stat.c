@@ -42,7 +42,7 @@ int squash_stat(sqfs_err *error, sqfs *fs, const char *path, struct stat *buf)
 
 int squash_lstat(sqfs_err *error, sqfs *fs, const char *path, struct stat *buf)
 {
-	// TODO returns information about the link
+	// TODO @sounder
 	return squash_stat(error, fs, path, buf);
 }
 

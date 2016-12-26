@@ -11,10 +11,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 
-int scandir(sqfs_err *error, sqfs *fs, const char *dirname, struct dirent ***namelist,
+int squash_scandir(sqfs_err *error, sqfs *fs, const char *dirname, struct dirent ***namelist,
 	int (*select)(const struct dirent *),
 	int (*compar)(const struct dirent **, const struct dirent **))
 {
-	// TODO
+	// TODO @sounder
 	return -1;
 }
