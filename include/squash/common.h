@@ -34,7 +34,6 @@
 	#include "squash/windows.h"
 #else
 	#include <unistd.h>
-	#include <dirent.h>
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;
 	typedef off_t sqfs_off_t;

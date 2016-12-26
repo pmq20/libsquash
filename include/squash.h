@@ -34,10 +34,11 @@
 #include "squash/util.h"
 #include "squash/private.h"
 #include "squash/fdtable.h"
+#include "squash/dirent.h"
 
-#define SQUASH_SEEK_SET    0   /* set file offset to offset */
-#define SQUASH_SEEK_CUR    1   /* set file offset to current plus offset */
-#define SQUASH_SEEK_END    2   /* set file offset to EOF plus offset */
+#define SQUASH_SEEK_SET 0 /* set file offset to offset */
+#define SQUASH_SEEK_CUR 1 /* set file offset to current plus offset */
+#define SQUASH_SEEK_END 2 /* set file offset to EOF plus offset */
 
 #define SQUASH_VALID_VFD(vfd) ((vfd) < squash_global_fdtable.nr && NULL != squash_global_fdtable.fds[(vfd)])
 #define SQUASH_VFD_FILE(vfd) (squash_global_fdtable.fds[(vfd)])
@@ -135,7 +136,7 @@ ssize_t squash_readlink(sqfs_err *error, sqfs *fs, const char *path, char *buf, 
  * and sets error to the reason of the error.
  * The returned resource should later be closed by squash_closedir().
  */
-DIR * squash_opendir(sqfs_err *error, sqfs *fs, const char *filename);
+SQUASH_DIR * squash_opendir(sqfs_err *error, sqfs *fs, const char *filename);
 
 /*
  * Closes the named directory stream and
@@ -150,7 +151,7 @@ int squash_closedir(sqfs_err *error, DIR *dirp);
  * It returns NULL upon reaching the end of the directory or on error. 
  * In the event of an error, error is set to the reason of the error.
  */
-struct dirent * squash_readdir(sqfs_err *error, DIR *dirp);
+struct squash_dirent * squash_readdir(sqfs_err *error, DIR *dirp);
 
 /*
  * Returns the current location associated with the named directory stream.

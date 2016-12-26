@@ -33,23 +33,4 @@ typedef uint32_t uid_t;		/* [???] user IDs */
 
 #define	makedev(x,y)	((dev_t)(((x) << 24) | (y)))
 
-struct direct
-{
-    long d_namlen;
-    ino_t d_ino;
-    char *d_name;
-    char *d_altname; /* short name */
-    short d_altlen;
-    uint8_t d_type;
-};
-typedef struct {
-    WCHAR *start;
-    WCHAR *curr;
-    long size;
-    long nfiles;
-    long loc;  /* [0, nfiles) */
-    struct direct dirstr;
-    char *bits;  /* used for d_isdir and d_isrep */
-} DIR;
-
 #endif /* end of include guard: WINDOWS_H_A80B5674 */
