@@ -110,4 +110,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/pmq20/
 
 Squashfuse is copyright (c) 2012-2014 Dave Vasilevsky <dave@vasilevsky.ca>
 
-Copyright (c) 2016-2017 Minqi Pan, under terms of the [MIT License](http://opensource.org/licenses/MIT).
+Copyright (c) 2016-2017 [Minqi Pan](https://github.com/pmq20/) and [Shengyuan Liu](https://github.com/sounderliu), under terms of the [MIT License](http://opensource.org/licenses/MIT).
