@@ -6,10 +6,17 @@ work in progress - part 1:
 
 - squash_opendir(error, fs, filename)
 - squash_closedir(error, dirp)
+- squash_readdir(error, dirp)
+- squash_telldir(dirp)
+- squash_seekdir(dirp, loc)
+- squash_rewinddir(dirp)
+- squash_dirfd(error, dirp)
 
 work in progress - part 2:
 
-- 
+- squash_lstat(error, fs, path, buf)
+- squash_readlink(error, fs, path, buf, bufsize)
+- squash_scandir(error, fs, dirname, namelist, select, compar)
 
 ## v0.2.0
 

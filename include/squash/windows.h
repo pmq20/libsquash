@@ -33,28 +33,23 @@ typedef uint32_t uid_t;		/* [???] user IDs */
 
 #define	makedev(x,y)	((dev_t)(((x) << 24) | (y)))
 
-struct _telldir;
-
-/* structure describing an open directory. */
+struct direct
+{
+    long d_namlen;
+    ino_t d_ino;
+    char *d_name;
+    char *d_altname; /* short name */
+    short d_altlen;
+    uint8_t d_type;
+};
 typedef struct {
-	int	dd_fd;	/* file descriptor associated with directory */
-	long	dd_loc;	/* offset in current buffer */
-	long	dd_size;	/* amount of data returned */
-	char	*dd_buf;	/* data buffer */
-	int	dd_len;	/* size of data buffer */
-	long	dd_seek;	/* magic cookie returned */
-	long	dd_rewind;	/* magic cookie for rewinding */
-	int	dd_flags;	/* flags for readdir */
-	struct _telldir *dd_td; /* telldir position recording */
+    WCHAR *start;
+    WCHAR *curr;
+    long size;
+    long nfiles;
+    long loc;  /* [0, nfiles) */
+    struct direct dirstr;
+    char *bits;  /* used for d_isdir and d_isrep */
 } DIR;
-
-struct {
-	uint64_t  d_ino;      /* file number of entry */ \
-	uint64_t  d_seekoff;  /* seek offset (optional, used by servers) */ \
-	uint16_t  d_reclen;   /* length of this record */ \
-	uint16_t  d_namlen;   /* length of string in d_name */ \
-	uint8_t   d_type;     /* file type, see below */ \
-	char      d_name[1024]; /* entry name (up to MAXPATHLEN bytes) */ \
-} dirent;
 
 #endif /* end of include guard: WINDOWS_H_A80B5674 */
