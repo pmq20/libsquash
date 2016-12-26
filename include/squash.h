@@ -100,7 +100,8 @@ int squash_close(sqfs_err *error, int vfd);
 ssize_t squash_read(sqfs_err *error, int vfd, void *buf, sqfs_off_t nbyte);
 
 /*
- * Repositions the offset of vfs to the argument offset, according to the directive whence.
+ * Repositions the offset of vfs to the argument offset,
+ * according to the directive whence.
  * If whence is SQUASH_SEEK_SET then the offset is set to offset bytes;
  * if whence is SQUASH_SEEK_CUR, the offset is set to
  * its current location plus offset bytes;
@@ -115,5 +116,89 @@ ssize_t squash_read(sqfs_err *error, int vfd, void *buf, sqfs_off_t nbyte);
  * error is set to the reason of the error.
  */
 off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence);
+
+/*
+ * Places the contents of the symbolic link path of a SquashFS fs
+ * in the buffer buf, which has size bufsize.
+ * It does not append a NUL character to buf.
+ * If it succeeds the call returns the count of characters placed in the buffer;
+ * otherwise -1 is returned and error is set to the reason of the error.
+ */
+ssize_t squash_readlink(sqfs_err *error, sqfs *fs, const char *path, char *buf, size_t bufsize);
+
+/*
+ * Opens the directory named by filename of a SquashFS fs,
+ * associates a directory stream with it and returns a pointer
+ * to be used to identify the directory stream in subsequent operations.
+ * The pointer NULL is returned if filename cannot be accessed,
+ * or if it cannot allocate enough memory to hold the whole thing,
+ * and sets error to the reason of the error.
+ * The returned resource should later be closed by squash_closedir().
+ */
+DIR * squash_opendir(sqfs_err *error, sqfs *fs, const char *filename);
+
+/*
+ * Closes the named directory stream and
+ * frees the structure associated with the dirp pointer,
+ * returning 0 on success.
+ * On failure, -1 is returned and error is set to the reason of the error.
+ */
+int squash_closedir(sqfs_err *error, DIR *dirp);
+
+/*
+ * Returns a pointer to the next directory entry.
+ * It returns NULL upon reaching the end of the directory or on error. 
+ * In the event of an error, error is set to the reason of the error.
+ */
+struct dirent * squash_readdir(sqfs_err *error, DIR *dirp);
+
+/*
+ * Returns the current location associated with the named directory stream.
+ */
+long squash_telldir(DIR *dirp);
+
+/*
+ * Sets the position of the next squash_readdir() operation
+ * on the directory stream.
+ * The new position reverts to the one associated with the directory stream
+ * when the squash_telldir() operation was performed.
+ */
+void squash_seekdir(DIR *dirp, long loc);
+
+/*
+ * Resets the position of the named directory stream to
+ * the beginning of the directory.
+ */
+void squash_rewinddir(DIR *dirp);
+
+/*
+ * Returns the integer Libsquash file descriptor
+ * associated with the named directory stream.
+ * On failure, -1 is returned and error is set to the reason of the error.
+ */
+int squash_dirfd(sqfs_err *error, DIR *dirp);
+
+/*
+ * Reads the directory dirname of a SquashFS fs and
+ * builds an array of pointers to directory entries using malloc.
+ * If successful it returns the number of entries in the array; 
+ * otherwise -1 is returned and error is set to the reason of the error.
+ * A pointer to the array of directory entries is stored
+ * in the location referenced by namelist (even if the number of entries is 0),
+ * which should later be freed via free() by freeing each pointer
+ * in the array and then the array itself.
+ * The select argument is a pointer to a user supplied subroutine which is
+ * called by scandir to select which entries are to be included in the array.
+ * The select routine is passed a pointer to a directory entry
+ * and should return a non-zero value if the directory entry
+ * is to be included in the array.
+ * If select is NULL, then all the directory entries will be included.
+ * The compar argument is a pointer to a user supplied subroutine
+ * which is passed to qsort to sort the completed array.
+ * If this pointer is NULL, then the array is not sorted.
+ */
+int scandir(sqfs_err *error, sqfs *fs, const char *dirname, struct dirent ***namelist,
+	int (*select)(const struct dirent *),
+	int (*compar)(const struct dirent **, const struct dirent **));
 
 #endif
