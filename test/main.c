@@ -293,22 +293,30 @@ static void test_dirent()
 	mydirent = squash_readdir(&error, dir);
 	expect(NULL != mydirent, "returns a pointer to the next directory entry");
 	expect(0 == strcmp(".0.0.4@something4", mydirent->d_name), "got .0.0.4@something4");
+#ifndef __linux__
 	expect(strlen(".0.0.4@something4") == mydirent->d_namlen, "got a str len");
+#endif
 	expect(DT_DIR == mydirent->d_type, "this ia dir");
 	mydirent = squash_readdir(&error, dir);
 	expect(NULL != mydirent, "returns a pointer to the next directory entry");
 	expect(0 == strcmp(".bin", mydirent->d_name), "got a .bin");
+#ifndef __linux__
 	expect(strlen(".bin") == mydirent->d_namlen, "got a str len");
+#endif
 	expect(DT_DIR == mydirent->d_type, "this a dir");
 	mydirent = squash_readdir(&error, dir);
 	expect(NULL != mydirent, "got another entry");
 	expect(0 == strcmp("@minqi", mydirent->d_name), "got a @minqi");
+#ifndef __linux__
 	expect(strlen("@minqi") == mydirent->d_namlen, "got a str len");
+#endif
 	expect(DT_DIR == mydirent->d_type, "got yet another dir");
 	mydirent = squash_readdir(&error, dir);
 	expect(NULL != mydirent, "got another entry");
 	expect(0 == strcmp("something4", mydirent->d_name), "this is named something4");
+#ifndef __linux__
 	expect(strlen("something4") == mydirent->d_namlen, "got a strlen");
+#endif
 	expect(DT_LNK == mydirent->d_type, "so this one is a link");
 	mydirent = squash_readdir(&error, dir);
 	expect(NULL == mydirent, "finally reaching an EOF");

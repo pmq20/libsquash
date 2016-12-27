@@ -120,7 +120,9 @@ struct dirent * squash_readdir(sqfs_err *error, SQUASH_DIR *dirp)
 				minsize = SQUASHFS_NAME_LEN;
 			}
 			memcpy(sysentry->d_name, dirp->entries[dirp->actual_nr].name, minsize);
+#ifndef __linux__
 			sysentry->d_namlen = minsize;
+#endif
 			sysentry->d_name[minsize] = '\0';
 			// TODO special treatment of L types
 			switch (entry->type)
