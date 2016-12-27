@@ -2,7 +2,7 @@
 
 ## v0.3.0
 
-work in progress - part 1:
+Implemented the following dirent APIs.
 
 - squash_opendir(error, fs, filename)
 - squash_closedir(error, dirp)
@@ -12,7 +12,7 @@ work in progress - part 1:
 - squash_rewinddir(dirp)
 - squash_dirfd(error, dirp)
 
-work in progress - part 2:
+work in progress @sounder:
 
 - squash_lstat(error, fs, path, buf)
 - squash_readlink(error, fs, path, buf, bufsize)
