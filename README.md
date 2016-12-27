@@ -1,6 +1,6 @@
 # Libsquash
 
-Portable, User-land SquashFS that can be easily linked and embedded within your application; a [squashfuse](https://github.com/vasi/squashfuse) fork.
+Portable, user-land SquashFS that can be easily linked and embedded within your application; a [squashfuse](https://github.com/vasi/squashfuse) fork.
 
 [![Build status: Linux and Darwin](https://travis-ci.org/pmq20/libsquash.svg?branch=master)](https://travis-ci.org/pmq20/libsquash)
 [![Build status: Windows](https://ci.appveyor.com/api/projects/status/f4htq948gag3l2k8/branch/master?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash/branch/master)
