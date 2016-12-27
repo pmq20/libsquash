@@ -33,6 +33,7 @@
 #ifdef _WIN32
 	#include "squash/windows.h"
 #else
+	#include <sys/dir.h>
 	#include <unistd.h>
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;

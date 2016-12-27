@@ -9,7 +9,6 @@
 #define DIRENT_H_245C4278
 
 #include <sys/types.h>
-#include <sys/dir.h>
 
 typedef struct {
 	sqfs *fs;
