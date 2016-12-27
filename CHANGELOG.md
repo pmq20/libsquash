@@ -33,4 +33,4 @@ work in progress @sounder:
 
 ## v0.1.0
 
-Initial Release.
+Added Tests for basic APIs from squashfuse; tagged the initial release.
