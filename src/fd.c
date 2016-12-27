@@ -9,10 +9,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <sys/types.h>
 #include <sys/stat.h>
+#include <io.h>
 
 int squash_open(sqfs_err *error, sqfs *fs, const char *path)
 {
+	*error = SQFS_OK;
 	struct squash_file *file = malloc(sizeof(struct squash_file));
 	bool found;
 	int fd;
@@ -65,6 +68,7 @@ failure:
 
 int squash_close(sqfs_err *error, int vfd)
 {
+	*error = SQFS_OK;
 	if (!SQUASH_VALID_VFD(vfd))
 	{
 		*error = SQFS_INVALFD;
@@ -78,6 +82,7 @@ int squash_close(sqfs_err *error, int vfd)
 
 ssize_t squash_read(sqfs_err *error, int vfd, void *buf, sqfs_off_t nbyte)
 {
+	*error = SQFS_OK;
 	if (!SQUASH_VALID_VFD(vfd))
 	{
 		*error = SQFS_INVALFD;
@@ -96,6 +101,7 @@ ssize_t squash_read(sqfs_err *error, int vfd, void *buf, sqfs_off_t nbyte)
 
 off_t squash_lseek(sqfs_err *error, int vfd, off_t offset, int whence)
 {
+	*error = SQFS_OK;
 	if (!SQUASH_VALID_VFD(vfd))
 	{
 		*error = SQFS_INVALFD;

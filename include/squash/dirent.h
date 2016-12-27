@@ -9,15 +9,22 @@
 #define DIRENT_H_245C4278
 
 typedef struct {
-	int	fd;	/* file descriptor associated with directory */
-	long	loc;	/* offset in current buffer */
-	long	size;	/* amount of data returned */
-	char	*buf;	/* data buffer */
-	int	len;	/* size of data buffer */
-	long	seek;	/* magic cookie returned */
-	long	rewind;	/* magic cookie for rewinding */
-	int	flags;	/* flags for readdir */
-	long	td;	/* telldir position recording */
+	sqfs *fs;
+	int	fd;	/* virtual file descriptor associated with directory */
+	sqfs_inode node;
+	sqfs_dir dir;
+	// CAUTION: this is a big struct, mind the SQUASHFS_NAME_LEN 256 size
+	struct {
+		sqfs_dir_entry entry;
+		struct dirent sysentry;
+		sqfs_name name;
+		bool not_eof;
+	} *entries;
+	size_t nr; /* allocated size for entries */
+	int actual_nr; /* actual number of entries read */
+	long loc;	/* offset in current buffer */
 } SQUASH_DIR;
+
+sqfs_err squash_dir_realloc(SQUASH_DIR *dir, size_t nr);
 
 #endif /* end of include guard: DIRENT_H_245C4278 */

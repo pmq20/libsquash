@@ -34,7 +34,6 @@
 
 sqfs_err sqfs_stat(sqfs *fs, sqfs_inode *inode, struct stat *st) {
 	sqfs_err err = SQFS_OK;
-	uid_t id;
 	
 	memset(st, 0, sizeof(*st));
 	st->st_mode = inode->base.mode;

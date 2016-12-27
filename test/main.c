@@ -269,10 +269,78 @@ static void test_virtual_fd()
 	fflush(stderr);
 }
 
+static void test_dirent()
+{
+	fprintf(stderr, "Testing dirent APIs\n");
+	fflush(stderr);
+
+	sqfs fs;
+	sqfs_err error;
+	int ret;
+	int fd;
+	SQUASH_DIR *dir;
+	struct dirent *mydirent;
+
+	memset(&fs, 0, sizeof(sqfs));
+	sqfs_open_image(&fs, libsquash_fixture, 0);
+	
+	dir = squash_opendir(&error, &fs, "/dir1-what-the-f");
+	expect(NULL == dir, "on error NULL is returned");
+	dir = squash_opendir(&error, &fs, "/dir1");
+	expect(NULL != dir, "returns a pointer to be used to identify the dir stream");
+	fd = squash_dirfd(&error, dir);
+	expect(fd > 0, "returns a vfs associated with the named diretory stream");
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL != mydirent, "returns a pointer to the next directory entry");
+	expect(0 == strcmp(".0.0.4@something4", mydirent->d_name), "got .0.0.4@something4");
+	expect(strlen(".0.0.4@something4") == mydirent->d_namlen, "got a str len");
+	expect(DT_DIR == mydirent->d_type, "this ia dir");
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL != mydirent, "returns a pointer to the next directory entry");
+	expect(0 == strcmp(".bin", mydirent->d_name), "got a .bin");
+	expect(strlen(".bin") == mydirent->d_namlen, "got a str len");
+	expect(DT_DIR == mydirent->d_type, "this a dir");
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL != mydirent, "got another entry");
+	expect(0 == strcmp("@minqi", mydirent->d_name), "got a @minqi");
+	expect(strlen("@minqi") == mydirent->d_namlen, "got a str len");
+	expect(DT_DIR == mydirent->d_type, "got yet another dir");
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL != mydirent, "got another entry");
+	expect(0 == strcmp("something4", mydirent->d_name), "this is named something4");
+	expect(strlen("something4") == mydirent->d_namlen, "got a strlen");
+	expect(DT_LNK == mydirent->d_type, "so this one is a link");
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL == mydirent, "finally reaching an EOF");
+	long pos = squash_telldir(dir);
+	squash_rewinddir(dir);
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL != mydirent, "starting all over again");
+	expect(0 == strcmp(".0.0.4@something4", mydirent->d_name), "got .0.0.4@something4");
+	squash_seekdir(dir, pos);
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL == mydirent, "back to before");
+	ret = squash_closedir(&error, dir);
+	expect(0 == ret, "returns 0 on success");
+
+	dir = squash_opendir(&error, &fs, "/dir1/.bin");
+	expect(NULL != dir, "returns a pointer to be used to identify the dir stream");
+	mydirent = squash_readdir(&error, dir);
+	expect(NULL == mydirent, "oops empty dir");
+
+	fprintf(stderr, "\n");
+	fflush(stderr);
+}
+
 int main(int argc, char const *argv[])
 {
+	squash_start();
+
 	test_basic_func();
 	test_stat();
 	test_virtual_fd();
+	test_dirent();
+
+	squash_halt();
 	return 0;
 }

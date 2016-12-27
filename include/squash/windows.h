@@ -66,6 +66,42 @@ typedef uint32_t uid_t;		/* [???] user IDs */
 #define	makedev(x,y)	((dev_t)(((x) << 24) | (y)))
 #endif
 
+#ifndef DT_UNKNOWN
+#define	DT_UNKNOWN	 0
+#endif
+
+#ifndef	DT_FIFO
+#define	DT_FIFO		 1
+#endif
+
+#ifndef	DT_CHR
+#define	DT_CHR		 2
+#endif
+
+#ifndef	DT_DIR
+#define	DT_DIR		 4
+#endif
+
+#ifndef	DT_BLK
+#define	DT_BLK		 6
+#endif
+
+#ifndef	DT_REG
+#define	DT_REG		 8
+#endif
+
+#ifndef	DT_LNK
+#define	DT_LNK		10
+#endif
+
+#ifndef	DT_SOCK
+#define	DT_SOCK		12
+#endif
+
+#ifndef	DT_WHT
+#define	DT_WHT		14
+#endif
+
 struct squash_windows_dirent
 {
 	long d_namlen;

@@ -43,6 +43,9 @@
 #define SQUASH_VALID_VFD(vfd) ((vfd) < squash_global_fdtable.nr && NULL != squash_global_fdtable.fds[(vfd)])
 #define SQUASH_VFD_FILE(vfd) (squash_global_fdtable.fds[(vfd)])
 
+sqfs_err squash_start();
+sqfs_err squash_halt();
+
 /*
  * Obtains information about the file pointed to by path of a SquashFS fs.
  * The buf argument is a pointer to a stat structure as defined by
@@ -173,7 +176,7 @@ void squash_seekdir(SQUASH_DIR *dirp, long loc);
 void squash_rewinddir(SQUASH_DIR *dirp);
 
 /*
- * Returns the integer Libsquash file descriptor
+ * Returns the integer virtual file descriptor
  * associated with the named directory stream.
  * On failure, -1 is returned and error is set to the reason of the error.
  */

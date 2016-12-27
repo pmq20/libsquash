@@ -18,6 +18,7 @@ sqfs_err squash_fdtable_realloc(size_t nr)
 	{
 		return SQFS_OK;
 	}
+	nr *= 10; // we internally extend the requested size to minimize the number of realloc calls
 	squash_global_fdtable.fds = realloc(squash_global_fdtable.fds, nr * sizeof(struct squash_file *));
 	if (NULL == squash_global_fdtable.fds)
 	{

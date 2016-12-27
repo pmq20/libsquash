@@ -13,6 +13,7 @@
 
 int squash_stat(sqfs_err *error, sqfs *fs, const char *path, struct stat *buf)
 {
+	*error = SQFS_OK;
 	sqfs_inode node;
 	bool found;
 
@@ -48,6 +49,7 @@ int squash_lstat(sqfs_err *error, sqfs *fs, const char *path, struct stat *buf)
 
 int squash_fstat(sqfs_err *error, sqfs *fs, int vfd, struct stat *buf)
 {
+	*error = SQFS_OK;
 	if (!SQUASH_VALID_VFD(vfd))
 	{
 		*error = SQFS_INVALFD;
