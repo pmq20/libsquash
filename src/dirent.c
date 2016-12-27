@@ -113,15 +113,15 @@ struct dirent * squash_readdir(sqfs_err *error, SQUASH_DIR *dirp)
 			struct dirent *sysentry = &dirp->entries[dirp->actual_nr].sysentry;
 			sysentry->d_ino = entry->inode_number;
 			size_t minsize = entry->name_size;
-			if (sizeof(sysentry->d_name) < minsize) {
-				minsize = sizeof(sysentry->d_name);
-			}
 			if (SQUASHFS_NAME_LEN < minsize) {
 				minsize = SQUASHFS_NAME_LEN;
 			}
 #ifdef _WIN32
 			sysentry->d_name = dirp->entries[dirp->actual_nr].name;
 #else
+			if (sizeof(sysentry->d_name) < minsize) {
+				minsize = sizeof(sysentry->d_name);
+			}
 			memcpy(sysentry->d_name, dirp->entries[dirp->actual_nr].name, minsize);
 #endif
 #ifndef __linux__
