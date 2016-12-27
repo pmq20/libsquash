@@ -10,6 +10,7 @@
 
 #include <Windows.h>
 #include <stdint.h>
+#include <io.h>
 
 typedef unsigned short sqfs_mode_t;
 typedef uint32_t sqfs_id_t; /* Internal uids/gids are 32-bits */

@@ -8,6 +8,9 @@
 #ifndef DIRENT_H_245C4278
 #define DIRENT_H_245C4278
 
+#include <sys/types.h>
+#include <sys/dir.h>
+
 typedef struct {
 	sqfs *fs;
 	int	fd;	/* virtual file descriptor associated with directory */

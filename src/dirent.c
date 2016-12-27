@@ -112,13 +112,16 @@ struct dirent * squash_readdir(sqfs_err *error, SQUASH_DIR *dirp)
 			sqfs_dir_entry *entry = &dirp->entries[dirp->actual_nr].entry;
 			struct dirent *sysentry = &dirp->entries[dirp->actual_nr].sysentry;
 			sysentry->d_ino = entry->inode_number;
-			sysentry->d_name = dirp->entries[dirp->actual_nr].name;
-			sysentry->d_namlen = entry->name_size;
-			if (sysentry->d_namlen > SQUASHFS_NAME_LEN)
-			{
-				sysentry->d_namlen = SQUASHFS_NAME_LEN;
+			size_t minsize = entry->name_size;
+			if (sizeof(sysentry->d_name) < minsize) {
+				minsize = sizeof(sysentry->d_name);
 			}
-			sysentry->d_name[sysentry->d_namlen] = '\0';
+			if (SQUASHFS_NAME_LEN < minsize) {
+				minsize = SQUASHFS_NAME_LEN;
+			}
+			memcpy(sysentry->d_name, dirp->entries[dirp->actual_nr].name, minsize);
+			sysentry->d_namlen = minsize;
+			sysentry->d_name[minsize] = '\0';
 			// TODO special treatment of L types
 			switch (entry->type)
 			{	

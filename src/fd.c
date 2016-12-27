@@ -11,7 +11,6 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <io.h>
 
 int squash_open(sqfs_err *error, sqfs *fs, const char *path)
 {
