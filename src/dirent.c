@@ -38,6 +38,8 @@ SQUASH_DIR *squash_opendir(sqfs_err *error, sqfs *fs, const char *filename)
 		*error = SQFS_NOMEM;
 		return NULL;
 	}
+	memcpy(dir->magic, SQUASH_DIR_MAGIC, SQUASH_DIR_MAGIC_LEN);
+	dir->magic[SQUASH_DIR_MAGIC_LEN] = '\0';
 	dir->fs = fs;
 	dir->entries = NULL;
 	dir->nr = 0;

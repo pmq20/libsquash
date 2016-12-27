@@ -10,7 +10,11 @@
 
 #include <sys/types.h>
 
+#define SQUASH_DIR_MAGIC_LEN 18
+#define SQUASH_DIR_MAGIC "SQUASH_DIR_MAGIC__"
+
 typedef struct {
+	char magic[SQUASH_DIR_MAGIC_LEN + 1];
 	sqfs *fs;
 	int	fd;	/* virtual file descriptor associated with directory */
 	sqfs_inode node;

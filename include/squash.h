@@ -26,6 +26,7 @@
 #define SQFS_SQUASH_H
 
 #include <stdbool.h>
+#include <string.h>
 
 #include "squash/dir.h"
 #include "squash/file.h"
@@ -42,6 +43,7 @@
 
 #define SQUASH_VALID_VFD(vfd) ((vfd) < squash_global_fdtable.nr && NULL != squash_global_fdtable.fds[(vfd)])
 #define SQUASH_VFD_FILE(vfd) (squash_global_fdtable.fds[(vfd)])
+#define SQUASH_VALID_DIR(dir) (0 == strncmp(SQUASH_DIR_MAGIC, (char *)((dir)), SQUASH_DIR_MAGIC_LEN))
 
 sqfs_err squash_start();
 sqfs_err squash_halt();
