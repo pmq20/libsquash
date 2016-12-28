@@ -1,7 +1,7 @@
 /build/
 /zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8/
 *~
-
+.idea
 # Object files
 *.o
 *.ko
