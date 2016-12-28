@@ -6,18 +6,18 @@
  */
 
 #include "squash.h"
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/stat.h>
 
+
+/**
+ *
+ */
 ssize_t squash_readlink(sqfs_err *error, sqfs *fs, const char *path, char *buf, size_t bufsize)
 {
 	if(!error)
 		return -1;
 
 	if(!buf || !path || !fs){
-		*error = SQFS_ERR;
+		*error = SQFS_NULLPTR;
 		return -1;
 	}
 
