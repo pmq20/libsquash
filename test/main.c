@@ -356,7 +356,7 @@ static void test_squash_readlink()
 	sqfs_name name;
 	size_t name_size = sizeof(name);
 	struct stat st;
-	bzero(&st, sizeof(st));
+	memset(&st, 0, sizeof(st));
 
 	memset(&fs, 0, sizeof(sqfs));
 	sqfs_open_image(&fs, libsquash_fixture, 0);
