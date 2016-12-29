@@ -183,8 +183,16 @@ static void test_stat()
 	expect(S_ISREG(st.st_mode), "/bombing is a regular file");
 	squash_close(&error, fd);
 	
-	// TODO test a link
-	
+	//stat /dir/something4
+	ret = squash_lstat(&error, &fs, "/dir1/something4", &st);
+	expect(0 == ret, "Upon successful completion a value of 0 is returned");
+	expect(S_ISLNK(st.st_mode), "/dir1/something4 is a symbolic link file");
+
+	//stat /dir/something4
+	ret = squash_stat(&error, &fs, "/dir1/something4", &st);
+	expect(0 == ret, "Upon successful completion a value of 0 is returned");
+	expect(S_ISDIR(st.st_mode), "/dir1/something4 is a symbolic link file and references is a dir");
+
 	// RIP.
 	sqfs_destroy(&fs);
 
@@ -366,7 +374,7 @@ static void test_squash_readlink()
 	expect(SQFS_OK == error, "squash_readlink is happy");
 	char content[] = ".0.0.4@something4";
 	expect(0 == strcmp(name, content), "something4 links to .0.0.4@something4");
-	expect(sizeof(content) == readsize, "squash_readlink return value is happy");
+	expect(strlen(content) == readsize, "squash_readlink return value is happy");
 
 	readsize = squash_readlink(0, &fs, "/dir1/something4" ,(char *)&name, name_size);
 	expect(-1 == readsize, "squash_readlink ‘error’ is null");
