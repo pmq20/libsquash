@@ -285,6 +285,12 @@ int filter_scandir(const struct dirent * ent)
 int reverse_alpha_compar(const struct dirent **a, const struct dirent **b){
 	return -strcmp((*a)->d_name, (*b)->d_name);
 }
+#ifndef __linux__
+int alphasort(const struct dirent **a, const struct dirent **b){
+	return strcmp((*a)->d_name, (*b)->d_name);
+}
+
+#endif
 
 static void test_dirent()
 {
@@ -355,11 +361,9 @@ static void test_dirent()
 	expect(NULL == mydirent, "oops empty dir");
 
 	struct dirent **namelist = 0;
-#ifdef __linux__
+
 	int numEntries = squash_scandir(&error, &fs, "/dir1", &namelist, filter_scandir, alphasort);
-#else
-	int numEntries = squash_scandir(&error, &fs, "/dir1", &namelist, filter_scandir, NULL);
-#endif
+
 	expect(2 == numEntries, "scandir_filter is happy");
 
 
