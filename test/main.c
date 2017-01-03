@@ -355,8 +355,13 @@ static void test_dirent()
 	expect(NULL == mydirent, "oops empty dir");
 
 	struct dirent **namelist = 0;
+#ifdef __linux__
 	int numEntries = squash_scandir(&error, &fs, "/dir1", &namelist, filter_scandir, alphasort);
+#else
+	int numEntries = squash_scandir(&error, &fs, "/dir1", &namelist, filter_scandir, NULL);
+#endif
 	expect(2 == numEntries, "scandir_filter is happy");
+
 
 	expect(NULL != namelist[0], "returns a pointer to the next directory entry");
 	expect(0 == strcmp(".0.0.4@something4", namelist[0]->d_name), "got .0.0.4@something4");
