@@ -371,7 +371,9 @@ static void test_dirent()
 	expect(strlen(".bin") == namelist[1]->d_namlen, "got a str len");
 #endif
 
-	for(int i = 0; i < numEntries; i++){
+	int i = 0;
+
+	for(i = 0; i < numEntries; i++){
 		free(namelist[i]);
 	}
 	free(namelist);
@@ -398,21 +400,10 @@ static void test_dirent()
 
 
 
-	for(int i = 0; i < numEntries; i++){
+	for(i = 0; i < numEntries; i++){
 		free(namelist[i]);
 	}
 	free(namelist);
-
-
-//	if (n < 0)
-//		perror("scandir");
-//	else {
-//		while(n--) {
-//			printf("%s\n", namelist[n]->d_name);
-//			free(namelist[n]);
-//		}
-//		free(namelist);
-//	}
 
 	fprintf(stderr, "\n");
 	fflush(stderr);
