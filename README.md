@@ -20,7 +20,7 @@ other ordinary file descriptors of the process.
 1. Added extra API's that mirror the calling style of common system calls;
 also added are a sample on how to use libsquash in an unobtrusive way by utilizing those API's.
 1. Made it compile on 3 platforms simultanesly: Windows, Mac OS X and Linux. Added CMake so that Xcode and Vistual Studio Projects could be easily generated.
-1. Added test code. Registered with Travis CI for Linux and Darwin; appveyor for Windows.
+1. Added test code.
 
 ## Building
 
