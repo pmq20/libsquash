@@ -25,13 +25,12 @@ other ordinary file descriptors of the process.
 
 ## Building
 
-On most systems you could build and test the library using the following commands,
+On most systems you could build the library using the following commands,
 
     mkdir build
     cd build
     cmake ..
     cmake --build .
-    ctest --verbose
 
 ## Extra API's
 

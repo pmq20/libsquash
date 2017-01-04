@@ -1,19 +1,23 @@
 PROJECT(libsquash C)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
+OPTION(BUILD_TESTS "Build tests of libsquash" OFF)
+
 FIND_PACKAGE(ZLIB REQUIRED)
 INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIRS})
-LINK_LIBRARIES(${ZLIB_LIBRARIES})
 
 INCLUDE_DIRECTORIES(src include)
 FILE(GLOB SRC_H include/squash.h include/squash/*.h)
 FILE(GLOB SRC_SQUASH src/*.c)
 ADD_LIBRARY(squash ${SRC_H} ${SRC_SQUASH})
 
-INCLUDE_DIRECTORIES(test)
-FILE(GLOB SRC_TEST test/*.c)
-FILE(GLOB SRC_TEST_FIXTURES test/fixtures/*.c)
-ADD_EXECUTABLE(squash_tests ${SRC_H} ${SRC_SQUASH}
-                            ${SRC_TEST} ${SRC_TEST_FIXTURES})
-ENABLE_TESTING()
-ADD_TEST(squash_tests squash_tests)
+IF (BUILD_TESTS)
+	INCLUDE_DIRECTORIES(test)
+	FILE(GLOB SRC_TEST test/*.c)
+	FILE(GLOB SRC_TEST_FIXTURES test/fixtures/*.c)
+	ADD_EXECUTABLE(squash_tests ${SRC_H} ${SRC_SQUASH}
+	                            ${SRC_TEST} ${SRC_TEST_FIXTURES})
+	TARGET_LINK_LIBRARIES(squash_tests ${ZLIB_LIBRARIES})
+	ENABLE_TESTING()
+	ADD_TEST(squash_tests squash_tests)
+ENDIF ()
