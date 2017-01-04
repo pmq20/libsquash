@@ -18,7 +18,7 @@ and loaded into memory in advance.
 libsquash operations. The vfd is a non-negative integer that lives together with
 other ordinary file descriptors of the process.
 1. Added new API's that mirror the calling style of common system calls;
-also added are a sample on how to use libsquash in an unobtrusive way by utilizing those API's.
+also added is a sample on how to use libsquash in an unobtrusive way by utilizing those API's.
 1. Made it compile on 3 platforms simultanesly: Windows, Mac OS X and Linux. Added CMake so that Xcode and Vistual Studio Projects could be easily generated.
 1. Added tests for both the old and new API's of the library.
 
