@@ -33,7 +33,7 @@ On most systems you could build the library using the following commands,
 
 Use `cmake -DBUILD_TESTS=ON ..` to build the tests in addition and use `ctest --verbose` to run them.
 
-## new API's
+## New API's
 
 ### `squash_stat(error, fs, path, buf)`
 
