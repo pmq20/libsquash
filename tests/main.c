@@ -6,11 +6,13 @@
  */
 
 #include "squash.h"
-#include "fixture.h"
-
+#include <stdint.h>
+#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+extern const uint8_t libsquash_fixture[];
 
 static void expect(short condition, const char *reason)
 {
