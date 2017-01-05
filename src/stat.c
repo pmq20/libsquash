@@ -120,7 +120,7 @@ int squash_lstat(sqfs *fs, const char *path, struct stat *buf)
 	return 0;
 }
 
-int squash_fstat(sqfs *fs, int vfd, struct stat *buf)
+int squash_fstat(int vfd, struct stat *buf)
 {
 	if (!SQUASH_VALID_VFD(vfd))
 	{
