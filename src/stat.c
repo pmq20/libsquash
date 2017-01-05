@@ -7,10 +7,7 @@
  */
 
 #include "squash.h"
-#include <stdlib.h>
-#include <string.h>
-#include <fcntl.h>
-#include <sys/stat.h>
+
 
 int squash_stat(sqfs *fs, const char *path, struct stat *buf)
 {
@@ -120,7 +117,7 @@ int squash_lstat(sqfs *fs, const char *path, struct stat *buf)
 	return 0;
 }
 
-int squash_fstat(sqfs *fs, int vfd, struct stat *buf)
+int squash_fstat(int vfd, struct stat *buf)
 {
 	if (!SQUASH_VALID_VFD(vfd))
 	{
