@@ -34,7 +34,7 @@
 
 #include <stdbool.h>
 #include <string.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include <assert.h>
 
 #include "squash/dir.h"
