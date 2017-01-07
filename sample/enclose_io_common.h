@@ -22,6 +22,7 @@
 #include <assert.h>
 
 #ifdef _WIN32
+#define MAXPATHLEN 1024
 #include <direct.h>
 #include <wchar.h>
 #include <Windows.h>
