@@ -33,8 +33,6 @@ On most systems you could build the library using the following commands,
 
 Use `cmake -DBUILD_TESTS=ON ..` to build the tests in addition and use `ctest --verbose` to run them.
 
-Use `cmake -DBUILD_SAMPLE=ON ..` to build the sample in addition.
-
 ## New API's
 
 ### `squash_stat(fs, path, buf)`

@@ -1,11 +1,19 @@
 version: '{build}'
 
 environment:
-  ARCH: 32
+  matrix:
+  - GENERATOR: "Visual Studio 14 2015 Win64"
+    ARCH: 64
+    PlatformToolset: v140
+    Platform: x64
+  - GENERATOR: "Visual Studio 12 2013 Win64"
+    ARCH: 64
+    PlatformToolset: v120
+    Platform: x64
 
 build_script:
-- cmd: |
-    nuget install zlib.v140.windesktop.msvcstl.dyn.rt-dyn
+- ps: |
+    nuget install zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn
 
     cmake --version
 
@@ -13,10 +21,10 @@ build_script:
 
     cd build
 
-    cmake -DBUILD_SAMPLE=ON -DBUILD_TESTS=ON -G"Visual Studio 14 2015" -DZLIB_INCLUDE_DIR:PATH=C:\projects\libsquash\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\include -DZLIB_LIBRARY_RELEASE:FILEPATH=C:\projects\libsquash\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\Win32\RelWithDebInfo\zlib.lib ..
+    cmake -DBUILD_TESTS=ON -G"$env:GENERATOR" -DZLIB_INCLUDE_DIR:PATH=C:\projects\libsquash\zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\build\native\include -DZLIB_LIBRARY_RELEASE:FILEPATH=C:\projects\libsquash\zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\$env:PlatformToolset\windesktop\msvcstl\dyn\rt-dyn\$env:Platform\RelWithDebInfo\zlib.lib ..
 
     cmake --build . --config Release
 
-    copy C:\projects\libsquash\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\Win32\RelWithDebInfo\zlib.dll Release
+    copy C:\projects\libsquash\zlib.$env:PlatformToolset.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\$env:PlatformToolset\windesktop\msvcstl\dyn\rt-dyn\$env:Platform\RelWithDebInfo\zlib.dll Release
 
     ctest --verbose

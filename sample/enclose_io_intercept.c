@@ -89,7 +89,7 @@ int enclose_io_stat(const char *path, struct stat *buf)
 		return stat(path, buf);
 	}
 }
-#ifndef _WIN32
+
 int enclose_io_lstat(const char *path, struct stat *buf)
 {
 	if (enclose_io_cwd_inside && '/' != *path) {
@@ -101,7 +101,7 @@ int enclose_io_lstat(const char *path, struct stat *buf)
 		return lstat(path, buf);
 	}
 }
-#endif
+
 int enclose_io_fstat(int fildes, struct stat *buf)
 {
 	if (SQUASH_VALID_VFD(fildes)) {
@@ -124,7 +124,7 @@ int enclose_io_open(int nargs, const char *pathname, int flags, ...)
 		} else {
 			va_list args;
 			va_start(args, flags);
-			int mode = va_arg(args, int);
+			mode_t mode = va_arg(args, mode_t);
 			va_end(args);
 			return open(pathname, flags, mode);
 		}
@@ -157,7 +157,7 @@ off_t enclose_io_lseek(int fildes, off_t offset, int whence)
 		return lseek(fildes, offset, whence);
 	}
 }
-#ifndef _WIN32
+
 ssize_t enclose_io_readlink(const char *path, char *buf, size_t bufsize)
 {
 	if (enclose_io_cwd_inside && '/' != *path) {
@@ -249,4 +249,3 @@ int enclose_io_scandir(const char *dirname, struct dirent ***namelist,
 		return scandir(dirname, namelist, select, compar);
 	}
 }
-#endif

@@ -50,9 +50,8 @@ int squash_open(sqfs *fs, const char *path)
 
 	// get a dummy fd from the system
 	fd = dup(0);
-	assert(fd > 0);
 	// make sure that our global fd table is large enough
-	int nr = fd + 1;
+	size_t nr = fd + 1;
 	if (squash_global_fdtable.nr < nr)
 	{
 		// we secretly extend the requested size
