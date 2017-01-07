@@ -19,7 +19,7 @@ struct squash_file {
 };
 
 struct squash_fdtable {
-	size_t nr;
+	int nr;
 	struct squash_file **fds;
 };
 
