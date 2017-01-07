@@ -4,9 +4,7 @@ environment:
   ARCH: 32
 
 build_script:
-- ps: |
-    $ErrorActionPreference="Stop"
-
+- cmd: |
     nuget install zlib.v140.windesktop.msvcstl.dyn.rt-dyn
 
     cmake --version
@@ -22,4 +20,3 @@ build_script:
     copy C:\projects\libsquash\zlib.v140.windesktop.msvcstl.dyn.rt-dyn.1.2.8.8\lib\native\v140\windesktop\msvcstl\dyn\rt-dyn\Win32\RelWithDebInfo\zlib.dll Release
 
     ctest --verbose
-
