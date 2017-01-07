@@ -423,11 +423,7 @@ static void test_squash_readlink()
 	fprintf(stderr, "Testing squash_readlink...\n");
 	fflush(stderr);
 
-	sqfs_inode root, node;
 	sqfs fs;
-	int ret;
-	int fd;
-	bool found = false;
 
 	sqfs_name name;
 	size_t name_size = sizeof(name);
