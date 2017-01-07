@@ -5,6 +5,8 @@ environment:
 
 build_script:
 - ps: |
+    $ErrorActionPreference="Stop"
+
     nuget install zlib.v140.windesktop.msvcstl.dyn.rt-dyn
 
     cmake --version
