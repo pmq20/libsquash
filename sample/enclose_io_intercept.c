@@ -124,7 +124,7 @@ int enclose_io_open(int nargs, const char *pathname, int flags, ...)
 		} else {
 			va_list args;
 			va_start(args, flags);
-			mode_t mode = va_arg(args, mode_t);
+			mode_t mode = va_arg(args, int);
 			va_end(args);
 			return open(pathname, flags, mode);
 		}
