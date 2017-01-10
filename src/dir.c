@@ -320,6 +320,7 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 		bool *found, bool follow_link) {
 	sqfs_err err;
 	sqfs_name buf;
+	sqfs_name name_here;
 	sqfs_dir_entry entry;
 
 	memset(&buf, 0, sizeof(sqfs_name));
@@ -355,7 +356,9 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 
 		if (follow_link && S_ISLNK(inode->base.mode)) {
 			size_t size_here = path - path0;
-			char name_here[size_here + 1];
+			if (size_here > SQUASHFS_NAME_LEN) {
+				size_here = SQUASHFS_NAME_LEN;
+			}
 			memcpy(name_here, path0, size_here);
 			name_here[size_here] = '\0';
 			err = squash_follow_link(fs, name_here, inode);
