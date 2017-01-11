@@ -51,14 +51,14 @@ static void test_basic_func()
 	memset(&fs, 0, sizeof(sqfs));
 	ret = sqfs_open_image(&fs, libsquash_fixture, 0);
 	expect(SQFS_OK == ret, "sqfs_open_image should succeed");
-	//expect(1484142037 == fs.sb->mkfs_time, "fs made at 2016-12-15 13:33:09 +0800");
+	expect(1484142037 == fs.sb->mkfs_time, "fs made at Wed Jan 11 21:40:37 2017 +0800");
 	
 	// sqfs => root sqfs_inode
 	memset(&root, 0, sizeof(sqfs_inode));
 	ret = sqfs_inode_get(&fs, &root, sqfs_inode_root(&fs));
 	expect(SQFS_OK == ret, "successfully read the root inode");
 	expect(SQUASHFS_DIR_TYPE == root.base.inode_type, "got a dir as the root");
-	//expect(1481778144 == root.base.mtime, "2016-12-15 13:02:24 +0800");
+	expect(1484142005 == root.base.mtime, "Jan 11 21:40:05 2017 +0800");
 	
 	// "/" => sqfs_inode and stat
 	memcpy(&node, &root, sizeof(sqfs_inode));
