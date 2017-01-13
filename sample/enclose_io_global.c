@@ -6,6 +6,8 @@
  * For full terms see the included LICENSE file
  */
 
+#include "enclose_io_common.h"
+
 #include <stdint.h>
 #include <stddef.h>
 
