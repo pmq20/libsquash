@@ -195,7 +195,8 @@ int squash_dirfd(SQUASH_DIR *dirp)
 
 bool squash_valid_dir(void *dirp)
 {
-	for (size_t i = 0; i <= squash_global_fdtable.last; ++i) {
+	size_t i;
+	for (i = 0; i <= squash_global_fdtable.last; ++i) {
 		if (squash_global_fdtable.fds[i] && dirp == squash_global_fdtable.fds[i]->payload) {
 			return true;
 		}
