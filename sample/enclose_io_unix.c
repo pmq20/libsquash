@@ -16,6 +16,9 @@
 						memcpy(&enclose_io_expanded_name[enclose_io_cwd_len], (path), memcpy_len); \
 						enclose_io_expanded_name[enclose_io_cwd_len + memcpy_len] = '\0'
 
+sqfs *enclose_io_fs;
+sqfs_name enclose_io_cwd;
+
 #ifndef _WIN32
 int enclose_io_chdir(const char *path)
 {
