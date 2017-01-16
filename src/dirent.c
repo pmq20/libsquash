@@ -27,13 +27,13 @@ SQUASH_DIR *squash_opendir(sqfs *fs, const char *filename)
 	dir->entries = NULL;
 	dir->nr = 0;
 	dir->fd = squash_open(fs, filename);
-	squash_global_fdtable.fds[dir->fd]->payload = (void *)dir;
-	dir->actual_nr = 0;
-	dir->loc = 0;
 	if (-1 == dir->fd)
 	{
 		goto failure;
 	}
+	squash_global_fdtable.fds[dir->fd]->payload = (void *)dir;
+	dir->actual_nr = 0;
+	dir->loc = 0;
 	error = sqfs_inode_get(fs, &dir->node, sqfs_inode_root(fs));
 	if (SQFS_OK != error)
 	{
