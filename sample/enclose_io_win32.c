@@ -223,6 +223,7 @@ EncloseIOGetFileAttributesW(
 	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
+		int ret;
 		struct stat buf;
 		ret = squash_stat(enclose_io_fs, enclose_io_expanded, &buf);
 		if (-1 == ret) {
@@ -232,6 +233,7 @@ EncloseIOGetFileAttributesW(
 		return EncloseIOGetFileAttributesHelper(&buf);
 	} else if (W_IS_ENCLOSE_IO_PATH(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
+		int ret;
 		struct stat buf;
 		ret = squash_stat(enclose_io_fs, enclose_io_converted, &buf);
 		if (-1 == ret) {
@@ -240,7 +242,7 @@ EncloseIOGetFileAttributesW(
 		}		
 		return EncloseIOGetFileAttributesHelper(&buf);
 	} else {
-		return EncloseIOGetFileAttributesW(
+		return GetFileAttributesW(
 			lpFileName
 		);
 	}
@@ -256,6 +258,8 @@ EncloseIOGetFileAttributesExW(
 	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
+		assert(GetFileExInfoStandard == fInfoLevelId);
+		int ret;
 		struct stat buf;
 		ret = squash_stat(enclose_io_fs, enclose_io_expanded, &buf);
 		if (-1 == ret) {
@@ -263,10 +267,12 @@ EncloseIOGetFileAttributesExW(
 			return 0;
 		}
 		WIN32_FILE_ATTRIBUTE_DATA *fa = (WIN32_FILE_ATTRIBUTE_DATA *)lpFileInformation;
-		*fa = EncloseIOGetFileAttributesHelper(&buf);
+		fa->dwFileAttributes = EncloseIOGetFileAttributesHelper(&buf);
 		return 1;
 	} else if (W_IS_ENCLOSE_IO_PATH(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
+		assert(GetFileExInfoStandard == fInfoLevelId);
+		int ret;
 		struct stat buf;
 		ret = squash_stat(enclose_io_fs, enclose_io_converted, &buf);
 		if (-1 == ret) {
@@ -274,10 +280,10 @@ EncloseIOGetFileAttributesExW(
 			return 0;
 		}
 		WIN32_FILE_ATTRIBUTE_DATA *fa = (WIN32_FILE_ATTRIBUTE_DATA *)lpFileInformation;
-		*fa = EncloseIOGetFileAttributesHelper(&buf);
+		fa->dwFileAttributes = EncloseIOGetFileAttributesHelper(&buf);
 		return 1;
 	} else {
-		return EncloseIOGetFileAttributesExW(
+		return GetFileAttributesExW(
 			lpFileName,
 			fInfoLevelId,
 			lpFileInformation
@@ -317,7 +323,7 @@ EncloseIOReadFile(
 	}
 }
 
-#ifndef EncloseIORubyCompiler
+#ifndef RUBY_EXPORT
 NTSTATUS
 EncloseIOpNtQueryInformationFile(
 	HANDLE FileHandle,
@@ -433,5 +439,5 @@ EncloseIOpNtQueryDirectoryFile(
 	}
 }
 
-#endif // !EncloseIORubyCompiler
+#endif // !RUBY_EXPORT
 #endif

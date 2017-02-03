@@ -35,11 +35,11 @@
 #define GetFileAttributesW(...) EncloseIOGetFileAttributesW(__VA_ARGS__)
 #define GetFileAttributesExW(...) EncloseIOGetFileAttributesExW(__VA_ARGS__)
 
-#ifndef EncloseIORubyCompiler
+#ifndef RUBY_EXPORT
 #define pNtQueryDirectoryFile(...) EncloseIOpNtQueryDirectoryFile(__VA_ARGS__)
 #define pNtQueryInformationFile(...) EncloseIOpNtQueryInformationFile(__VA_ARGS__)
 #define pNtQueryVolumeInformationFile(...) EncloseIOpNtQueryVolumeInformationFile(__VA_ARGS__)
-#endif //!EncloseIORubyCompiler
+#endif //!RUBY_EXPORT
 
 #endif //_WIN32
 #endif //!__cplusplus
