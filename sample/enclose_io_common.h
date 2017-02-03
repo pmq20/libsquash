@@ -171,6 +171,18 @@ EncloseIOCloseHandle(
 	HANDLE hObject
 );
 
+DWORD
+EncloseIOGetFileAttributesW(
+    LPCWSTR lpFileName
+);
+
+BOOL
+EncloseIOGetFileAttributesExW(
+    LPCWSTR lpFileName,
+    GET_FILEEX_INFO_LEVELS fInfoLevelId,
+    LPVOID lpFileInformation
+);
+
 NTSTATUS
 EncloseIOpNtQueryInformationFile(
 	HANDLE FileHandle,

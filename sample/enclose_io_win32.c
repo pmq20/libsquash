@@ -200,6 +200,91 @@ EncloseIOCloseHandle(
 	}
 }
 
+static DWORD EncloseIOGetFileAttributesHelper(struct stat *st)
+{
+	DWORD fa = FILE_ATTRIBUTE_READONLY;
+	if (S_ISCHR(st->st_mode)) {
+		fa |= FILE_ATTRIBUTE_DEVICE;
+	} else if (S_ISLNK(st->st_mode)) {
+		fa |= FILE_ATTRIBUTE_REPARSE_POINT;
+	} else if (S_ISDIR(st->st_mode)) {
+		fa |= FILE_ATTRIBUTE_DIRECTORY;
+	} else {
+		fa |= FILE_ATTRIBUTE_NORMAL;
+	}
+	return fa;
+}
+
+DWORD
+EncloseIOGetFileAttributesW(
+    LPCWSTR lpFileName
+)
+{
+	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(lpFileName)) {
+		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
+		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
+		struct stat buf;
+		ret = squash_stat(enclose_io_fs, enclose_io_expanded, &buf);
+		if (-1 == ret) {
+			ENCLOSE_IO_SET_LAST_ERROR;
+			return INVALID_FILE_ATTRIBUTES;
+		}
+		return EncloseIOGetFileAttributesHelper(&buf);
+	} else if (W_IS_ENCLOSE_IO_PATH(lpFileName)) {
+		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
+		struct stat buf;
+		ret = squash_stat(enclose_io_fs, enclose_io_converted, &buf);
+		if (-1 == ret) {
+			ENCLOSE_IO_SET_LAST_ERROR;
+			return INVALID_FILE_ATTRIBUTES;
+		}		
+		return EncloseIOGetFileAttributesHelper(&buf);
+	} else {
+		return EncloseIOGetFileAttributesW(
+			lpFileName
+		);
+	}
+}
+
+BOOL
+EncloseIOGetFileAttributesExW(
+    LPCWSTR lpFileName,
+    GET_FILEEX_INFO_LEVELS fInfoLevelId,
+    LPVOID lpFileInformation
+)
+{
+	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(lpFileName)) {
+		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
+		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
+		struct stat buf;
+		ret = squash_stat(enclose_io_fs, enclose_io_expanded, &buf);
+		if (-1 == ret) {
+			ENCLOSE_IO_SET_LAST_ERROR;
+			return 0;
+		}
+		WIN32_FILE_ATTRIBUTE_DATA *fa = (WIN32_FILE_ATTRIBUTE_DATA *)lpFileInformation;
+		*fa = EncloseIOGetFileAttributesHelper(&buf);
+		return 1;
+	} else if (W_IS_ENCLOSE_IO_PATH(lpFileName)) {
+		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
+		struct stat buf;
+		ret = squash_stat(enclose_io_fs, enclose_io_converted, &buf);
+		if (-1 == ret) {
+			ENCLOSE_IO_SET_LAST_ERROR;
+			return 0;
+		}
+		WIN32_FILE_ATTRIBUTE_DATA *fa = (WIN32_FILE_ATTRIBUTE_DATA *)lpFileInformation;
+		*fa = EncloseIOGetFileAttributesHelper(&buf);
+		return 1;
+	} else {
+		return EncloseIOGetFileAttributesExW(
+			lpFileName,
+			fInfoLevelId,
+			lpFileInformation
+		);
+	}
+}
+
 BOOL
 EncloseIOReadFile(
 	HANDLE       hFile,
@@ -246,16 +331,7 @@ EncloseIOpNtQueryInformationFile(
 		struct stat st = sqf->st;
 		IoStatusBlock->Status = STATUS_NOT_IMPLEMENTED;
 		FILE_ALL_INFORMATION *file_info = (FILE_ALL_INFORMATION *)FileInformation;
-		file_info->BasicInformation.FileAttributes = FILE_ATTRIBUTE_READONLY;
-		if (S_ISCHR(st.st_mode)) {
-			file_info->BasicInformation.FileAttributes |= FILE_ATTRIBUTE_DEVICE;
-		} else if (S_ISLNK(st.st_mode)) {
-			file_info->BasicInformation.FileAttributes |= FILE_ATTRIBUTE_REPARSE_POINT;
-		} else if (S_ISDIR(st.st_mode)) {
-			file_info->BasicInformation.FileAttributes |= FILE_ATTRIBUTE_DIRECTORY;
-		} else {
-			file_info->BasicInformation.FileAttributes |= FILE_ATTRIBUTE_NORMAL;
-		}
+		file_info->BasicInformation.FileAttributes = EncloseIOGetFileAttributesHelper(&st);
 		file_info->StandardInformation.EndOfFile.QuadPart = st.st_size;
 
 		file_info->BasicInformation.LastAccessTime.QuadPart = st.st_atime * 10000000ULL + 116444736000000000ULL;
