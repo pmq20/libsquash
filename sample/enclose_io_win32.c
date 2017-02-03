@@ -12,11 +12,11 @@
 
 int enclose_io_wopen(const wchar_t *pathname, int flags, int mode)
 {
-	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(pathname)) {
+	if (enclose_io_cwd[0] && enclose_io_is_relative_w(pathname)) {
 		W_ENCLOSE_IO_PATH_CONVERT(pathname);
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
 		return squash_open(enclose_io_fs, enclose_io_expanded);
-	} else if (W_IS_ENCLOSE_IO_PATH(pathname)) {
+	} else if (enclose_io_is_path_w(pathname)) {
 		W_ENCLOSE_IO_PATH_CONVERT(pathname);
 		return squash_open(enclose_io_fs, enclose_io_converted);
 	} else {
@@ -46,7 +46,7 @@ intptr_t enclose_io_get_osfhandle(int fd)
 
 int enclose_io_wchdir(const wchar_t *path)
 {
-	if (W_IS_ENCLOSE_IO_PATH(path)) {
+	if (enclose_io_is_path_w(path)) {
 		W_ENCLOSE_IO_PATH_CONVERT(path);
 		return enclose_io_chdir_helper(enclose_io_converted);
 	} else {
@@ -158,11 +158,11 @@ EncloseIOCreateFileW(
 	HANDLE hTemplateFile
 )
 {
-	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(lpFileName)) {
+	if (enclose_io_cwd[0] && enclose_io_is_relative_w(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
 		return EncloseIOCreateFileWHelper(enclose_io_expanded);
-	} else if (W_IS_ENCLOSE_IO_PATH(lpFileName)) {
+	} else if (enclose_io_is_path_w(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		return EncloseIOCreateFileWHelper(enclose_io_converted);
 	} else {
@@ -220,7 +220,7 @@ EncloseIOGetFileAttributesW(
     LPCWSTR lpFileName
 )
 {
-	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(lpFileName)) {
+	if (enclose_io_cwd[0] && enclose_io_is_relative_w(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
 		int ret;
@@ -231,7 +231,7 @@ EncloseIOGetFileAttributesW(
 			return INVALID_FILE_ATTRIBUTES;
 		}
 		return EncloseIOGetFileAttributesHelper(&buf);
-	} else if (W_IS_ENCLOSE_IO_PATH(lpFileName)) {
+	} else if (enclose_io_is_path_w(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		int ret;
 		struct stat buf;
@@ -255,7 +255,7 @@ EncloseIOGetFileAttributesExW(
     LPVOID lpFileInformation
 )
 {
-	if (enclose_io_cwd[0] && W_IS_ENCLOSE_IO_RELATIVE(lpFileName)) {
+	if (enclose_io_cwd[0] && enclose_io_is_relative_w(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
 		assert(GetFileExInfoStandard == fInfoLevelId);
@@ -269,7 +269,7 @@ EncloseIOGetFileAttributesExW(
 		WIN32_FILE_ATTRIBUTE_DATA *fa = (WIN32_FILE_ATTRIBUTE_DATA *)lpFileInformation;
 		fa->dwFileAttributes = EncloseIOGetFileAttributesHelper(&buf);
 		return 1;
-	} else if (W_IS_ENCLOSE_IO_PATH(lpFileName)) {
+	} else if (enclose_io_is_path_w(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		assert(GetFileExInfoStandard == fInfoLevelId);
 		int ret;
