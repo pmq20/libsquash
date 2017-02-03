@@ -1,13 +1,13 @@
 # Libsquash
 
-Portable, user-land SquashFS that can be easily linked and embedded within your application; a [squashfuse](https://github.com/vasi/squashfuse) fork.
+Portable, user-land SquashFS that can be easily linked and embedded within your application.
 
 [![Build status: Linux and Darwin](https://travis-ci.org/pmq20/libsquash.svg?branch=master)](https://travis-ci.org/pmq20/libsquash)
 [![Build status: Windows](https://ci.appveyor.com/api/projects/status/f4htq948gag3l2k8/branch/master?svg=true)](https://ci.appveyor.com/project/pmq20/libsquash/branch/master)
 
-## About the fork
+## Design
 
-This project was forked from https://github.com/vasi/squashfuse with the following modifications.
+This project was derived from https://github.com/vasi/squashfuse with the following modifications.
 
 1. __NO FUSE REQUIRED__, so that it can be so portable that even systems without fuse could use it.
 1. Read data from the memory instead of from a file by passing a pointer to an array of bytes,
