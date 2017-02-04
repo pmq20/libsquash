@@ -164,7 +164,3 @@ If this pointer is `NULL`, then the array is not sorted.
 ## Acknowledgment
 
 Thank you [Dave Vasilevsky](https://github.com/vasi) for the excellent work of squashfuse!
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/pmq20/libsquash.
