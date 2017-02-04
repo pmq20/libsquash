@@ -168,9 +168,3 @@ Thank you [Dave Vasilevsky](https://github.com/vasi) for the excellent work of s
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/pmq20/libsquash.
-
-## License
-
-Copyright (c) 2012 **Dave Vasilevsky** &lt;dave@vasilevsky.ca&gt;, **Phillip Lougher** &lt;phillip@squashfs.org.uk&gt;.
-
-Copyright (c) 2017 **Minqi Pan** &lt;pmq2001@gmail.com&gt;, **Shengyuan Liu** &lt;sounder.liu@gmail.com&gt;.
