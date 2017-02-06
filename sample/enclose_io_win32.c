@@ -37,6 +37,7 @@ int enclose_io_open_osfhandle(intptr_t osfhandle, int flags)
 intptr_t enclose_io_get_osfhandle(int fd)
 {
 	if (SQUASH_VALID_VFD(fd)) {
+                assert(!(S_ISDIR(squash_global_fdtable.fds[fd]->st.st_mode)));
 		return (intptr_t)(squash_global_fdtable.fds[fd]->payload);
 	}
 	else {
@@ -128,23 +129,13 @@ static HANDLE EncloseIOCreateFileWHelper(char * incoming)
 		return INVALID_HANDLE_VALUE;
 	}
 	if (S_ISDIR(buf.st_mode)) {
-		SQUASH_DIR *handle = squash_opendir(enclose_io_fs, incoming);
-		assert(NULL != handle);
-		return (void *)handle;
-	}
-	else {
+		SQUASH_DIR *dirp = squash_opendir(enclose_io_fs, incoming);
+		assert(NULL != dirp);
+	} else {
 		ret = squash_open(enclose_io_fs, incoming);
 		assert(ret >= 0);
-		// TODO free it
-		int *handle = (int *)malloc(sizeof(int));
-		if (NULL == handle) {
-			SetLastError(ERROR_NOT_ENOUGH_MEMORY);
-			return INVALID_HANDLE_VALUE;
-		}
-		*handle = ret;
-		squash_global_fdtable.fds[*handle]->payload = (void *)handle;
-		return (void *)handle;
 	}
+        return squash_global_fdtable.fds[ret]->payload;
 }
 
 HANDLE
