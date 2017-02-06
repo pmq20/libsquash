@@ -319,7 +319,7 @@ EncloseIOGetHandleInformation(
     LPDWORD lpdwFlags
 )
 {
-	struct squash_file *sqf = squash_find_entry((void *)lpdwFlags);
+	struct squash_file *sqf = squash_find_entry((void *)hObject);
         if (sqf) {
                 *lpdwFlags = 0;
                 return 1;
