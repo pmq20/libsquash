@@ -181,7 +181,6 @@ EncloseIOCloseHandle(
 			return TRUE;
 		} else {
 			squash_close(*((int *)hObject));
-			free((int *)hObject);
 			return TRUE;
 		}
 	} else {

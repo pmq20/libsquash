@@ -29,7 +29,7 @@ SQUASH_DIR *squash_opendir(sqfs *fs, const char *filename)
 	{
 		goto failure;
 	}
-        int *handle = (int *)(squash_global_fdtable.fds[vfd]->payload);
+        int *handle = (int *)(squash_global_fdtable.fds[dir->fd]->payload);
         free(handle);
 	squash_global_fdtable.fds[dir->fd]->payload = (void *)dir;
 	dir->actual_nr = 0;
