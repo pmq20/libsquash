@@ -190,6 +190,38 @@ EncloseIOCloseHandle(
 	}
 }
 
+BOOL
+EncloseIOReadFile(
+	HANDLE       hFile,
+	LPVOID       lpBuffer,
+	DWORD        nNumberOfBytesToRead,
+	LPDWORD      lpNumberOfBytesRead,
+	LPOVERLAPPED lpOverlapped
+)
+{
+	struct squash_file *sqf = squash_find_entry((void *)hFile);
+	if (sqf) {
+		// TODO the case of lpOverlapped
+		assert(NULL == lpOverlapped);
+		int ret = squash_read(sqf->fd, lpBuffer, nNumberOfBytesToRead);
+		if (-1 == ret)
+		{
+			ENCLOSE_IO_SET_LAST_ERROR;
+			return FALSE;
+		}
+		*lpNumberOfBytesRead = ret;
+		return TRUE;
+	} else {
+		return ReadFile(
+			hFile,
+			lpBuffer,
+			nNumberOfBytesToRead,
+			lpNumberOfBytesRead,
+			lpOverlapped
+		);
+	}
+}
+
 static DWORD EncloseIOGetFileAttributesHelper(struct stat *st)
 {
 	DWORD fa = FILE_ATTRIBUTE_READONLY;
@@ -282,35 +314,21 @@ EncloseIOGetFileAttributesExW(
 }
 
 BOOL
-EncloseIOReadFile(
-	HANDLE       hFile,
-	LPVOID       lpBuffer,
-	DWORD        nNumberOfBytesToRead,
-	LPDWORD      lpNumberOfBytesRead,
-	LPOVERLAPPED lpOverlapped
+EncloseIOGetHandleInformation(
+    HANDLE hObject,
+    LPDWORD lpdwFlags
 )
 {
-	struct squash_file *sqf = squash_find_entry((void *)hFile);
-	if (sqf) {
-		// TODO the case of lpOverlapped
-		assert(NULL == lpOverlapped);
-		int ret = squash_read(sqf->fd, lpBuffer, nNumberOfBytesToRead);
-		if (-1 == ret)
-		{
-			ENCLOSE_IO_SET_LAST_ERROR;
-			return FALSE;
-		}
-		*lpNumberOfBytesRead = ret;
-		return TRUE;
-	} else {
-		return ReadFile(
-			hFile,
-			lpBuffer,
-			nNumberOfBytesToRead,
-			lpNumberOfBytesRead,
-			lpOverlapped
-		);
-	}
+	struct squash_file *sqf = squash_find_entry((void *)lpdwFlags);
+        if (sqf) {
+                *lpdwFlags = 0;
+                return 1;
+        } else {
+                return GetHandleInformation(
+                        hObject,
+                        lpdwFlags
+                );
+        }
 }
 
 #ifndef RUBY_EXPORT

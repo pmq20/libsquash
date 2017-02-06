@@ -34,6 +34,7 @@
 
 #define GetFileAttributesW(...) EncloseIOGetFileAttributesW(__VA_ARGS__)
 #define GetFileAttributesExW(...) EncloseIOGetFileAttributesExW(__VA_ARGS__)
+#define GetHandleInformation(...) EncloseIOGetHandleInformation(__VA_ARGS__)
 
 #ifndef RUBY_EXPORT
 #define pNtQueryDirectoryFile(...) EncloseIOpNtQueryDirectoryFile(__VA_ARGS__)

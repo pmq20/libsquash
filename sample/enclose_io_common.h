@@ -192,6 +192,12 @@ EncloseIOReadFile(
 	LPOVERLAPPED lpOverlapped
 );
 
+BOOL
+EncloseIOGetHandleInformation(
+    HANDLE hObject,
+    LPDWORD lpdwFlags
+);
+
 #else
 int enclose_io_lstat(const char *path, struct stat *buf);
 ssize_t enclose_io_readlink(const char *path, char *buf, size_t bufsize);
