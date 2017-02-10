@@ -24,7 +24,7 @@ typedef struct {
 		sqfs_dir_entry entry;
 		struct dirent sysentry;
 		sqfs_name name;
-		bool not_eof;
+		short not_eof;
 	} *entries;
 	size_t nr; /* allocated size for entries */
 	int actual_nr; /* actual number of entries read */

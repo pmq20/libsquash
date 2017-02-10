@@ -37,8 +37,8 @@ static void test_basic_func()
 	sqfs_dir_entry entry;
 	sqfs_name name;
 
-	bool found;
-	bool has_next;
+	short found;
+	short has_next;
 	struct stat st;
 	size_t name_size = sizeof(name);
 	char buffer[1024];

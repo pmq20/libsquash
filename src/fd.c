@@ -16,7 +16,7 @@ int squash_open(sqfs *fs, const char *path)
 {
 	sqfs_err error;
 	struct squash_file *file = calloc(1, sizeof(struct squash_file));
-	bool found;
+	short found;
 	int fd;
 
 	// try locating the file and fetching its stat
@@ -30,7 +30,7 @@ int squash_open(sqfs *fs, const char *path)
 	{
 		goto failure;
 	}
-	error = sqfs_lookup_path_inner(fs, &file->node, path, &found, true);
+	error = sqfs_lookup_path_inner(fs, &file->node, path, &found, 1);
 	if (SQFS_OK != error)
 	{
 		goto failure;

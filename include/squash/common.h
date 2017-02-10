@@ -25,7 +25,6 @@
 #ifndef SQFS_COMMON_H
 #define SQFS_COMMON_H
 
-#include <stdbool.h>
 #include <stdint.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -60,7 +59,7 @@ typedef struct sqfs_inode sqfs_inode;
 typedef struct {
 	size_t size;
 	void *data;
-	bool data_need_freeing;
+	short data_need_freeing;
 } sqfs_block;
 
 typedef struct {

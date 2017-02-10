@@ -39,7 +39,7 @@ ssize_t squash_readlink(sqfs *fs, const char *path, char *buf, size_t bufsize)
 	sqfs_inode node;
 	memset(&node, 0, sizeof(sqfs_inode));
 
-	bool found = false;
+	short found = 0;
 
 	error = sqfs_inode_get(fs, &node, sqfs_inode_root(fs));
 	if(SQFS_OK != error)

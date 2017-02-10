@@ -22,6 +22,7 @@ also added is a sample on how to use libsquash in an unobtrusive way by utilizin
 1. Made it compile on 3 platforms simultanesly: Windows, Mac OS X and Linux.
 1. Added [CMake](https://cmake.org/) so that Xcode and Vistual Studio Projects could be easily generated.
 1. Added tests for both the old and new API's of the library.
+1. Eliminate dependencies on <stdbool.h> so that Windows XP and Visual C++ 2010 could use this library.
 
 ## Building
 

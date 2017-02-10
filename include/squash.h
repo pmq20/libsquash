@@ -32,7 +32,6 @@
 #ifndef SQFS_SQUASH_H
 #define SQFS_SQUASH_H
 
-#include <stdbool.h>
 #include <string.h>
 #include <errno.h>
 #include <assert.h>

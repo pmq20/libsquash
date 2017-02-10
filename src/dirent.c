@@ -14,7 +14,7 @@
 SQUASH_DIR *squash_opendir(sqfs *fs, const char *filename)
 {
 	sqfs_err error;
-	bool found;
+	short found;
 	SQUASH_DIR *dir = calloc(1, sizeof(SQUASH_DIR));
 	if (NULL == dir)
 	{
@@ -40,7 +40,7 @@ SQUASH_DIR *squash_opendir(sqfs *fs, const char *filename)
 	{
 		goto failure;
 	}
-	error = sqfs_lookup_path_inner(fs, &dir->node, filename, &found, true);
+	error = sqfs_lookup_path_inner(fs, &dir->node, filename, &found, 1);
 	if (SQFS_OK != error)
 	{
 		goto failure;
