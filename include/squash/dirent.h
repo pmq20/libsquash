@@ -22,7 +22,7 @@ typedef struct {
 	// CAUTION: this is a big struct, mind the SQUASHFS_NAME_LEN 256 size
 	struct {
 		sqfs_dir_entry entry;
-		struct dirent sysentry;
+		struct SQUASH_DIRENT sysentry;
 		sqfs_name name;
 		short not_eof;
 	} *entries;

@@ -231,12 +231,13 @@ static sqfs_err sqfs_dir_ff_name_f(sqfs *fs, sqfs_md_cursor *cur,
 	sqfs_err err;
 	sqfs_dir_ff_name_t *args = (sqfs_dir_ff_name_t*)arg;
 	size_t name_size = index->size + 1;
-	
+	int order;
+
 	if ((err = sqfs_md_read(fs, cur, args->name, name_size)))
 		return err;
 	args->name[name_size] = '\0';
 	
-	int order = strncmp(args->name, args->cmp, args->cmplen);
+	order = strncmp(args->name, args->cmp, args->cmplen);
 	if (order > 0 || (order == 0 && name_size > args->cmplen))
 		*stop = 1;
 	
@@ -280,8 +281,11 @@ sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node)
 
 	char base_path[SQUASHFS_PATH_LEN];
 	char new_path[SQUASHFS_PATH_LEN];
+	
+	int inode_num;
+
 	strcpy(base_path, path);
-	int inode_num = 0;
+	inode_num = 0;
 	do{
 		char buf_link[SQUASHFS_PATH_LEN]; // is enough for path?
 		ssize_t link_length = squash_readlink_inode(fs, node, buf_link, sizeof(buf_link));
@@ -339,14 +343,14 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 	sqfs_name buf;
 	sqfs_name name_here;
 	sqfs_dir_entry entry;
-
+	const char* path0;
 	memset(&buf, 0, sizeof(sqfs_name));
 	memset(&entry, 0, sizeof(sqfs_dir_entry));
 
 	*found = 0;
 	sqfs_dentry_init(&entry, buf);
 	
-	const char* path0 = path;
+	path0 = path;
 	while (*path) {
 		const char *name;
 		size_t size;

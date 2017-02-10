@@ -31,12 +31,14 @@
 
 #ifdef _WIN32
 	#include "squash/windows.h"
+        #define SQUASH_DIRENT squash_windows_dirent
 #else
 	#include <sys/dir.h>
 	#include <unistd.h>
 	typedef mode_t sqfs_mode_t;
 	typedef uid_t sqfs_id_t;
 	typedef off_t sqfs_off_t;
+        #define SQUASH_DIRENT dirent
 #endif
 typedef const uint8_t * sqfs_fd_t;
 

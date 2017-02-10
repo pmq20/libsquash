@@ -168,7 +168,7 @@ int squash_closedir(SQUASH_DIR *dirp);
  * It returns NULL upon reaching the end of the directory or on error. 
  * In the event of an error, error is set to the reason of the error.
  */
-struct dirent * squash_readdir(SQUASH_DIR *dirp);
+struct SQUASH_DIRENT * squash_readdir(SQUASH_DIR *dirp);
 
 /*
  * Returns the current location associated with the named directory stream.
@@ -215,8 +215,8 @@ int squash_dirfd(SQUASH_DIR *dirp);
  * which is passed to qsort to sort the completed array.
  * If this pointer is NULL, then the array is not sorted.
  */
-int squash_scandir(sqfs *fs, const char *dirname, struct dirent ***namelist,
-	int (*select)(const struct dirent *),
-	int (*compar)(const struct dirent **, const struct dirent **));
+int squash_scandir(sqfs *fs, const char *dirname, struct SQUASH_DIRENT ***namelist,
+	int (*select)(const struct SQUASH_DIRENT *),
+	int (*compar)(const struct SQUASH_DIRENT **, const struct SQUASH_DIRENT **));
 
 #endif
