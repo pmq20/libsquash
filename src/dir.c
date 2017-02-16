@@ -274,19 +274,24 @@ sqfs_err sqfs_dir_lookup(sqfs *fs, sqfs_inode *inode,
 	return err;
 }
 
-sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node)
-{
+sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node) {
+
 	sqfs_err error;
 	short found;
+	if(strlen(path) > SQUASHFS_PATH_LEN){
+		errno = ENAMETOOLONG;
+		return SQFS_ERR;
+	}
+
 
 	char base_path[SQUASHFS_PATH_LEN];
 	char new_path[SQUASHFS_PATH_LEN];
-	
+
 	int inode_num;
 
 	strcpy(base_path, path);
 	inode_num = 0;
-	do{
+	do {
 		char buf_link[SQUASHFS_PATH_LEN]; // is enough for path?
 		ssize_t link_length = squash_readlink_inode(fs, node, buf_link, sizeof(buf_link));
 		if (link_length > 0) {
@@ -300,13 +305,13 @@ sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node)
 				if (SQFS_OK != error) {
 					return error;
 				} else if (!found) {
-				        errno = ENOENT;
-				        return SQFS_ERR;
-                                }
+					errno = ENOENT;
+					return SQFS_ERR;
+				}
 			} else { // is Relative Path
 				size_t pos = strlen(base_path) - 1;
 				// find the last /  "/a/b/cb"
-				while (base_path[pos--] != '/') {}
+				while (base_path[pos--] != '/') { }
 
 
 				memcpy(new_path, base_path, pos + 2);
@@ -321,13 +326,13 @@ sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node)
 				if (SQFS_OK != error) {
 					return error;
 				} else if (!found) {
-				        errno = ENOENT;
-				        return SQFS_ERR;
-                                }
+					errno = ENOENT;
+					return SQFS_ERR;
+				}
 			}
 
 			inode_num++;
-			if(inode_num > SQUASHFS_MAX_LINK_LEVEL){
+			if (inode_num > SQUASHFS_MAX_LINK_LEVEL) {
 				errno = ELOOP;
 				return SQFS_ERR;
 			}
@@ -338,7 +343,7 @@ sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node)
 		}
 
 
-	}while(S_ISLNK(node->base.mode));
+	} while (S_ISLNK(node->base.mode));
 
 	return SQFS_OK;
 }
