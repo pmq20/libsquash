@@ -289,25 +289,29 @@ sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node) {
 
 	int inode_num;
 
-	strcpy(base_path, path);
+	strncpy(base_path, path, SQUASHFS_PATH_LEN);
 	inode_num = 0;
 	do {
 		char buf_link[SQUASHFS_PATH_LEN]; // is enough for path?
 		ssize_t link_length = squash_readlink_inode(fs, node, buf_link, sizeof(buf_link));
 		if (link_length > 0) {
 			if (buf_link[0] == '/') { // is Absolute Path
-#ifdef SQUASH_ROOT_ALIAS
-                                if (strlen(buf_link) >= strlen(ROOT_ALIAS) && buf_link == strstr(buf_link, ROOT_ALIAS)) {
-                                        buf_link += strlen(ROOT_ALIAS) - 1;
-                                        assert(buf_link[0] == '/'); // still is Absolute Path 
-                                }
-#endif
 				// find node from /
 				error = sqfs_inode_get(fs, node, sqfs_inode_root(fs));
 				if (SQFS_OK != error) {
 					return error;
 				}
-				error = sqfs_lookup_path(fs, node, buf_link, &found);
+                                if (fs->root_alias &&
+                                    strlen(buf_link) >= strlen(fs->root_alias) &&
+                                    buf_link == strstr(buf_link, fs->root_alias)) {
+                                        char *buf_link_ptr = buf_link + strlen(fs->root_alias) - 1;
+                                        assert(buf_link_ptr[0] == '/'); // still is Absolute Path 
+        				error = sqfs_lookup_path(fs, node, buf_link_ptr, &found);
+                                        strncpy(new_path, buf_link_ptr, SQUASHFS_PATH_LEN);
+                                } else {
+        				error = sqfs_lookup_path(fs, node, buf_link, &found);
+                                        strncpy(new_path, buf_link, SQUASHFS_PATH_LEN);
+                                }
 				if (SQFS_OK != error) {
 					return error;
 				} else if (!found) {
@@ -342,7 +346,7 @@ sqfs_err squash_follow_link(sqfs *fs, const char *path, sqfs_inode *node) {
 				errno = ELOOP;
 				return SQFS_ERR;
 			}
-			strcpy(base_path, new_path);
+			strncpy(base_path, new_path, SQUASHFS_PATH_LEN);
 
 		} else {
 			return SQFS_ERR;
