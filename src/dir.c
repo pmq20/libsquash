@@ -354,7 +354,6 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 	while (*path) {
 		const char *name;
 		size_t size;
-		short dfound;
 		
 		/* Find next path component */
 		while (*path == '/') /* skip leading slashes */
@@ -364,12 +363,17 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 		while (*path && *path != '/')
 			++path;
 		size = path - name;
-		if (size == 0) /* we're done */
+		if (0 == size) {
+			/* we're done */
 			break;
-		
-		if ((err = sqfs_dir_lookup(fs, inode, name, size, &entry, &dfound)))
+		}
+		if (1 == size && '.' == *name) {
+			/* interpret dot */
+			continue;
+		}
+		if ((err = sqfs_dir_lookup(fs, inode, name, size, &entry, found)))
 			return err;
-		if (!dfound)
+		if (!(*found))
 			return SQFS_OK; /* not found */
 		
 		if ((err = sqfs_inode_get(fs, inode, sqfs_dentry_inode(&entry))))
