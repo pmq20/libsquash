@@ -61,15 +61,21 @@ void sqfs_cache_destroy(sqfs_cache *cache) {
 }
 
 void *sqfs_cache_get(sqfs_cache *cache, sqfs_cache_idx idx) {
+	MUTEX_LOCK(&squash_global_cache_mutex);
 	size_t i;
 	for (i = 0; i < cache->count; ++i) {
-		if (cache->idxs[i] == idx)
+		if (cache->idxs[i] == idx){
+			MUTEX_UNLOCK(&squash_global_cache_mutex);
 			return sqfs_cache_entry(cache, i);
+		}
+
 	}
+	MUTEX_UNLOCK(&squash_global_cache_mutex);
 	return NULL;
 }
 
 void *sqfs_cache_add(sqfs_cache *cache, sqfs_cache_idx idx) {
+	MUTEX_LOCK(&squash_global_cache_mutex);
 	size_t i = (cache->next++);
 	cache->next %= cache->count;
 	
@@ -77,6 +83,7 @@ void *sqfs_cache_add(sqfs_cache *cache, sqfs_cache_idx idx) {
 		cache->dispose(sqfs_cache_entry(cache, i));
 	
 	cache->idxs[i] = idx;
+	MUTEX_LOCK(&squash_global_cache_mutex);
 	return sqfs_cache_entry(cache, i);
 }
 

@@ -12,7 +12,7 @@
 
 struct squash_fdtable squash_global_fdtable;
 MUTEX squash_global_fdtable_mutex;
-MUTEX squash_global_md_mutex;
+MUTEX squash_global_cache_mutex;
 int squash_open(sqfs *fs, const char *path)
 {
 	sqfs_err error;
@@ -174,7 +174,7 @@ sqfs_err squash_start()
 	squash_global_fdtable.nr = 0;
 	squash_global_fdtable.fds = NULL;
 	MUTEX_INIT(&squash_global_fdtable_mutex);
-    MUTEX_INIT(&squash_global_md_mutex);
+    MUTEX_INIT(&squash_global_cache_mutex);
 	return SQFS_OK;
 }
 
@@ -182,7 +182,7 @@ sqfs_err squash_halt()
 {
 	free(squash_global_fdtable.fds);
     MUTEX_DESTORY(&squash_global_fdtable_mutex);
-    MUTEX_DESTORY(&squash_global_md_mutex);
+    MUTEX_DESTORY(&squash_global_cache_mutex);
 	return SQFS_OK;
 }
 

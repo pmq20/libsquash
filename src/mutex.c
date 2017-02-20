@@ -25,7 +25,7 @@ int MUTEX_LOCK(MUTEX *mutex)
 {
 #ifdef _WIN32
     return (WaitForSingleObject(*mutex, INFINITE)==WAIT_FAILED?1:0);
-#else defined(LINUX)
+#else
     return pthread_mutex_lock(mutex);
 #endif
 }
@@ -34,7 +34,7 @@ int MUTEX_UNLOCK(MUTEX *mutex)
 {
 #ifdef _WIN32
     return (ReleaseMutex(*mutex)==0);
-#else defined(LINUX)
+#else
     return pthread_mutex_unlock(mutex);
 #endif
 }
@@ -43,7 +43,7 @@ int MUTEX_DESTORY(MUTEX *mutex)
 {
 #ifdef _WIN32
     return CloseHandle(mutex);
-#else defined(LINUX)
+#else
     return pthread_mutex_destroy(mutex);
 #endif
 }
