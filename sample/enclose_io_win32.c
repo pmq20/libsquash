@@ -249,8 +249,10 @@ EncloseIOReadFile(
         int ret;
 
 	if (sqf) {
-		// TODO the case of lpOverlapped
-		assert(NULL == lpOverlapped);
+		if (NULL != lpOverlapped) {
+                        squash_lseek(sqf->fd, lpOverlapped->Offset, SQUASH_SEEK_SET);
+                        assert(0 == lpOverlapped->OffsetHigh); // TODO support OffsetHigh
+                }
 		ret = squash_read(sqf->fd, lpBuffer, nNumberOfBytesToRead);
 		if (-1 == ret)
 		{
@@ -324,6 +326,25 @@ EncloseIOGetFileAttributesW(
 	}
 }
 
+static void EncloseIOUnixtimeToFiletime(time_t time, FILETIME *ft)
+{
+    ULARGE_INTEGER tmp;
+    tmp.QuadPart = ((long long)time + (long long)((1970-1601)*365.2425) * 24 * 60 * 60) * 10 * 1000 * 1000;
+    ft->dwLowDateTime = tmp.LowPart;
+    ft->dwHighDateTime = tmp.HighPart;
+}
+
+static void EncloseIOFillWin32FileAttributeDataHelper(WIN32_FILE_ATTRIBUTE_DATA *fa, struct stat *st)
+{
+        fa->dwFileAttributes = EncloseIOGetFileAttributesHelper(st);
+        EncloseIOUnixtimeToFiletime(st->st_atime, &fa->ftLastAccessTime);
+        EncloseIOUnixtimeToFiletime(st->st_mtime, &fa->ftLastWriteTime);
+        EncloseIOUnixtimeToFiletime(st->st_ctime, &fa->ftCreationTime);
+        // TODO somehow support large files?
+        fa->nFileSizeHigh = 0;
+        fa->nFileSizeLow = st->st_size;
+}
+
 BOOL
 EncloseIOGetFileAttributesExW(
     LPCWSTR lpFileName,
@@ -352,7 +373,7 @@ EncloseIOGetFileAttributesExW(
 			return 0;
 		}
 		fa = (WIN32_FILE_ATTRIBUTE_DATA *)lpFileInformation;
-		fa->dwFileAttributes = EncloseIOGetFileAttributesHelper(&buf);
+                EncloseIOFillWin32FileAttributeDataHelper(fa, &buf);
 		return 1;
 	} else if (enclose_io_is_path_w(lpFileName)) {
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
@@ -363,7 +384,7 @@ EncloseIOGetFileAttributesExW(
 			return 0;
 		}
 		fa = (WIN32_FILE_ATTRIBUTE_DATA *)lpFileInformation;
-		fa->dwFileAttributes = EncloseIOGetFileAttributesHelper(&buf);
+                EncloseIOFillWin32FileAttributeDataHelper(fa, &buf);
 		return 1;
 	} else {
 		return GetFileAttributesExW(
