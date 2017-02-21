@@ -44,7 +44,7 @@ sqfs_err sqfs_open_image(sqfs *fs, const uint8_t *image, size_t offset) {
 	sqfs_err err;
 	sqfs_fd_t fd;
 
-	if ((err = sqfs_fd_open(image, &fd, (short)stderr)))
+	if ((err = sqfs_fd_open(image, &fd, stderr)))
 		return err;
 
 	err = sqfs_init(fs, fd, offset);
