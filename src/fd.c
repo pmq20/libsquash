@@ -174,28 +174,29 @@ sqfs_err squash_start()
 	squash_global_fdtable.nr = 0;
 	squash_global_fdtable.fds = NULL;
 	MUTEX_INIT(&squash_global_fdtable_mutex);
-    MUTEX_INIT(&squash_global_cache_mutex);
+	MUTEX_INIT(&squash_global_cache_mutex);
 	return SQFS_OK;
 }
 
 sqfs_err squash_halt()
 {
 	free(squash_global_fdtable.fds);
-    MUTEX_DESTORY(&squash_global_fdtable_mutex);
-    MUTEX_DESTORY(&squash_global_cache_mutex);
+	MUTEX_DESTORY(&squash_global_fdtable_mutex);
+	MUTEX_DESTORY(&squash_global_cache_mutex);
 	return SQFS_OK;
 }
 
 struct squash_file * squash_find_entry(void *ptr)
 {
 	size_t i;
-    MUTEX_LOCK(&squash_global_fdtable_mutex);
+	struct squash_file * ret = NULL;
+	MUTEX_LOCK(&squash_global_fdtable_mutex);
 	for (i = 0; i < squash_global_fdtable.end; ++i) {
 		if (squash_global_fdtable.fds[i] && ptr == squash_global_fdtable.fds[i]->payload) {
-            MUTEX_UNLOCK(&squash_global_fdtable_mutex);
-            return squash_global_fdtable.fds[i];
+			ret = squash_global_fdtable.fds[i];
+			break;
 		}
 	}
-    MUTEX_UNLOCK(&squash_global_fdtable_mutex);
-	return NULL;
+	MUTEX_UNLOCK(&squash_global_fdtable_mutex);
+	return ret;
 }
