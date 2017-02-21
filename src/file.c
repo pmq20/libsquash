@@ -220,6 +220,7 @@ sqfs_err sqfs_blockidx_init(sqfs_cache *cache) {
 		SQUASHFS_META_SLOTS, &sqfs_blockidx_dispose);
 }
 
+/* Fill *out with all the block-index entries for this file */
 static sqfs_err sqfs_blockidx_add(sqfs *fs, sqfs_inode *inode,
 		sqfs_blockidx_entry **out) {
 	size_t blocks;	/* Number of blocks in the file */
