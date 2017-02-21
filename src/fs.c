@@ -177,36 +177,45 @@ sqfs_err sqfs_data_block_read(sqfs *fs, sqfs_off_t pos, uint32_t hdr,
 }
 
 sqfs_err sqfs_md_cache(sqfs *fs, sqfs_off_t *pos, sqfs_block **block) {
-    sqfs_block_cache_entry *entry = sqfs_cache_get(
-            &fs->md_cache, *pos);
-    if (!entry) {
-        sqfs_err err;
-        entry = sqfs_cache_add(&fs->md_cache, *pos);
+	sqfs_block_cache_entry *entry;
+	sqfs_err ret;
+	MUTEX_LOCK(&fs->md_cache.mutex);
 
-        /* fprintf(stderr, "MD BLOCK: %12llx\n", (long long)*pos); */
-        err = sqfs_md_block_read(fs, *pos,
-                                 &entry->data_size, &entry->block);
-        if (err)
-            return err;
-    }
-    *block = entry->block;
-    *pos += entry->data_size;
-    return SQFS_OK;
+	entry = sqfs_cache_get(&fs->md_cache, *pos);
+	if (!entry) {
+		entry = sqfs_cache_add(&fs->md_cache, *pos);
+		ret = sqfs_md_block_read(fs, *pos, &entry->data_size, &entry->block);
+		if (ret) {
+			goto exit;
+		}
+	}
+	*block = entry->block;
+	*pos += entry->data_size;
+	ret = SQFS_OK;
+exit:
+	MUTEX_UNLOCK(&fs->md_cache.mutex);
+	return ret;
 }
 
 sqfs_err sqfs_data_cache(sqfs *fs, sqfs_cache *cache, sqfs_off_t pos,
 		uint32_t hdr, sqfs_block **block) {
-	sqfs_block_cache_entry *entry = sqfs_cache_get(cache, pos);
+	sqfs_block_cache_entry *entry;
+	sqfs_err ret;
+	MUTEX_LOCK(&cache->mutex);
+
+	entry = sqfs_cache_get(cache, pos);
 	if (!entry) {
-		sqfs_err err;
 		entry = sqfs_cache_add(cache, pos);
-		err = sqfs_data_block_read(fs, pos, hdr,
-			&entry->block);
-		if (err)
-			return err;
+		ret = sqfs_data_block_read(fs, pos, hdr, &entry->block);
+		if (ret) {
+			goto exit;
+		}
 	}
 	*block = entry->block;
-	return SQFS_OK;
+	ret = SQFS_OK;
+exit:
+	MUTEX_UNLOCK(&cache->mutex);
+	return ret;
 }
 
 void sqfs_block_dispose(sqfs_block *block) {

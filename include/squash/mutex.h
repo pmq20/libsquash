@@ -9,16 +9,12 @@
 #ifndef LIBSQUASH_MUTEX_H
 #define LIBSQUASH_MUTEX_H
 
-
-
 #ifdef _WIN32
     #include <windows.h>
     #include <process.h>
 #else
     #include <pthread.h>
 #endif
-
-
 
 #ifdef _WIN32
    #define MUTEX HANDLE
@@ -27,8 +23,6 @@
 #endif
 
 extern MUTEX squash_global_fdtable_mutex;
-extern MUTEX squash_global_cache_mutex;
-
 
 int MUTEX_INIT(MUTEX *mutex);
 int MUTEX_LOCK(MUTEX *mutex);
