@@ -83,7 +83,7 @@ void *sqfs_cache_add(sqfs_cache *cache, sqfs_cache_idx idx) {
 		cache->dispose(sqfs_cache_entry(cache, i));
 	
 	cache->idxs[i] = idx;
-	MUTEX_LOCK(&squash_global_cache_mutex);
+	MUTEX_UNLOCK(&squash_global_cache_mutex);
 	return sqfs_cache_entry(cache, i);
 }
 
