@@ -238,6 +238,18 @@ EncloseIOFindClose(
         HANDLE hFindFile
 );
 
+BOOL
+EncloseIODeviceIoControl(
+        HANDLE hDevice,
+        DWORD dwIoControlCode,
+        LPVOID lpInBuffer,
+        DWORD nInBufferSize,
+        LPVOID lpOutBuffer,
+        DWORD nOutBufferSize,
+        LPDWORD lpBytesReturned,
+        LPOVERLAPPED lpOverlapped
+);
+
 #else
 int enclose_io_lstat(const char *path, struct stat *buf);
 ssize_t enclose_io_readlink(const char *path, char *buf, size_t bufsize);

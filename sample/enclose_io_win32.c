@@ -471,8 +471,8 @@ EncloseIOGetFileType(
 )
 {
 	struct squash_file *sqf = squash_find_entry((void *)hFile);
-        struct stat st;
         if (sqf) {
+                struct stat st;
 		st = sqf->st;
                 if (S_ISCHR(st.st_mode)) {
                         return FILE_TYPE_CHAR;
@@ -663,6 +663,60 @@ EncloseIOFindClose(
                         hFindFile
                 );
         }
+}
+
+BOOL
+EncloseIODeviceIoControl(
+        HANDLE hDevice,
+        DWORD dwIoControlCode,
+        LPVOID lpInBuffer,
+        DWORD nInBufferSize,
+        LPVOID lpOutBuffer,
+        DWORD nOutBufferSize,
+        LPDWORD lpBytesReturned,
+        LPOVERLAPPED lpOverlapped
+)
+{
+	struct squash_file *sqf = squash_find_entry((void *)hDevice);
+        int ret;
+
+	if (sqf) {
+                struct stat st;
+                sqfs_inode *node;
+
+                // TODO support more than FSCTL_GET_REPARSE_POINT
+                assert(dwIoControlCode == FSCTL_GET_REPARSE_POINT);
+		st = sqf->st;
+                if (!S_ISLNK(st.st_mode)) {
+                        errno = EINVAL;
+                        SetLastError(ERROR_NOT_A_REPARSE_POINT);
+                        _doserrno = ERROR_NOT_A_REPARSE_POINT;
+                        return FALSE;
+                }
+                ret = squash_readlink_inode(
+                        enclose_io_fs,
+                        &sqf->node,
+                        lpOutBuffer,
+                        nOutBufferSize
+                      );
+                if (-1 == ret) {
+                        ENCLOSE_IO_SET_LAST_ERROR;
+                        return FALSE;
+                }
+                *lpBytesReturned = ret;
+                return TRUE;
+	} else {
+                return DeviceIoControl(
+                        hDevice,
+                        dwIoControlCode,
+                        lpInBuffer,
+                        nInBufferSize,
+                        lpOutBuffer,
+                        nOutBufferSize,
+                        lpBytesReturned,
+                        lpOverlapped
+                );
+	}
 }
 
 #ifndef RUBY_EXPORT
