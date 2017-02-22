@@ -94,7 +94,7 @@ short enclose_io_is_relative_w(wchar_t *pathname);
                                 _doserrno = ERROR_FILE_NOT_FOUND; \
 			} else if (EBADF == errno) { \
 				SetLastError(ERROR_INVALID_HANDLE); \
-                                _doserrno = ERROR_INVALID_HANDLE; \n
+                                _doserrno = ERROR_INVALID_HANDLE; \
 			} else if (ENAMETOOLONG == errno) { \
 				SetLastError(ERROR_BUFFER_OVERFLOW); \
                                 _doserrno = ERROR_BUFFER_OVERFLOW; \
@@ -111,7 +111,7 @@ short enclose_io_is_relative_w(wchar_t *pathname);
                                 ENCLOSE_IO_SET_LAST_ERROR; \
                                 return ret; \
                         } else { \
-                                return ret; \ 
+                                return ret; \
                         } \
                 } while (0)
 #else
