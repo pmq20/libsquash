@@ -172,13 +172,21 @@ __int64 enclose_io_lseeki64(int fildes, __int64 offset, int whence)
 	}
 }
 
-static HANDLE EncloseIOCreateFileWHelper(char * incoming)
+static HANDLE EncloseIOCreateFileWHelper(
+        char * incoming,
+        DWORD dwFlagsAndAttributes
+)
 {
 	int ret;
 	struct stat buf;
         SQUASH_DIR *dirp;
 
-	ret = squash_stat(enclose_io_fs, incoming, &buf);
+        if (dwFlagsAndAttributes & FILE_FLAG_OPEN_REPARSE_POINT) {
+        	ret = squash_lstat(enclose_io_fs, incoming, &buf);
+        } else {
+        	ret = squash_stat(enclose_io_fs, incoming, &buf);
+        }
+
 	if (-1 == ret) {
 		ENCLOSE_IO_SET_LAST_ERROR;
 		return INVALID_HANDLE_VALUE;
@@ -224,7 +232,10 @@ EncloseIOCreateFileW(
 
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
-		return EncloseIOCreateFileWHelper(enclose_io_expanded);
+		return EncloseIOCreateFileWHelper(
+                        enclose_io_expanded,
+                        dwFlagsAndAttributes
+                );
 	} else if (enclose_io_is_path_w(lpFileName)) {
 		sqfs_path enclose_io_converted_storage;
 		char *enclose_io_converted;
@@ -232,7 +243,10 @@ EncloseIOCreateFileW(
 		size_t enclose_io_converted_length;
 
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
-		return EncloseIOCreateFileWHelper(enclose_io_converted);
+		return EncloseIOCreateFileWHelper(
+                        enclose_io_converted,
+                        dwFlagsAndAttributes
+                );
 	} else {
 		return CreateFileW(
 			lpFileName,
