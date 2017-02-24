@@ -180,11 +180,14 @@ static HANDLE EncloseIOCreateFileWHelper(
 	int ret;
 	struct stat buf;
         SQUASH_DIR *dirp;
+        int follow_link;
 
         if (dwFlagsAndAttributes & FILE_FLAG_OPEN_REPARSE_POINT) {
         	ret = squash_lstat(enclose_io_fs, incoming, &buf);
+                follow_link = 0;
         } else {
         	ret = squash_stat(enclose_io_fs, incoming, &buf);
+                follow_link = 1;
         }
 
 	if (-1 == ret) {
@@ -200,7 +203,7 @@ static HANDLE EncloseIOCreateFileWHelper(
                         return INVALID_HANDLE_VALUE;
                 }
 	} else {
-		ret = squash_open(enclose_io_fs, incoming);
+		ret = squash_open_inner(enclose_io_fs, incoming, follow_link);
 		if (ret >= 0) {
                         return (HANDLE)(squash_global_fdtable.fds[ret]->payload);
                 } else {

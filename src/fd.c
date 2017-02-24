@@ -12,7 +12,7 @@
 struct squash_fdtable squash_global_fdtable;
 MUTEX squash_global_fdtable_mutex;
 
-int squash_open(sqfs *fs, const char *path)
+int squash_open_inner(sqfs *fs, const char *path, short follow_link)
 {
 	sqfs_err error;
 	struct squash_file *file = calloc(1, sizeof(struct squash_file));
@@ -32,7 +32,7 @@ int squash_open(sqfs *fs, const char *path)
 	{
 		goto failure;
 	}
-	error = sqfs_lookup_path_inner(fs, &file->node, path, &found, 1);
+	error = sqfs_lookup_path_inner(fs, &file->node, path, &found, follow_link);
 	if (SQFS_OK != error)
 	{
 		goto failure;
@@ -103,6 +103,11 @@ failure:
 	}
 	free(file);
 	return -1;
+}
+
+int squash_open(sqfs *fs, const char *path)
+{
+        return squash_open_inner(fs, path, 1);
 }
 
 int squash_close(int vfd)
