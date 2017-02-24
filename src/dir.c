@@ -403,6 +403,13 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 	*found = 0;
 	sqfs_dentry_init(&entry, buf);
 	
+        /* path must not end with slash */
+        path0 = path + strlen(path) - 1;
+        while (path0 >= path && '/' == *path0) {
+                *path0 = '\0';
+                --path0;
+        }
+
 	path0 = path;
 	while (*path) {
 		const char *name;
@@ -432,17 +439,19 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 		if ((err = sqfs_inode_get(fs, inode, sqfs_dentry_inode(&entry))))
 			return err;
 
-		if (follow_link && S_ISLNK(inode->base.mode)) {
-			size_t size_here = path - path0;
-			if (size_here > SQUASHFS_PATH_LEN) {
-				size_here = SQUASHFS_PATH_LEN;
-			}
-			memcpy(path_here, path0, size_here);
-			path_here[size_here] = '\0';
-			err = squash_follow_link(fs, path_here, inode);
-			if (SQFS_OK != err) {
-				return err;
-			}
+		if (S_ISLNK(inode->base.mode)) {
+                        if (follow_link || *path)) {
+                                size_t size_here = path - path0;
+                                if (size_here > SQUASHFS_PATH_LEN) {
+                                        size_here = SQUASHFS_PATH_LEN;
+                                }
+                                memcpy(path_here, path0, size_here);
+                                path_here[size_here] = '\0';
+                                err = squash_follow_link(fs, path_here, inode);
+                                if (SQFS_OK != err) {
+                                        return err;
+                                }
+                        }
 		}
 	}
 	
