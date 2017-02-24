@@ -440,7 +440,7 @@ sqfs_err sqfs_lookup_path_inner(sqfs *fs, sqfs_inode *inode, const char *path,
 			return err;
 
 		if (S_ISLNK(inode->base.mode)) {
-                        if (follow_link || *path)) {
+                        if (follow_link || *path) {
                                 size_t size_here = path - path0;
                                 if (size_here > SQUASHFS_PATH_LEN) {
                                         size_here = SQUASHFS_PATH_LEN;
