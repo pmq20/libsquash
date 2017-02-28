@@ -724,7 +724,7 @@ EncloseIODeviceIoControl(
 		REPARSE_DATA_BUFFER* reparse_data = (REPARSE_DATA_BUFFER*)lpOutBuffer;
 
                 // TODO handle the overlapped
-                assert(NULL == lpOverlapped)
+                assert(NULL == lpOverlapped);
 
                 // TODO support more than FSCTL_GET_REPARSE_POINT
 		assert(0 == nInBufferSize);
@@ -759,7 +759,7 @@ EncloseIODeviceIoControl(
 		}
                 the_wpath[retlen] = L'\0';
                 *lpBytesReturned = sizeof(REPARSE_DATA_BUFFER) + retlen * sizeof(wchar_t);
-                if (lpBytesReturned > nOutBufferSize) {
+                if (*lpBytesReturned > nOutBufferSize) {
                         *lpBytesReturned = 0;
                         errno = ENAMETOOLONG;
                         ENCLOSE_IO_SET_LAST_ERROR;
