@@ -943,7 +943,6 @@ EncloseIOpNtQueryDirectoryFile(
                         ret->FileNameLength = sizeof(ret->FileName[0]) * retlen;
 			ret->FileAttributes = EncloseIODType2FileAttributes(mydirent->d_type);
                         IoStatusBlock->Information = (void*)(&ret->FileName[retlen]) - (void*)FileInformation + 1;
-                        assert(IoStatusBlock->Information >= sizeof(FILE_DIRECTORY_INFORMATION));
 			return STATUS_SUCCESS;
 		}
 	} else {
