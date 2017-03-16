@@ -1,4 +1,4 @@
-# Libsquash Roadmap
+# Libsquash Road Map
 
 ## v1.0.0
 
