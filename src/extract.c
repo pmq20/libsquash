@@ -126,7 +126,7 @@ static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 {
 	FILE *fp;
 	int fd;
-    SQUASH_OS_PATH tmpdir;
+    static SQUASH_OS_PATH tmpdir = NULL;
     SQUASH_OS_PATH tmpf;
 	size_t size;
 	ssize_t ssize;
@@ -138,19 +138,19 @@ static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 	if (-1 == fd) {
 		return NULL;
 	}
-	tmpdir = squash_tmpdir();
+    if (NULL == tmpdir) {
+        tmpdir = squash_tmpdir();
+    }
 	if (NULL == tmpdir) {
 		return NULL;
 	}
 	tmpf = squash_tmpf(tmpdir);
 	if (NULL == tmpf) {
-		free(tmpdir);
 		return NULL;
 	}
 	fp = fopen(tmpf, "w");
 	if (NULL == fp) {
 		free(tmpf);
-		free(tmpdir);
 		return NULL;
 	}
 	file = SQUASH_VFD_FILE(fd);
@@ -160,21 +160,18 @@ static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 		if (ssize <= 0) {
 			fclose(fp);
 			free(tmpf);
-			free(tmpdir);
 			return NULL;
 		}
 		offset -= ssize;
 		size = fwrite(buffer, ssize, 1, fp);
-		if (size != ssize) {
+		if (size != 1) {
 			fclose(fp);
 			free(tmpf);
-			free(tmpdir);
 			return NULL;
 		}
 	}
 	assert(0 == offset);
 	fclose(fp);
-	free(tmpdir);
 	return tmpf;
 }
 
@@ -205,11 +202,7 @@ static void squash_extract_cache_insert(sqfs *fs, SQUASH_OS_PATH path, SQUASH_OS
 		return;
 	}
 	ptr->fs = fs;
-	ptr->path = strdup(path);
-	if (NULL == ptr->path) {
-		free(ptr);
-		return;
-	}
+	ptr->path = path;
 	ptr->ret = ret;
 	ptr->next = squash_extract_cache;
 	squash_extract_cache = ptr;
