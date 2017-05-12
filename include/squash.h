@@ -238,5 +238,6 @@ int squash_scandir(sqfs *fs, const char *dirname, struct SQUASH_DIRENT ***nameli
 #define SQUASH_OS_PATH const char*
 #endif
 SQUASH_OS_PATH squash_extract(sqfs *fs, SQUASH_OS_PATH path);
+void squash_extract_clear_cache();
 
 #endif

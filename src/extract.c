@@ -122,43 +122,6 @@ static SQUASH_OS_PATH squash_tmpf(SQUASH_OS_PATH tmpdir)
 }
 #endif // _WIN32
 
-struct SquashExtractEntry {
-	sqfs *fs;
-	SQUASH_OS_PATH path;
-	SQUASH_OS_PATH ret;
-	struct SquashExtractEntry *next;
-};
-
-static struct SquashExtractEntry* squash_extract_cache = NULL;
-
-static const struct SquashExtractEntry* squash_extract_cache_find(sqfs *fs, SQUASH_OS_PATH path)
-{
-	struct SquashExtractEntry* ptr = squash_extract_cache;
-	while (NULL != ptr) {
-		if (fs == ptr->fs && 0 == strcmp(path, ptr->path)) {
-			return ptr;
-		}
-		ptr = ptr->next;
-	}
-	return ptr;
-}
-static void squash_extract_cache_insert(sqfs *fs, SQUASH_OS_PATH path, SQUASH_OS_PATH ret)
-{
-	struct SquashExtractEntry* ptr = malloc(sizeof(struct SquashExtractEntry));
-	if (NULL == ptr) {
-		return;
-	}
-	ptr->fs = fs;
-	ptr->path = strdup(path);
-	if (NULL == ptr->path) {
-		free(ptr);
-		return;
-	}
-	ptr->ret = ret;
-	ptr->next = squash_extract_cache;
-	squash_extract_cache = ptr;
-}
-
 static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 {
 	FILE *fp;
@@ -215,6 +178,43 @@ static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 	return tmpf;
 }
 
+struct SquashExtractEntry {
+	sqfs *fs;
+	SQUASH_OS_PATH path;
+	SQUASH_OS_PATH ret;
+	struct SquashExtractEntry *next;
+};
+
+static struct SquashExtractEntry* squash_extract_cache = NULL;
+
+static const struct SquashExtractEntry* squash_extract_cache_find(sqfs *fs, SQUASH_OS_PATH path)
+{
+	struct SquashExtractEntry* ptr = squash_extract_cache;
+	while (NULL != ptr) {
+		if (fs == ptr->fs && 0 == strcmp(path, ptr->path)) {
+			return ptr;
+		}
+		ptr = ptr->next;
+	}
+	return ptr;
+}
+static void squash_extract_cache_insert(sqfs *fs, SQUASH_OS_PATH path, SQUASH_OS_PATH ret)
+{
+	struct SquashExtractEntry* ptr = malloc(sizeof(struct SquashExtractEntry));
+	if (NULL == ptr) {
+		return;
+	}
+	ptr->fs = fs;
+	ptr->path = strdup(path);
+	if (NULL == ptr->path) {
+		free(ptr);
+		return;
+	}
+	ptr->ret = ret;
+	ptr->next = squash_extract_cache;
+	squash_extract_cache = ptr;
+}
+
 SQUASH_OS_PATH squash_extract(sqfs *fs, SQUASH_OS_PATH path)
 {
 	SQUASH_OS_PATH ret;
@@ -229,4 +229,17 @@ SQUASH_OS_PATH squash_extract(sqfs *fs, SQUASH_OS_PATH path)
 		squash_extract_cache_insert(fs, path, ret);
 	}
 	return ret;
+}
+
+void squash_extract_clear_cache()
+{
+	struct SquashExtractEntry* ptr = squash_extract_cache;
+	while (NULL != ptr) {
+#ifdef _WIN32
+		DeleteFileW(ptr->ret);
+#else
+		unlink(ptr->ret);
+#endif
+		ptr = ptr->next;
+	}
 }
