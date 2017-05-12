@@ -129,7 +129,7 @@ struct SquashExtractEntry {
 	struct SquashExtractEntry *next;
 };
 
-static SquashExtractEntry* squash_extract_cache = NULL;
+static struct SquashExtractEntry* squash_extract_cache = NULL;
 
 static const struct SquashExtractEntry* squash_extract_cache_find(sqfs *fs, SQUASH_OS_PATH path)
 {
@@ -162,16 +162,17 @@ static void squash_extract_cache_insert(sqfs *fs, SQUASH_OS_PATH path, SQUASH_OS
 static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 {
 	FILE *fp;
-	int vfd;
-	SQUASH_OS_PATH tmpdir, tmpf, ret;
+	int fd;
+    SQUASH_OS_PATH tmpdir;
+    SQUASH_OS_PATH tmpf;
 	size_t size;
 	ssize_t ssize;
 	char buffer[1024];
 	sqfs_off_t offset;
 	struct squash_file *file;
 
-	vfd = squash_open(fs, path);
-	if (-1 == vfd) {
+	fd = squash_open(fs, path);
+	if (-1 == fd) {
 		return NULL;
 	}
 	tmpdir = squash_tmpdir();
@@ -217,7 +218,7 @@ static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 SQUASH_OS_PATH squash_extract(sqfs *fs, SQUASH_OS_PATH path)
 {
 	SQUASH_OS_PATH ret;
-	static SquashExtractEntry* found;
+	static struct SquashExtractEntry* found;
 
 	found = squash_extract_cache_find(fs, path);
 	if (NULL != found) {

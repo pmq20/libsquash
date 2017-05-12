@@ -188,6 +188,8 @@ static void test_stat()
 	expect(0 == ret, "Upon successful completion a value of 0 is returned");
 	expect(S_ISREG(st.st_mode), "/bombing is a regular file");
 	squash_close(fd);
+    
+    // extract "/bombing"
 	
 	//stat /dir/something4
 	ret = squash_lstat(&fs, "/dir1/something4", &st);
