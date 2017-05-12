@@ -7,14 +7,15 @@
  */
 
 #include "squash.h"
+#include <time.h>
+#include <stdlib.h>
 
 #ifdef _WIN32
-
 #include <Windows.h>
-static const int squash_win32_buf_sz = 32767;
-static wchar_t squash_win32_buf[squash_win32_buf_sz + 1];
 static SQUASH_OS_PATH squash_tmpdir()
 {
+	const int squash_win32_buf_sz = 32767;
+	wchar_t squash_win32_buf[squash_win32_buf_sz + 1];
 	DWORD length;
 
 	length = GetEnvironmentVariable(L"TEMP", squash_win32_buf, squash_win32_buf_sz);
@@ -50,8 +51,29 @@ out:
 	}
 	return wcsdup(squash_win32_buf);
 }
-
+static SQUASH_OS_PATH squash_tmpf(SQUASH_OS_PATH tmpdir)
+{
+	const int squash_win32_buf_sz = 32767;
+	wchar_t squash_win32_buf[squash_win32_buf_sz + 1];
+	int ret, try = 0;
+	srand(time(NULL));
+	while (try < 3) {
+		ret = swprintf(squash_win32_buf, squash_win32_buf_sz, L"%s\\nodec-runtime-%d", tmpdir, rand());
+		if (-1 == ret) {
+			return NULL;
+		}
+		if (!PathFileExistsW(squash_win32_buf)) {
+			return wcsdup(squash_win32_buf);
+		}
+		++try;
+	}
+	return NULL;
+}
 #else // _WIN32
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 static SQUASH_OS_PATH squash_tmpdir()
 {
@@ -78,10 +100,27 @@ out:
 	}
 	return try;
 }
+static SQUASH_OS_PATH squash_tmpf(SQUASH_OS_PATH tmpdir)
+{
+	const int squash_buf_sz = 32767;
+	char squash_buf[squash_buf_sz + 1];
+	int ret, try = 0;
+    struct stat statbuf;
 
+	srand(time(NULL));
+	while (try < 3) {
+		ret = snprintf(squash_buf, squash_buf_sz, "%s/nodec-runtime-%d", tmpdir, rand());
+		if (-1 == ret) {
+			return NULL;
+		}
+		if (-1 == stat(squash_buf, &statbuf)) {
+			return strdup(squash_buf);
+		}
+		++try;
+	}
+	return NULL;
+}
 #endif // _WIN32
-
-// TODO better data structure?
 
 struct SquashExtractEntry {
 	sqfs *fs;
@@ -122,7 +161,21 @@ static void squash_extract_cache_insert(sqfs *fs, SQUASH_OS_PATH path, SQUASH_OS
 
 static SQUASH_OS_PATH squash_uncached_extract(sqfs *fs, SQUASH_OS_PATH path)
 {
-	
+	SQUASH_OS_PATH tmpdir, tmpf, ret;
+
+	tmpdir = squash_tmpdir();
+	if (NULL == tmpdir) {
+		return NULL;
+	}
+	tmpf = squash_tmpf(tmpdir);
+	if (NULL == tmpf) {
+		free(tmpdir);
+		return NULL;
+	}
+	// TODO
+out:
+	free(tmpdir);
+	return ret;
 }
 
 SQUASH_OS_PATH squash_extract(sqfs *fs, SQUASH_OS_PATH path)
