@@ -195,23 +195,27 @@ static void test_stat()
 	// extract "/bombing"
 	path = squash_extract(&fs, "/bombing", "txt");
 	expect(NULL != path, "sucecssfully extracts the file");
-	ret = stat(path, &st);
+	#ifdef _WIN32
+		ret = _wstat(path, &st);
+	#else
+		ret = stat(path, &st);
+	#endif
 	expect(0 == ret, "system stat - a value of 0 is returned");
 	expect(S_ISREG(st.st_mode), "system stat - a regular file");
 	path2 = squash_extract(&fs, "/bombing", "txt");
 	expect(path == path2, "cache works");
 	#ifdef _WIN32
-	path_len = wcslen(path);
-	expect(L'.' == path[path_len-4], ".txt");
-	expect(L't' == path[path_len-3], ".txt");
-	expect(L'x' == path[path_len-2], ".txt");
-	expect(L't' == path[path_len-1], ".txt");
+		path_len = wcslen(path);
+		expect(L'.' == path[path_len-4], ".txt");
+		expect(L't' == path[path_len-3], ".txt");
+		expect(L'x' == path[path_len-2], ".txt");
+		expect(L't' == path[path_len-1], ".txt");
 	#else
-	path_len = strlen(path);
-	expect('.' == path[path_len-4], ".txt");
-	expect('t' == path[path_len-3], ".txt");
-	expect('x' == path[path_len-2], ".txt");
-	expect('t' == path[path_len-1], ".txt");
+		path_len = strlen(path);
+		expect('.' == path[path_len-4], ".txt");
+		expect('t' == path[path_len-3], ".txt");
+		expect('x' == path[path_len-2], ".txt");
+		expect('t' == path[path_len-1], ".txt");
 	#endif
 
 	//stat /dir/something4
