@@ -224,7 +224,7 @@ int enclose_io_access(const char *path, int mode)
 		struct stat buf;
 		return squash_stat(enclose_io_fs, path, &buf);
 	} else {
-		return access(const char *path, int mode);
+		return access(path, mode);
 	}
 }
 #endif // !_WIN32
