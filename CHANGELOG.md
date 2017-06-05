@@ -1,8 +1,13 @@
 # Libsquash Changelog
 
+## v0.5.0
+
+work in progress
+
 ## v0.4.0
 
-- Fix dot-dot in opening `/__enclose_io_memfs__/lib/../package.json`: https://github.com/pmq20/node-compiler/issues/24
+- Fix dot-dot in opening `/__enclose_io_memfs__/lib/../package.json`
+  - https://github.com/pmq20/node-compiler/issues/24
 
 ## v0.3.0
 
