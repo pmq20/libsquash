@@ -2,7 +2,8 @@
 
 ## v0.5.0
 
-work in progress
+- deprecate use of swprintf() to ease compiling on Windows
+- interpret system calls to access()
 
 ## v0.4.0
 
