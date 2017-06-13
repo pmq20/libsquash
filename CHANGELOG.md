@@ -1,5 +1,9 @@
 # Libsquash Changelog
 
+## v0.6.0
+
+work in progress
+
 ## v0.5.0
 
 - deprecate use of swprintf() to ease compiling on Windows
