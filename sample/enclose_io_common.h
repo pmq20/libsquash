@@ -295,6 +295,7 @@ int enclose_io_scandir(const char *dirname, struct SQUASH_DIRENT ***namelist,
 	int(*compar)(const struct SQUASH_DIRENT **, const struct SQUASH_DIRENT **));
 ssize_t enclose_io_pread(int d, void *buf, size_t nbyte, off_t offset);
 ssize_t enclose_io_readv(int d, const struct iovec *iov, int iovcnt);
+void* enclose_io_ifextract(const char* path, const char* ext_name);
 void* enclose_io_dlopen(const char* path, int mode);
 int enclose_io_access(const char *path, int mode);
 
