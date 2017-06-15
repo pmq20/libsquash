@@ -121,6 +121,7 @@ short enclose_io_is_relative_w(wchar_t *pathname);
 #define ENCLOSE_IO_DOS_RETURN(statement) return (statement)
 #endif // _WIN32
 
+SQUASH_OS_PATH enclose_io_ifextract(const char* path, const char* ext_name);
 void enclose_io_chdir_helper(const char *path);
 int enclose_io_chdir(const char *path);
 char *enclose_io_getcwd(char *buf, size_t size);
@@ -295,7 +296,6 @@ int enclose_io_scandir(const char *dirname, struct SQUASH_DIRENT ***namelist,
 	int(*compar)(const struct SQUASH_DIRENT **, const struct SQUASH_DIRENT **));
 ssize_t enclose_io_pread(int d, void *buf, size_t nbyte, off_t offset);
 ssize_t enclose_io_readv(int d, const struct iovec *iov, int iovcnt);
-void* enclose_io_ifextract(const char* path, const char* ext_name);
 void* enclose_io_dlopen(const char* path, int mode);
 int enclose_io_access(const char *path, int mode);
 
