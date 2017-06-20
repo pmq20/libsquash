@@ -217,6 +217,17 @@ int enclose_io_access(const char *path, int mode)
 }
 #endif // !_WIN32
 
+short enclose_io_if(const char* path)
+{
+	if (enclose_io_cwd[0] && '/' != *path) {
+		return 1;
+	} else if (enclose_io_is_path(path)) {
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
 SQUASH_OS_PATH enclose_io_ifextract(const char* path, const char* ext_name)
 {
     if (enclose_io_cwd[0] && '/' != *path) {
@@ -301,7 +312,8 @@ char *enclose_io_getcwd(char *buf, size_t size)
 			}
 		}
 		memcpy(buf, enclose_io_cwd, memcpy_len);
-		buf[memcpy_len] = '\0';
+		assert(memcpy_len - 1 >= 0);
+		buf[memcpy_len - 1] = '\0';
 		return buf;
 	} else {
 		return getcwd(buf, size);

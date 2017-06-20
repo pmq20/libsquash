@@ -3,6 +3,7 @@
 ## v0.6.0
 
 - add `enclose_io_ifextract(const char* path, const char* ext_name)`
+- add `enclose_io_if(const char* path)`
 
 ## v0.5.0
 
