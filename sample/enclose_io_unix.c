@@ -36,7 +36,7 @@ static const char* enclose_io_mkdir_workdir()
 		MUTEX_LOCK(&squash_global_mutex);
 		if (NULL == mkdir_workdir) {
 			mkdir_workdir = squash_tmpf(squash_tmpdir(), NULL);
-			if (mkdir(mkdir_workdir, 0777)) {
+			if (mkdir(mkdir_workdir, S_IRWXU)) {
 				mkdir_workdir = NULL;
 				return NULL;
 			}
@@ -60,13 +60,13 @@ int enclose_io_lstat(const char *path, struct stat *buf)
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			enclose_io_expanded,
 			squash_lstat(enclose_io_fs, enclose_io_expanded, buf),
-			squash_lstat(enclose_io_fs, mkdir_workdir_expanded, buf)
+			lstat(mkdir_workdir_expanded, buf)
 		);
 	} else if (enclose_io_is_path(path)) {
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			path,
 			squash_lstat(enclose_io_fs, path, buf),
-			squash_lstat(enclose_io_fs, mkdir_workdir_expanded, buf)
+			lstat(mkdir_workdir_expanded, buf)
 		);
 	} else {
 		return lstat(path, buf);
@@ -83,14 +83,14 @@ ssize_t enclose_io_readlink(const char *path, char *buf, size_t bufsize)
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			enclose_io_expanded,
 			squash_readlink(enclose_io_fs, enclose_io_expanded, buf, bufsize),
-			squash_readlink(enclose_io_fs, mkdir_workdir_expanded, buf, bufsize)
+			readlink(mkdir_workdir_expanded, buf, bufsize)
 		);
 	}
 	else if (enclose_io_is_path(path)) {
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			path,
 			squash_readlink(enclose_io_fs, path, buf, bufsize),
-			squash_readlink(enclose_io_fs, mkdir_workdir_expanded, buf, bufsize)
+			readlink(mkdir_workdir_expanded, buf, bufsize)
 		);
 	}
 	else {
@@ -108,14 +108,14 @@ DIR * enclose_io_opendir(const char *filename)
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			enclose_io_expanded,
 			(DIR *)squash_opendir(enclose_io_fs, enclose_io_expanded),
-			(DIR *)squash_opendir(enclose_io_fs, mkdir_workdir_expanded)
+			opendir(mkdir_workdir_expanded)
 		);
 	}
 	else if (enclose_io_is_path(filename)) {
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			filename,
 			(DIR *)squash_opendir(enclose_io_fs, filename),
-			(DIR *)squash_opendir(enclose_io_fs, mkdir_workdir_expanded)
+			opendir(mkdir_workdir_expanded)
 		);
 	}
 	else {
@@ -195,14 +195,14 @@ int enclose_io_scandir(const char *dirname, struct SQUASH_DIRENT ***namelist,
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			enclose_io_expanded,
 			squash_scandir(enclose_io_fs, enclose_io_expanded, namelist, select, compar),
-			squash_scandir(enclose_io_fs, mkdir_workdir_expanded, namelist, select, compar)
+			scandir(mkdir_workdir_expanded, namelist, select, compar)
 		);
 	}
 	else if (enclose_io_is_path(dirname)) {
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			dirname,
 			squash_scandir(enclose_io_fs, dirname, namelist, select, compar),
-			squash_scandir(enclose_io_fs, mkdir_workdir_expanded, namelist, select, compar)
+			scandir(mkdir_workdir_expanded, namelist, select, compar)
 		);
 	}
 	else {
@@ -273,18 +273,50 @@ int enclose_io_access(const char *path, int mode)
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			enclose_io_expanded,
 			squash_stat(enclose_io_fs, enclose_io_expanded, &buf),
-			squash_stat(enclose_io_fs, mkdir_workdir_expanded, &buf)
+			access(mkdir_workdir_expanded, &buf)
 		);
 	} else if (enclose_io_is_path(path)) {
 		struct stat buf;
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			path,
 			squash_stat(enclose_io_fs, path, &buf),
-			squash_stat(enclose_io_fs, mkdir_workdir_expanded, &buf)
+			access(mkdir_workdir_expanded, &buf)
 		);
 	} else {
 		return access(path, mode);
 	}
+}
+
+static int enclose_io_mkdir_recursive(char *path, mode_t mode) {
+	int ret;
+	char *head = NULL;
+	char *p = NULL;
+	struct stat buf;
+
+	while (strlen(path) - 1 >= 0 && '/' == path[strlen(path) - 1]) {
+		path[strlen(path) - 1] = 0;
+	}
+
+	head = strstr(path, "/__enclose_io_memfs__/");
+	assert(NULL != head);
+	assert('/' == head[21]);
+	head[21] = 0;
+	mkdir(path, mode);
+	head[21] = '/';
+
+	for(p = head + 22; *p; p++) {
+		if(*p == '/') {
+			*p = 0;
+			if (0 == squash_stat(enclose_io_fs, head, &buf) && S_ISDIR(buf.st_mode)) {
+				mkdir(path, mode);
+			} else {
+				errno = ENOENT;
+				return -1;
+			}
+			*p = '/';
+		}
+	}
+	return mkdir(path, mode);
 }
 
 int enclose_io_mkdir(const char *path, mode_t mode)
@@ -316,7 +348,7 @@ int enclose_io_mkdir(const char *path, mode_t mode)
 			}
 			strcpy(workdir_path, workdir);
 			strcat(workdir_path, enclose_io_expanded);
-			ret_inner = mkdir(workdir_path, 0777);
+			ret_inner = enclose_io_mkdir_recursive(workdir_path, mode);
 			free(workdir_path);
 			return ret_inner;
 		}
@@ -343,7 +375,7 @@ int enclose_io_mkdir(const char *path, mode_t mode)
 			}
 			strcpy(workdir_path, workdir);
 			strcat(workdir_path, path);
-			ret_inner = mkdir(workdir_path, 0777);
+			ret_inner = enclose_io_mkdir_recursive(workdir_path, mode);
 			free(workdir_path);
 			return ret_inner;
 		}
@@ -510,13 +542,13 @@ int enclose_io_stat(const char *path, struct stat *buf)
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			enclose_io_expanded,
 			enclose_io_dos_return(squash_stat(enclose_io_fs, enclose_io_expanded, buf)),
-			enclose_io_dos_return(squash_stat(enclose_io_fs, mkdir_workdir_expanded, buf))
+			stat(mkdir_workdir_expanded, buf)
 		);
 	} else if (enclose_io_is_path(path)) {
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
 			path,
 			enclose_io_dos_return(squash_stat(enclose_io_fs, path, buf)),
-			enclose_io_dos_return(squash_stat(enclose_io_fs, mkdir_workdir_expanded, buf))
+			stat(mkdir_workdir_expanded, buf)
 		);
 	} else {
 		return stat(path, buf);
@@ -539,17 +571,43 @@ int enclose_io_open(int nargs, const char *pathname, int flags, ...)
 		size_t enclose_io_cwd_len;
 		size_t memcpy_len;
 		ENCLOSE_IO_GEN_EXPANDED_NAME(pathname);
-		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
-			enclose_io_expanded,
-			enclose_io_dos_return(squash_open(enclose_io_fs, enclose_io_expanded)),
-			enclose_io_dos_return(squash_open(enclose_io_fs, mkdir_workdir_expanded))
-		);
+		if (2 == nargs) {
+			ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
+				enclose_io_expanded,
+				enclose_io_dos_return(squash_open(enclose_io_fs, enclose_io_expanded)),
+				open(mkdir_workdir_expanded, flags)
+			);
+		} else {
+			va_list args;
+			mode_t mode;
+			va_start(args, flags);
+			mode = va_arg(args, mode_t);
+			va_end(args);
+			ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
+				enclose_io_expanded,
+				enclose_io_dos_return(squash_open(enclose_io_fs, enclose_io_expanded)),
+				open(mkdir_workdir_expanded, flags, mode)
+			);
+		}
 	} else if (enclose_io_is_path(pathname)) {
-		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
-			pathname,
-			enclose_io_dos_return(squash_open(enclose_io_fs, pathname)),
-			enclose_io_dos_return(squash_open(enclose_io_fs, mkdir_workdir_expanded))
-		);
+		if (2 == nargs) {
+			ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
+				pathname,
+				enclose_io_dos_return(squash_open(enclose_io_fs, pathname)),
+				open(mkdir_workdir_expanded, flags)
+			);
+		} else {
+			va_list args;
+			mode_t mode;
+			va_start(args, flags);
+			mode = va_arg(args, mode_t);
+			va_end(args);
+			ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
+				pathname,
+				enclose_io_dos_return(squash_open(enclose_io_fs, pathname)),
+				open(mkdir_workdir_expanded, flags, mode)
+			);
+		}
 	} else {
 		if (2 == nargs) {
 			return open(pathname, flags);
