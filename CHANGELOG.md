@@ -1,5 +1,9 @@
 # Libsquash Changelog
 
+## v0.7.0
+
+work in progress
+
 ## v0.6.0
 
 - add `enclose_io_ifextract(const char* path, const char* ext_name)`
