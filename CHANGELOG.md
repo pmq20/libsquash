@@ -2,7 +2,7 @@
 
 ## v0.7.0
 
-work in progress
+- test ifndef __USE_XOPEN_EXTENDED
 
 ## v0.6.0
 
