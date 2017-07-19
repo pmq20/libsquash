@@ -1,5 +1,10 @@
 # Libsquash Changelog
 
+## v0.8.0
+
+- allow creating files inside an existing folder of memfs
+  - removes the temporary directory and files at exit
+
 ## v0.7.0
 
 - test ifndef __USE_XOPEN_EXTENDED
