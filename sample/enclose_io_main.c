@@ -7,7 +7,6 @@
  */
 
 #include <stdint.h>
-#include <io.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +14,7 @@
 
 #ifdef _WIN32
 #include <Windows.h>
+#include <io.h>
 #define ssize_t __int64
 #endif
 
