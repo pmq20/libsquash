@@ -29,4 +29,4 @@ build_script:
 
     ctest --verbose
 
-    C:\projects\libautoupdate\build\Release\squash_sample.exe
+    C:\projects\libsquash\build\Release\squash_sample.exe
