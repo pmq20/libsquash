@@ -4,6 +4,8 @@
 
 - allow creating files inside an existing folder of memfs
   - removes the temporary directory and files at exit
+- produce an executable `squash_sample` when `BUILD_SAMPLE` in cmake
+  - let CI discover linking errors earlier about the sample
 
 ## v0.7.0
 
