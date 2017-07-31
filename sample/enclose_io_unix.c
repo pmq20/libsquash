@@ -29,9 +29,9 @@ static BOOL mkdir_workdir_halt_rm(const wchar_t *sPath)
 	short bSearch = 1;
 
 	wcscpy(DirPath, sPath);
-	wcscpy(DirPath, L"\\*");
+	wcscat(DirPath, L"\\*");
 	wcscpy(FileName, sPath);
-	wcscpy(FileName, L"\\");
+	wcscat(FileName, L"\\");
 
 	hFind = FindFirstFileW(DirPath, &FindFileData);
 	if (INVALID_HANDLE_VALUE == hFind) {
@@ -72,7 +72,7 @@ static BOOL mkdir_workdir_halt_rm(const wchar_t *sPath)
 	}
 
 	FindClose(hFind);
-	return RemoveDirectory(sPath);
+	return RemoveDirectoryW(sPath);
 }
 #else
 static int mkdir_workdir_halt_rm(const char *arg1, const struct stat *ptr, int flag, struct FTW *ftwarg)
@@ -94,14 +94,14 @@ static void mkdir_workdir_halt()
 #endif
 }
 
-static const char* enclose_io_mkdir_workdir()
+static SQUASH_OS_PATH enclose_io_mkdir_workdir()
 {
 	if (NULL == mkdir_workdir) {
 		MUTEX_LOCK(&squash_global_mutex);
 		if (NULL == mkdir_workdir) {
 			mkdir_workdir = squash_tmpf(squash_tmpdir(), NULL);
 #ifdef _WIN32
-			if (mkdir(mkdir_workdir)) {
+			if (_wmkdir(mkdir_workdir)) {
 #else
 			if (mkdir(mkdir_workdir, S_IRWXU)) {
 #endif
@@ -184,15 +184,24 @@ int enclose_io_mkdir(const char *path, mode_t mode)
 		size_t memcpy_len;
 		int ret;
 		int ret_inner;
-		const char* workdir;
 		const char* workdir_path;
+
 		ENCLOSE_IO_GEN_EXPANDED_NAME(path);
 		ret = squash_stat(enclose_io_fs, enclose_io_expanded, &buf);
-		workdir = enclose_io_mkdir_workdir();
+#ifdef _WIN32
+		char workdir[MAX_PATH * 3];
+		wchar_t* win32_workdir = enclose_io_mkdir_workdir();
+		if ((size_t)-1 == wcstombs(workdir, win32_workdir, MAX_PATH)) {
+			errno = ENOENT;
+			return -1;
+		}
+#else
+		const char* workdir = enclose_io_mkdir_workdir();
 		if (NULL == workdir) {
 			errno = ENOENT;
 			return -1;
 		}
+#endif
 		workdir_path = malloc(strlen(workdir) + strlen(enclose_io_expanded) + 1);
 		if (NULL == workdir_path) {
 			errno = ENOMEM;
@@ -212,14 +221,23 @@ int enclose_io_mkdir(const char *path, mode_t mode)
 		struct stat buf;
 		int ret;
 		int ret_inner;
-		const char* workdir;
 		const char* workdir_path;
+
 		ret = squash_stat(enclose_io_fs, path, &buf);
-		workdir = enclose_io_mkdir_workdir();
+#ifdef _WIN32
+		char workdir[MAX_PATH * 3];
+		wchar_t* win32_workdir = enclose_io_mkdir_workdir();
+		if ((size_t)-1 == wcstombs(workdir, win32_workdir, MAX_PATH)) {
+			errno = ENOENT;
+			return -1;
+		}
+#else
+		const char* workdir = enclose_io_mkdir_workdir();
 		if (NULL == workdir) {
 			errno = ENOENT;
 			return -1;
 		}
+#endif
 		workdir_path = malloc(strlen(workdir) + strlen(path) + 1);
 		if (NULL == workdir_path) {
 			errno = ENOMEM;
