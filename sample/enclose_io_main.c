@@ -151,14 +151,14 @@ const uint8_t libsquash_fixture[4096] = { 104
 static void expect(short condition, const char *reason)
 {
 	if (condition) {
-		fprintf(stderr, ".");
+		fprintf(stdout, ".");
 	}
 	else {
-		fprintf(stderr, "x");
-		fprintf(stderr, "\nFAILED: %s\n", reason);
+		fprintf(stdout, "x");
+		fprintf(stdout, "\nFAILED: %s\n", reason);
 		exit(1);
 	}
-	fflush(stderr);
+	fflush(stdout);
 }
 
 int main() {
