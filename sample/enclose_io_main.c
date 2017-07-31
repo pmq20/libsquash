@@ -175,12 +175,13 @@ int main() {
 	ret = _wmkdir(L"dd");
 	expect(0 == ret, "");
 #else
-	ret = mkdir("/__enclose_io_memfs__/jj");
+	ret = mkdir("/__enclose_io_memfs__/jj", 0777);
 	expect(0 == ret, "");
 	ret = chdir("/__enclose_io_memfs__/jj");
 	expect(0 == ret, "");
-	ret = mkdir("dd");
+	ret = mkdir("dd", 0777);
 	expect(0 == ret, "");
 #endif
 	return 0;
 }
+g
