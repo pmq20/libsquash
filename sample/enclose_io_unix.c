@@ -18,6 +18,63 @@ sqfs_path enclose_io_cwd; /* must end with a slash */
 SQUASH_OS_PATH mkdir_workdir = NULL; /* must NOT end with a slash */
 char *enclose_io_mkdir_scope = "/__enclose_io_memfs__"; /* must NOT end with a slash */
 
+
+#ifdef _WIN32
+static BOOL mkdir_workdir_halt_rm(const wchar_t *sPath)
+{
+	HANDLE hFind;
+	WIN32_FIND_DATAW FindFileData;
+	wchar_t DirPath[MAX_PATH];
+	wchar_t FileName[MAX_PATH];
+	short bSearch = 1;
+
+	wcscpy(DirPath, sPath);
+	wcscpy(DirPath, L"\\*");
+	wcscpy(FileName, sPath);
+	wcscpy(FileName, L"\\");
+
+	hFind = FindFirstFileW(DirPath, &FindFileData);
+	if (INVALID_HANDLE_VALUE == hFind) {
+		return FALSE;
+	}
+
+	wcscpy(DirPath, FileName);
+	while (bSearch) {
+		if (FindNextFileW(hFind, &FindFileData)) {
+			if (wcslen(FindFileData.cFileName) >= 2 && L'.' == FindFileData.cFileName[0] && L'.' == FindFileData.cFileName[1]) {
+				continue;
+			}
+			wcscat(FileName, FindFileData.cFileName);
+			if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) {
+				if (!mkdir_workdir_halt_rm(FileName)) {
+					FindClose(hFind);
+					return FALSE;
+				}
+				RemoveDirectoryW(FileName);
+			} else {
+				if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_READONLY) {
+					_wchmod(FileName, 0777);
+				}
+				if (!DeleteFile(FileName)) {
+					FindClose(hFind);
+					return FALSE;
+				}
+			}
+			wcscpy(FileName, DirPath);
+		} else {
+			if (ERROR_NO_MORE_FILES == GetLastError()) {
+				bSearch = 0;
+			} else {
+				FindClose(hFind);
+				return FALSE;
+			}
+		}
+	}
+
+	FindClose(hFind);
+	return RemoveDirectory(sPath);
+}
+#else
 static int mkdir_workdir_halt_rm(const char *arg1, const struct stat *ptr, int flag, struct FTW *ftwarg)
 {
 	if (FTW_D == flag || FTW_DNR == flag || FTW_DP == flag) {
@@ -26,10 +83,15 @@ static int mkdir_workdir_halt_rm(const char *arg1, const struct stat *ptr, int f
 		unlink(arg1);
 	}
 }
+#endif
 
 static void mkdir_workdir_halt()
 {
+#ifdef _WIN32
+	mkdir_workdir_halt_rm(mkdir_workdir);
+#else
 	nftw(mkdir_workdir, mkdir_workdir_halt_rm, 20, FTW_PHYS | FTW_MOUNT | FTW_DEPTH);
+#endif
 }
 
 static const char* enclose_io_mkdir_workdir()
@@ -38,7 +100,11 @@ static const char* enclose_io_mkdir_workdir()
 		MUTEX_LOCK(&squash_global_mutex);
 		if (NULL == mkdir_workdir) {
 			mkdir_workdir = squash_tmpf(squash_tmpdir(), NULL);
+#ifdef _WIN32
+			if (mkdir(mkdir_workdir)) {
+#else
 			if (mkdir(mkdir_workdir, S_IRWXU)) {
+#endif
 				mkdir_workdir = NULL;
 				return NULL;
 			}
@@ -83,7 +149,11 @@ static int enclose_io_mkdir_consult(char *path, mode_t mode) {
 						path2 + (head-path) + strlen(enclose_io_mkdir_scope),
 						strlen(path2 + (head-path) + strlen(enclose_io_mkdir_scope)) + 1
 					);
+#ifdef _WIN32
+					mkdir(path2);
+#else
 					mkdir(path2, mode);
+#endif
 					free(path2);
 				}
 				*p = '/';
@@ -98,8 +168,19 @@ static int enclose_io_mkdir_consult(char *path, mode_t mode) {
 		head + strlen(enclose_io_mkdir_scope),
 		strlen(head + strlen(enclose_io_mkdir_scope)) + 1
 	);
+#ifdef _WIN32
+	return mkdir(path);
+#else
 	return mkdir(path, mode);
+#endif
 }
+
+#ifdef _WIN32
+int enclose_io_wmkdir(wchar_t const* _Path)
+{
+	return _wmkdir(_Path);
+}
+#endif
 
 int enclose_io_mkdir(const char *path, mode_t mode)
 {
