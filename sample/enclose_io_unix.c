@@ -15,7 +15,8 @@
 
 sqfs *enclose_io_fs;
 sqfs_path enclose_io_cwd; /* must end with a slash */
-SQUASH_OS_PATH mkdir_workdir = NULL; /* must NOT end with a slash */
+SQUASH_OS_PATH generic_mkdir_workdir = NULL;
+char *mkdir_workdir = NULL; /* must NOT end with a slash */
 char *enclose_io_mkdir_scope = "/__enclose_io_memfs__"; /* must NOT end with a slash */
 
 
@@ -88,30 +89,66 @@ static int mkdir_workdir_halt_rm(const char *arg1, const struct stat *ptr, int f
 static void mkdir_workdir_halt()
 {
 #ifdef _WIN32
-	mkdir_workdir_halt_rm(mkdir_workdir);
+	mkdir_workdir_halt_rm(generic_mkdir_workdir);
 #else
 	nftw(mkdir_workdir, mkdir_workdir_halt_rm, 20, FTW_PHYS | FTW_MOUNT | FTW_DEPTH);
 #endif
 }
 
-static SQUASH_OS_PATH enclose_io_mkdir_workdir()
+static char * enclose_io_mkdir_workdir()
 {
 	if (NULL == mkdir_workdir) {
 		MUTEX_LOCK(&squash_global_mutex);
 		if (NULL == mkdir_workdir) {
-			mkdir_workdir = squash_tmpf(squash_tmpdir(), NULL);
-#ifdef _WIN32
-			if (_wmkdir(mkdir_workdir)) {
-#else
-			if (mkdir(mkdir_workdir, S_IRWXU)) {
-#endif
+			generic_mkdir_workdir = squash_tmpf(squash_tmpdir(), NULL);
+			if (NULL == generic_mkdir_workdir) {
 				mkdir_workdir = NULL;
+				return NULL;
+			}
+#ifdef _WIN32
+			mkdir_workdir = malloc(MAX_PATH * 3);
+			if (NULL == mkdir_workdir) {
+				mkdir_workdir = NULL;
+				free(generic_mkdir_workdir);
+				generic_mkdir_workdir = NULL;
+				return NULL;
+			}
+			if ((size_t)-1 == wcstombs(mkdir_workdir, generic_mkdir_workdir, MAX_PATH)) {
+				free(mkdir_workdir);
+				mkdir_workdir = NULL;
+				free(generic_mkdir_workdir);
+				generic_mkdir_workdir = NULL;
+				return -1;
+			}
+			if (mkdir(mkdir_workdir)) {
+				free(mkdir_workdir);
+				mkdir_workdir = NULL;
+				free(generic_mkdir_workdir);
+				generic_mkdir_workdir = NULL;
+				return NULL;
+			}
+			if (atexit(mkdir_workdir_halt)) {
+				free(mkdir_workdir);
+				mkdir_workdir = NULL;
+				free(generic_mkdir_workdir);
+				generic_mkdir_workdir = NULL;
+				return NULL;
+			}
+#else
+			mkdir_workdir = generic_mkdir_workdir;
+			if (mkdir(mkdir_workdir, S_IRWXU)) {
+				mkdir_workdir = NULL;
+				free(generic_mkdir_workdir);
+				generic_mkdir_workdir = NULL;
 				return NULL;
 			}
 			if (atexit(mkdir_workdir_halt)) {
 				mkdir_workdir = NULL;
+				free(generic_mkdir_workdir);
+				generic_mkdir_workdir = NULL;
 				return NULL;
 			}
+#endif
 		}
 		MUTEX_UNLOCK(&squash_global_mutex);
 	}
@@ -184,24 +221,16 @@ int enclose_io_mkdir(const char *path, mode_t mode)
 		size_t memcpy_len;
 		int ret;
 		int ret_inner;
+		const char* workdir;
 		const char* workdir_path;
 
 		ENCLOSE_IO_GEN_EXPANDED_NAME(path);
 		ret = squash_stat(enclose_io_fs, enclose_io_expanded, &buf);
-#ifdef _WIN32
-		char workdir[MAX_PATH * 3];
-		wchar_t* win32_workdir = enclose_io_mkdir_workdir();
-		if ((size_t)-1 == wcstombs(workdir, win32_workdir, MAX_PATH)) {
-			errno = ENOENT;
-			return -1;
-		}
-#else
-		const char* workdir = enclose_io_mkdir_workdir();
+		workdir = enclose_io_mkdir_workdir();
 		if (NULL == workdir) {
 			errno = ENOENT;
 			return -1;
 		}
-#endif
 		workdir_path = malloc(strlen(workdir) + strlen(enclose_io_expanded) + 1);
 		if (NULL == workdir_path) {
 			errno = ENOMEM;
@@ -221,23 +250,15 @@ int enclose_io_mkdir(const char *path, mode_t mode)
 		struct stat buf;
 		int ret;
 		int ret_inner;
+		const char* workdir;
 		const char* workdir_path;
 
 		ret = squash_stat(enclose_io_fs, path, &buf);
-#ifdef _WIN32
-		char workdir[MAX_PATH * 3];
-		wchar_t* win32_workdir = enclose_io_mkdir_workdir();
-		if ((size_t)-1 == wcstombs(workdir, win32_workdir, MAX_PATH)) {
-			errno = ENOENT;
-			return -1;
-		}
-#else
-		const char* workdir = enclose_io_mkdir_workdir();
+		workdir = enclose_io_mkdir_workdir();
 		if (NULL == workdir) {
 			errno = ENOENT;
 			return -1;
 		}
-#endif
 		workdir_path = malloc(strlen(workdir) + strlen(path) + 1);
 		if (NULL == workdir_path) {
 			errno = ENOMEM;
