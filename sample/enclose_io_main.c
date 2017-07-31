@@ -164,6 +164,9 @@ static void expect(short condition, const char *reason)
 int main() {
 	int ret;
 
+	fprintf(stdout, "\nrunning enclose_io_main of sample\n");
+	fflush(stdout);
+
 	squash_start();
 	enclose_io_fs = (sqfs *)calloc(sizeof(sqfs), 1);
 	sqfs_open_image(enclose_io_fs, libsquash_fixture, 0);
@@ -182,5 +185,9 @@ int main() {
 	ret = mkdir("dd", 0777);
 	expect(0 == ret, "");
 #endif
+
+	fprintf(stdout, "\ndone running enclose_io_main of sample\n");
+	fflush(stdout);
+
 	return 0;
 }
