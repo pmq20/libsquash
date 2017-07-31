@@ -127,13 +127,13 @@ static char * enclose_io_mkdir_workdir()
 				generic_mkdir_workdir = NULL;
 				return NULL;
 			}
-			// if (atexit(mkdir_workdir_halt)) {
-			// 	free(mkdir_workdir);
-			// 	mkdir_workdir = NULL;
-			// 	free(generic_mkdir_workdir);
-			// 	generic_mkdir_workdir = NULL;
-			// 	return NULL;
-			// }
+			if (atexit(mkdir_workdir_halt)) {
+				free(mkdir_workdir);
+				mkdir_workdir = NULL;
+				free(generic_mkdir_workdir);
+				generic_mkdir_workdir = NULL;
+				return NULL;
+			}
 #else
 			mkdir_workdir = generic_mkdir_workdir;
 			if (mkdir(mkdir_workdir, S_IRWXU)) {
