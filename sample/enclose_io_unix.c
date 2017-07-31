@@ -175,13 +175,6 @@ static int enclose_io_mkdir_consult(char *path, mode_t mode) {
 #endif
 }
 
-#ifdef _WIN32
-int enclose_io_wmkdir(wchar_t const* _Path)
-{
-	return _wmkdir(_Path);
-}
-#endif
-
 int enclose_io_mkdir(const char *path, mode_t mode)
 {
 	if (enclose_io_cwd[0] && '/' != *path) {
@@ -247,7 +240,34 @@ int enclose_io_mkdir(const char *path, mode_t mode)
 	}
 }
 
-#ifndef _WIN32
+#ifdef _WIN32
+int enclose_io__wmkdir(wchar_t* pathname)
+{
+	if (enclose_io_cwd[0] && enclose_io_is_relative_w(pathname)) {
+		sqfs_path enclose_io_expanded;
+		size_t enclose_io_cwd_len;
+		size_t memcpy_len;
+		sqfs_path enclose_io_converted_storage;
+		char *enclose_io_converted;
+		char *enclose_io_i;
+		size_t enclose_io_converted_length;
+
+		W_ENCLOSE_IO_PATH_CONVERT(pathname);
+		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
+		return enclose_io_dos_return(enclose_io_mkdir(enclose_io_expanded, 0777));
+	} else if (enclose_io_is_path_w(pathname)) {
+		sqfs_path enclose_io_converted_storage;
+		char *enclose_io_converted;
+		char *enclose_io_i;
+		size_t enclose_io_converted_length;
+
+		W_ENCLOSE_IO_PATH_CONVERT(pathname);
+		return enclose_io_dos_return(enclose_io_mkdir(enclose_io_converted, 0777));
+	} else {
+		return _wmkdir(pathname);
+	}
+}
+#else
 int enclose_io_lstat(const char *path, struct stat *buf)
 {
 	if (enclose_io_cwd[0] && '/' != *path) {
