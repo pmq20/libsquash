@@ -176,11 +176,11 @@ int main() {
 	expect(0 == ret, "");
 #else
 	ret = mkdir("/__enclose_io_memfs__/jj");
-	expect(0 == ret, "";
+	expect(0 == ret, "");
 	ret = chdir("/__enclose_io_memfs__/jj");
-	expect(0 == ret, "";
+	expect(0 == ret, "");
 	ret = mkdir("dd");
-	expect(0 == ret, "";
+	expect(0 == ret, "");
 #endif
 	return 0;
 }
