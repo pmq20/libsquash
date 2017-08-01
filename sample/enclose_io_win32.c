@@ -829,7 +829,7 @@ EncloseIOFindFirstFileW(
 				mkdir_workdir_expanded,
 				lpFindFileData
 			)
-		)
+		);
 	} else {
 		return FindFirstFileW(
 			lpFileName,
