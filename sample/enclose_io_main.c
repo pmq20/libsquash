@@ -177,6 +177,7 @@ int main() {
 	expect(SetCurrentDirectoryW(L"J:\\__enclose_io_memfs__\\jj"), "");
 	ret = _wmkdir(L"dd");
 	expect(0 == ret, "");
+	expect(SetCurrentDirectoryW(L"dd"), "");
 #else
 	ret = mkdir("/__enclose_io_memfs__/jj", 0777);
 	expect(0 == ret, "");
