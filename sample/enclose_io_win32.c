@@ -10,6 +10,9 @@
 
 #ifdef _WIN32
 
+extern char *mkdir_workdir;
+extern char *enclose_io_mkdir_scope;
+
 int enclose_io__open(const char *pathname, int flags)
 {
 	if (enclose_io_cwd[0] && '/' != *pathname) {
@@ -547,7 +550,7 @@ EncloseIOGetFileAttributesW(
 			EncloseIOGetFileAttributesWHelper(enclose_io_converted),
 			GetFileAttributes(
 				mkdir_workdir_expanded
-			);
+			)
 		);
 	} else if (enclose_io_is_path_w(lpFileName)) {
 		sqfs_path enclose_io_converted_storage;
