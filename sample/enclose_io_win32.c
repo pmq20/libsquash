@@ -546,8 +546,8 @@ EncloseIOGetFileAttributesW(
 		ENCLOSE_IO_GEN_EXPANDED_NAME(enclose_io_converted);
 		
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
-			enclose_io_converted,
-			EncloseIOGetFileAttributesWHelper(enclose_io_converted),
+			enclose_io_expanded,
+			EncloseIOGetFileAttributesWHelper(enclose_io_expanded),
 			GetFileAttributes(
 				mkdir_workdir_expanded
 			)
@@ -561,8 +561,8 @@ EncloseIOGetFileAttributesW(
 		W_ENCLOSE_IO_PATH_CONVERT(lpFileName);
 		
 		ENCLOSE_IO_CONSIDER_MKDIR_WORKDIR_RETURN(
-			enclose_io_expanded,
-			EncloseIOGetFileAttributesWHelper(enclose_io_expanded),
+			enclose_io_converted,
+			EncloseIOGetFileAttributesWHelper(enclose_io_converted),
 			GetFileAttributes(
 				mkdir_workdir_expanded
 			)
