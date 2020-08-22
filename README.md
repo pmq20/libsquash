@@ -169,7 +169,7 @@ Upon successful completion the path of the extracted temporary file is returned.
 Otherwise, a value of `NULL` is returned and `errno` is set to the reason of the error.
 The returned path is referenced by an internal cache and must not be freed.
 
-## Todo
+## To-do
 
 - Test Wide character directories and file names on Windows
 - Benchmark and tweet cache size and block size of libsquash
