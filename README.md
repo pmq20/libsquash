@@ -170,6 +170,19 @@ Upon successful completion the path of the extracted temporary file is returned.
 Otherwise, a value of `NULL` is returned and `errno` is set to the reason of the error.
 The returned path is referenced by an internal cache and must not be freed.
 
+## Todo
+
+- Test Wide character directories and file names on Windows
+- Benchmark and tweet cache size and block size of libsquash
+- Organize core API's and freeze
+- Make public struct's opaque
+- Seperate headers into private headers and public headers
+- Make intercepting system calls a core functionality instead of in the sample/
+- Test under ARM architecture as well
+- Support Unicode paths
+- Embed mksquashfs logic instead of relying on outside tool
+- Intercept dynamically without compiling via the LD_PRELOAD trick
+
 ## Acknowledgment
 
 Thank you [Dave Vasilevsky](https://github.com/vasi) for the excellent work of squashfuse!
