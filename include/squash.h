@@ -232,9 +232,9 @@ int squash_scandir(sqfs *fs, const char *dirname, struct SQUASH_DIRENT ***nameli
  * The returned path is referenced by an internal cache and must not be freed.
  */
 #ifdef _WIN32
-#define SQUASH_OS_PATH const wchar_t*
+#define SQUASH_OS_PATH wchar_t*
 #else
-#define SQUASH_OS_PATH const char*
+#define SQUASH_OS_PATH char*
 #endif
 SQUASH_OS_PATH squash_tmpdir();
 SQUASH_OS_PATH squash_tmpf(SQUASH_OS_PATH tmpdir, const char *ext_name);

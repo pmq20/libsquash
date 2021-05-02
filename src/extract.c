@@ -238,7 +238,7 @@ static void squash_extract_cache_insert(sqfs *fs, const char *path, SQUASH_OS_PA
 SQUASH_OS_PATH squash_extract(sqfs *fs, const char *path, const char *ext_name)
 {
 	SQUASH_OS_PATH ret;
-	static struct SquashExtractEntry* found;
+	static const struct SquashExtractEntry* found;
 
 	found = squash_extract_cache_find(fs, path);
 	if (NULL != found) {
